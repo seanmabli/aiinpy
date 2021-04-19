@@ -1,5 +1,5 @@
 import numpy as np
-from activationfunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, DerivativeOfStableSoftMax, ReLU, DerivativeOfReLU, Tanh, DerivativeOfTanh
+from .activationfunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, DerivativeOfStableSoftMax, ReLU, DerivativeOfReLU, Tanh, DerivativeOfTanh
 
 class NN:
   def __init__(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1)):
