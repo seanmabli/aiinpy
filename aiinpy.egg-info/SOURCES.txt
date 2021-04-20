@@ -1,0 +1,11 @@
+setup.py
+aiinpy/CONV.py
+aiinpy/NN.py
+aiinpy/POOL.py
+aiinpy/__init__.py
+aiinpy/activationfunctions.py
+aiinpy.egg-info/PKG-INFO
+aiinpy.egg-info/SOURCES.txt
+aiinpy.egg-info/dependency_links.txt
+aiinpy.egg-info/requires.txt
+aiinpy.egg-info/top_level.txt

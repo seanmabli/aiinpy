@@ -1,8 +1,9 @@
 from setuptools import setup
 
 setup(name='aiinpy',
-      version='0.0.0',
+      version='0.0.2',
       description='A simple artificial intelligence library',
       license='MIT',
       packages=['aiinpy'],
-      install_requires=['numpy'])
+      install_requires=['numpy']
+      )
