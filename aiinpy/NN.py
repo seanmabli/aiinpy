@@ -19,6 +19,10 @@ class NN:
       self.Output = Sigmoid(self.Output)
     if(self.Activation == "StableSoftMax"):
       self.Output = StableSoftMax(self.Output)
+    if(self.Activation == "Tanh"):
+      self.Output = Tanh(self.Output)
+    if(self.Activation == "None"):
+      self.Output = self.Output
     return self.Output
 
   def BackProp(self, FollowingLayerError):
@@ -30,6 +34,10 @@ class NN:
       FollowingLayerGradient = np.multiply(DerivativeOfSigmoid(self.Output), FollowingLayerError) * self.LearningRate
     if(self.Activation == "StableSoftMax"):
       FollowingLayerGradient = np.multiply(DerivativeOfStableSoftMax(self.Output), FollowingLayerError) * self.LearningRate
+    if(self.Activation == "Tanh"):
+      FollowingLayerGradient = np.multiply(DerivativeOfTanh(self.Output), FollowingLayerError) * self.LearningRate
+    if(self.Activation == "None"):
+      FollowingLayerGradient = np.multiply(self.Output, FollowingLayerError) * self.LearningRate
       
     # Calculate Current Layer Error
     CurrentLayerError = self.Weights @ FollowingLayerError
