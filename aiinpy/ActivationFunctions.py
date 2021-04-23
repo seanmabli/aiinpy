@@ -26,4 +26,3 @@ def Tanh(Input):
   return np.tanh(Input)
 def DerivativeOfTanh(Input):
   return 1 - np.square(Input)
-  
