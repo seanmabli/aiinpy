@@ -20,5 +20,5 @@ class RNN:
     self.Output = StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
     return self.Output
 
-  def BackProp(OutputError):
+  def BackProp(self, OutputError):
     
