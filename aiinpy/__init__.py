@@ -2,3 +2,4 @@ from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, De
 from .NN import NN
 from .CONV import CONV
 from .POOL import POOL
+from .RNN import RNN
