@@ -2,9 +2,9 @@ import numpy as np
 from .activationfunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, DerivativeOfStableSoftMax, ReLU, DerivativeOfReLU, Tanh, DerivativeOfTanh
 
 class NN:
-  def __init__(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1)):
+  def __init__(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0)):
     self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (CurrentLayerShape, FollowingLayerShape))
-    self.Biases = np.zeros(FollowingLayerShape)
+    self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], (FollowingLayerShape))
     self.Activation = Activation
     self.LearningRate = LearningRate
   
