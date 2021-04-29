@@ -29,20 +29,20 @@ class NN:
     # Calculate Gradients
     FollowingLayerGradient = np.zeros(self.Output.shape)
     if(self.Activation == "ReLU"):
-      FollowingLayerGradient = np.multiply(DerivativeOfReLU(self.Output), FollowingLayerError) * self.LearningRate
+      FollowingLayerGradient = np.multiply(DerivativeOfReLU(self.Output), FollowingLayerError)
     if(self.Activation == "Sigmoid"):
-      FollowingLayerGradient = np.multiply(DerivativeOfSigmoid(self.Output), FollowingLayerError) * self.LearningRate
+      FollowingLayerGradient = np.multiply(DerivativeOfSigmoid(self.Output), FollowingLayerError)
     if(self.Activation == "StableSoftMax"):
-      FollowingLayerGradient = np.multiply(DerivativeOfStableSoftMax(self.Output), FollowingLayerError) * self.LearningRate
+      FollowingLayerGradient = np.multiply(DerivativeOfStableSoftMax(self.Output), FollowingLayerError)
     if(self.Activation == "Tanh"):
-      FollowingLayerGradient = np.multiply(DerivativeOfTanh(self.Output), FollowingLayerError) * self.LearningRate
+      FollowingLayerGradient = np.multiply(DerivativeOfTanh(self.Output), FollowingLayerError)
     if(self.Activation == "None"):
-      FollowingLayerGradient = np.multiply(self.Output, FollowingLayerError) * self.LearningRate
+      FollowingLayerGradient = np.multiply(self.Output, FollowingLayerError)
       
     # Calculate Current Layer Error
     CurrentLayerError = self.Weights @ FollowingLayerError
       
     # Apply Deltas To The Weights And Biases
-    self.Biases += FollowingLayerGradient
-    self.Weights += np.outer(np.transpose(self.InputLayer), FollowingLayerGradient)
+    self.Biases += FollowingLayerGradient * self.LearningRate
+    self.Weights += np.outer(np.transpose(self.InputLayer), FollowingLayerGradient) * self.LearningRate
     return CurrentLayerError
