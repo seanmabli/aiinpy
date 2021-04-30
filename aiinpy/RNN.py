@@ -1,5 +1,5 @@
 class RNN:
-  def __init__(self, InputSize, OutputSize, Type, HiddenSize, LearningRate=0.05):
+  def __init__(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05):
     self.LearningRate = LearningRate
     self.Type = Type
 
@@ -16,16 +16,36 @@ class RNN:
 
     for i in range(len(InputLayer)):
       self.Hidden[i + 1, :] = Tanh(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases)
-
+    
     self.Output = StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
     return self.Output
 
   def BackProp(self, OutputError):
     OutputGradient = np.multiply(DerivativeOfStableSoftMax(self.Output), OutputError)
-    self.WeightsHidToOut += np.outer(np.transpose(self.Hidden[len(InputLayer), :]), OutputGradient) * self.LearningRate
+    
+    self.WeightsHidToOut = np.clip(np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)])), -1, 1) * self.LearningRate
+    self.OutputBiases = np.clip(OutputGradient, -1, 1) * self.LearningRate
 
-    self.HiddenError = np.zeros((self.Hidden.shape))
-    self.HiddenError[len(InputLayer)] = self.WeightsHidToHid @ OutputError
+    self.WeightsHidToHidDeltas = np.zeros(self.WeightsHidToHid.shape)
+    self.WeightsInputToHidDeltas = np.zeros(self.WeightsInputToHid.shape)
+    self.HiddenBiasesDeltas = np.zeros(self.HiddenBiases.shape)
 
-    for i in reversed(range(len(InputLayer))):
-      self.HiddenGradient = np.multiply(DerivativeOfTanh(self.Output), FollowingLayerError)
+    self.HiddenError = np.transpose(self.WeightsHidToOut) @ OutputError
+
+    for i in reversed(range(len(self.InputLayer))):
+      self.HiddenGradient = np.multiply(DerivativeOfTanh(self.Hidden[i + 1]), self.HiddenError)
+
+      self.HiddenBiasesDeltas += self.HiddenGradient
+
+      self.WeightsHidToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.Hidden[i]))
+
+      self.WeightsInputToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.InputLayer[i]))
+
+      self.HiddenError = np.transpose(self.WeightsHidToHid) @ self.HiddenGradient
+    
+    for d in [self.WeightsInputToHidDeltas, self.WeightsHidToHidDeltas, self.HiddenBiasesDeltas]:
+      np.clip(d, -1, 1, out=d)
+
+    self.WeightsHidToHid += self.LearningRate * self.WeightsHidToHidDeltas
+    self.WeightsInputToHid += self.LearningRate * self.WeightsInputToHidDeltas
+    self.HiddenBiases += self.LearningRate * self.HiddenBiasesDeltas
