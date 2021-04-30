@@ -23,7 +23,9 @@ class RNN:
   def BackProp(self, OutputError):
     OutputGradient = np.multiply(DerivativeOfStableSoftMax(self.Output), OutputError)
     self.WeightsHidToOut += np.outer(np.transpose(self.Hidden[len(InputLayer), :]), OutputGradient) * self.LearningRate
-    self.HiddenGradient = np.zeros((self.Hidden.shape))
 
-    for i in range(len(InputLayer)):
-      self.HiddenGradient[i + 1, :] = Tanh(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases)
+    self.HiddenError = np.zeros((self.Hidden.shape))
+    self.HiddenError[len(InputLayer)] = self.WeightsHidToHid @ OutputError
+
+    for i in reversed(range(len(InputLayer))):
+      self.HiddenGradient = np.multiply(DerivativeOfTanh(self.Output), FollowingLayerError)
