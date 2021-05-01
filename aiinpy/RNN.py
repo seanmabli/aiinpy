@@ -35,17 +35,12 @@ class RNN:
     for i in reversed(range(len(self.InputLayer))):
       self.HiddenGradient = np.multiply(DerivativeOfTanh(self.Hidden[i + 1]), self.HiddenError)
 
+      self.HiddenError = np.transpose(self.WeightsHidToHid) @ self.HiddenGradient
+
       self.HiddenBiasesDeltas += self.HiddenGradient
-
       self.WeightsHidToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.Hidden[i]))
-
       self.WeightsInputToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.InputLayer[i]))
 
-      self.HiddenError = np.transpose(self.WeightsHidToHid) @ self.HiddenGradient
-    
-    for d in [self.WeightsInputToHidDeltas, self.WeightsHidToHidDeltas, self.HiddenBiasesDeltas]:
-      np.clip(d, -1, 1, out=d)
-
-    self.WeightsHidToHid += self.LearningRate * self.WeightsHidToHidDeltas
-    self.WeightsInputToHid += self.LearningRate * self.WeightsInputToHidDeltas
-    self.HiddenBiases += self.LearningRate * self.HiddenBiasesDeltas
+    self.WeightsHidToHid += np.clip(self.WeightsHidToHidDeltas, -1, 1) * self.LearningRate
+    self.WeightsInputToHid += np.clip(self.WeightsInputToHid, -1, 1) * self.LearningRate
+    self.HiddenBiases += np.clip(self.HiddenBiasesDeltas, -1, 1) * self.LearningRate
