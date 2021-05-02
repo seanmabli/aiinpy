@@ -1,3 +1,5 @@
+import numpy as np
+
 class RNN:
   def __init__(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05):
     self.LearningRate = LearningRate
