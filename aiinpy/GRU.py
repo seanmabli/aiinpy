@@ -1,6 +1,6 @@
 import numpy as np
 from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, DerivativeOfStableSoftMax, ReLU, DerivativeOfReLU, Tanh, DerivativeOfTanh
 
-class LSTM:
+class GRU:
   def __init__(self):
     print("Not Started")
