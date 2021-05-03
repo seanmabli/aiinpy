@@ -1,0 +1,67 @@
+diff --git a/aiinpy.egg-info/PKG-INFO b/aiinpy.egg-info/PKG-INFO
+index 139330c..7dce180 100644
+--- a/aiinpy.egg-info/PKG-INFO
++++ b/aiinpy.egg-info/PKG-INFO
+@@ -1,6 +1,6 @@
+ Metadata-Version: 1.0
+ Name: aiinpy
+-Version: 0.0.5
++Version: 0.0.6
+ Summary: A simple artificial intelligence library
+ Home-page: UNKNOWN
+ Author: UNKNOWN
+diff --git a/dist/aiinpy-0.0.5.tar.gz b/dist/aiinpy-0.0.5.tar.gz
+index 4bb6fd4..fa1614d 100644
+Binary files a/dist/aiinpy-0.0.5.tar.gz and b/dist/aiinpy-0.0.5.tar.gz differ
+diff --git a/examples/RNN_Example.py b/examples/RNN_Example.py
+index 520dab9..55e0f65 100644
+--- a/examples/RNN_Example.py
++++ b/examples/RNN_Example.py
+@@ -1,15 +1,20 @@
+ import numpy as np
+ import aiinpy as ai
++import wandb
++
++wandb.init(project='rnn')
+ 
+ PositiveComments = open("C:\\Users\\smdro\\Downloads\\archive\\sentence_polarity\\rt-polarity.pos", "r")
+ NegativeComments = open("C:\\Users\\smdro\\Downloads\\archive\\sentence_polarity\\rt-polarity.neg", "r")
+ Comments = str(PositiveComments.read() + NegativeComments.read())
+-Comments = np.array(Comments.splitlines())
++Comments = np.array(Comments.splitlines())[:10]
+ 
+ UniqueWords = list(set([w for Sentence in Comments for w in Sentence.split(' ')]))
+ Rnn = ai.RNN(len(UniqueWords), 2, "ManyToOne")
+ 
+-for Generation in range(1):
++print(len(UniqueWords))
++
++for Generation in range(100000):
+   Random = np.random.randint(0, len(Comments))
+ 
+   InputSentenceSplit = list(Comments[Random].split(' '))
+@@ -20,7 +25,10 @@ for Generation in range(1):
+   Output = Rnn.ForwardProp(Input)
+ 
+   RealOutput = np.array([1, 0]) if Random < 5331 else np.array([0, 1])
++  NumberCorrect = int(np.argmax(Output) == (1 if Random < 5331 else 0))
+ 
+   OutputError = RealOutput - Output
+ 
+   Rnn.BackProp(OutputError)
++  wandb.log({"Number Correct": NumberCorrect})
++  wandb.log({"Error": np.sum(np.abs(OutputError))})
+\ No newline at end of file
+diff --git a/setup.py b/setup.py
+index 6986c0c..98bcb52 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1,7 +1,7 @@
+ from setuptools import setup
+ 
+ setup(name='aiinpy',
+-      version='0.0.5',
++      version='0.0.6',
+       description='A simple artificial intelligence library',
+       license='MIT',
+       packages=['aiinpy'],
