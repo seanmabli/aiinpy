@@ -1,5 +1,9 @@
 import numpy as np
 
+'''
+- Add Ativation Funtions
+'''
+
 class CONV:
   def __init__(self, FilterShape, LearningRate):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))

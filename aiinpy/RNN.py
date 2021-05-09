@@ -16,11 +16,16 @@ class RNN:
   def ForwardProp(self, InputLayer):
     self.InputLayer = InputLayer
     self.Hidden = np.zeros((len(self.InputLayer) + 1, self.WeightsHidToHid.shape[0]))
+    if(Type == 'ManyToMany'):
+      self.Output = np.zeros((len(self.InputLayer), self.OutputBiases.size))
 
     for i in range(len(InputLayer)):
       self.Hidden[i + 1, :] = Tanh(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases)
+      if(Type == 'ManyToMany'):
+        self.Output[i] = StableSoftMax(self.WeightsHidToOut @ self.Hidden[i + 1, :] + self.OutputBiases)
     
-    self.Output = StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
+    if(Type == 'ManyToOne'):
+      self.Output = StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
     return self.Output
 
   def BackProp(self, OutputError):
