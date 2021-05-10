@@ -1,6 +1,6 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from CONV import CONV
+from aiinpy.CONV import CONV
 from aiinpy.NN import NN
 from aiinpy.POOL import POOL
 from alive_progress import alive_bar
