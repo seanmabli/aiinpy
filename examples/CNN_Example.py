@@ -1,6 +1,6 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from aiinpy.CONV import CONV
+from CONV import CONV
 from aiinpy.NN import NN
 from aiinpy.POOL import POOL
 from alive_progress import alive_bar
@@ -24,13 +24,13 @@ def TestNetwork():
   return NumberCorrect / Generation
 
 # Load EMNIST Training And Testing Images
-TrainingImageLoaded = 1000
 TestImageLoaded = 1000
 TrainingImages, TrainingLabels = extract_training_samples('digits')
 TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
 
-with alive_bar(1000 + TestImageLoaded) as bar:
-  for Generation in range(1000):
+NumOfTrainGen = 1000
+with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
+  for Generation in range(NumOfTrainGen):
     # Set Input
     Random = np.random.randint(0, len(TrainingLabels))
     InputImage = (TrainingImages[Random] / 255) - 0.5
