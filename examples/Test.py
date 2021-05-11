@@ -1,4 +1,3 @@
 import numpy as np
-x = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
-y = np.vstack(([np.hstack(([x]*2))]*2))
-print(y)
+x = np.array([[[0, 0, 0], [1, 1, 5], [2, 2, 2]], [[0, 0, 0], [1, 1, 1], [2, 2, 2]], [[0, 0, 0], [1, 1, 1], [2, 2, 2]]])
+print(np.sum(x, axis=(1, 2)))

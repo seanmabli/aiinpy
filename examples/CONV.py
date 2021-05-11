@@ -7,17 +7,15 @@ class CONV:
     self.LearningRate = LearningRate
 
   def ForwardProp(self, InputImage):
-    self.InputImage = np.zeros((self.NumOfFilters, len(InputImage[0]), len(InputImage)))
-    for i in range(self.NumOfFilters):
-      self.InputImage[i, :, :] = InputImage
+    self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
 
     self.OutputWidth = len(InputImage[0]) - (len(self.Filter[0, 0]) - 1)
     self.OutputHeight = len(InputImage) - (len(self.Filter[0]) - 1)
     self.OutputArray = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
-
+    
     for i in range(self.OutputHeight):
       for j in range(self.OutputWidth):
-        self.OutputArray[:, i, j] = np.sum(np.multiply(self.InputImage[:, i : i + 3, j : j + 3], self.Filter))
+        self.OutputArray[:, i, j] = np.sum(np.multiply(self.InputImage[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
     return self.OutputArray
   
   def BackProp(self, ConvolutionError):
