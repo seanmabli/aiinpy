@@ -1,8 +1,11 @@
 import numpy as np
+
 '''
+Don't work with 2D arrays
 - DerivativeOfStableSoftMax
 - DerivativeOfReLU
 '''
+
 def Sigmoid(Input):
   return 1 / (1 + np.exp(-Input))
 def DerivativeOfSigmoid(Input):
