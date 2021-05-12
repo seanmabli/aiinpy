@@ -1,5 +1,5 @@
 import numpy as np
-from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, DerivativeOfStableSoftMax, ReLU, DerivativeOfReLU, Tanh, DerivativeOfTanh
+from aiinpy import Sigmoid, DerivativeOfSigmoid, StableSoftMax, DerivativeOfStableSoftMax, ReLU, DerivativeOfReLU, Tanh, DerivativeOfTanh
 
 class RNN:
   def __init__(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05):
