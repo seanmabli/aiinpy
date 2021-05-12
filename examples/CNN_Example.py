@@ -1,13 +1,11 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from CONV import CONV
-from aiinpy.NN import NN
-from aiinpy.POOL import POOL
+import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005)
-Conv1ToPool1 = POOL(2)
-InputToHid1 = NN((4 * 13 * 13), 10, "StableSoftMax", LearningRate=0.1, WeightsInit=(0, 0))
+InputImageToConv1 = ai.CONV((4, 3, 3), LearningRate=0.005)
+Conv1ToPool1 = ai.POOL(2)
+InputToHid1 = ai.NN((4 * 13 * 13), 10, "StableSoftMax", LearningRate=0.1, WeightsInit=(0, 0))
 
 def TestNetwork():
   NumberCorrect = 0

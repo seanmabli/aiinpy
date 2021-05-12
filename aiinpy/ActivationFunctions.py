@@ -1,5 +1,8 @@
 import numpy as np
-
+'''
+- DerivativeOfStableSoftMax
+- DerivativeOfReLU
+'''
 def Sigmoid(Input):
   return 1 / (1 + np.exp(-Input))
 def DerivativeOfSigmoid(Input):
@@ -10,7 +13,7 @@ def StableSoftMax(Input):
 def DerivativeOfStableSoftMax(Input):
   Output = np.zeros(Input.shape)
   for i in range(Output.size):
-    Output[i] = (np.exp(Input[i]) * (sum(np.exp(Input)) - np.exp(Input[i])))/(sum(np.exp(Input))) ** 2
+    Output[i] = (np.exp(Input[i]) * (np.sum(np.exp(Input)) - np.exp(Input[i])))/(np.sum(np.exp(Input))) ** 2
   return Output
 
 def ReLU(Input):
