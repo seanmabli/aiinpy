@@ -3,7 +3,7 @@ import RNN as ai
 from Data.PosNegCon import TrainingData, TestData
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
-Rnn = ai.RNN(len(TrainingDataUniqueWords), 2, "ManyToOne", LearningRate=0.05)
+Rnn = ai.RNN(len(TrainingDataUniqueWords), 2, Type="ManyToOne", LearningRate=0.05)
 
 for Generation in range(15000):
   items = list(TrainingData.items())
