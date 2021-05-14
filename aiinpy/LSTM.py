@@ -3,4 +3,4 @@ from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, De
 
 class LSTM:
   def __init__(self):
-    print("Not Started")
+    print('Not Started')

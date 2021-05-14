@@ -1,7 +1,7 @@
 import numpy as np
 
 class CONV:
-  def __init__(self, FilterShape, LearningRate):
+  def __init__(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1)):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
     self.NumOfFilters = 4
     self.LearningRate = LearningRate

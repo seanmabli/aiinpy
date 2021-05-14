@@ -6,4 +6,4 @@ from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, De
 
 class GRU:
   def __init__(self):
-    print("Not Started")
+    print('Not Started')
