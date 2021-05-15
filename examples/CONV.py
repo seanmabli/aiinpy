@@ -1,16 +1,22 @@
 import numpy as np
+import sys
 
 class CONV:
   def __init__(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1)):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
     self.NumOfFilters = 4
-    self.LearningRate = LearningRate
+    self.LearningRate, self.Padding, self.Stride = LearningRate, Padding, Stride
 
   def ForwardProp(self, InputImage):
-    self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
+    if (self.Padding == 'None'):
+      self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
+      self.OutputWidth = len(InputImage[0]) - (len(self.Filter[0, 0]) - 1)
+      self.OutputHeight = len(InputImage) - (len(self.Filter[0]) - 1)
+    if (self.Padding == 'Some'):
+      self.InputImage = np.stack(([np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
+      self.OutputWidth = len(InputImage[0])
+      self.OutputHeight = len(InputImage)
 
-    self.OutputWidth = len(InputImage[0]) - (len(self.Filter[0, 0]) - 1)
-    self.OutputHeight = len(InputImage) - (len(self.Filter[0]) - 1)
     self.OutputArray = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
     
     for i in range(self.OutputHeight):
