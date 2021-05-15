@@ -11,7 +11,7 @@ class CONV:
       self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
       self.OutputWidth = int((len(InputImage[0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
       self.OutputHeight = int((len(InputImage) - (len(self.Filter[0]) - 1)) / self.Stride[1])
-    if (self.Padding == 'Some'):
+    if (self.Padding == 'Same'):
       self.InputImage = np.stack(([np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
       self.OutputWidth = int(len(InputImage[0]) / self.Stride[0])
       self.OutputHeight = int(len(InputImage) / self.Stride[1])

@@ -4,6 +4,8 @@ import numpy as np
 Don't work with 2D arrays
 - DerivativeOfStableSoftMax
 - DerivativeOfReLU
+
+Add Leaky ReLU
 '''
 
 def Sigmoid(Input):
@@ -32,3 +34,11 @@ def Tanh(Input):
   return np.tanh(Input)
 def DerivativeOfTanh(Input):
   return 1 - np.square(Input)
+
+def LeakyReLU(Input):
+  return np.maximum(0.01 * Input, Input)
+def DerivativeOfLeakyReLU(Input):
+  if (Input < 0):
+    return 0.01
+  else:
+    return 1

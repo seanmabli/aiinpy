@@ -5,7 +5,7 @@ from NN import NN
 import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Some')
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same')
 Conv1ToPool1 = ai.POOL(2)
 InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
@@ -25,6 +25,7 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     
     # Forward Propagation
     ConvolutionLayer1 = InputImageToConv1.ForwardProp(InputImage)
+    print(ConvolutionLayer1.shape)
     MaxPooling1 = Conv1ToPool1.ForwardProp(ConvolutionLayer1)
     Input = MaxPooling1.flatten()
     Output = InputToHid1.ForwardProp(Input)
