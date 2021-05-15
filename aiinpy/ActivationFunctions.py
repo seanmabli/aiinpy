@@ -1,13 +1,5 @@
 import numpy as np
 
-'''
-Don't work with 2D arrays
-- DerivativeOfStableSoftMax
-- DerivativeOfReLU
-
-Add Leaky ReLU
-'''
-
 def Sigmoid(Input):
   return 1 / (1 + np.exp(-Input))
 def DerivativeOfSigmoid(Input):
@@ -16,19 +8,19 @@ def DerivativeOfSigmoid(Input):
 def StableSoftMax(Input):
   return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
 def DerivativeOfStableSoftMax(Input):
-  Output = np.zeros(Input.shape)
-  for i in range(Output.size):
-    Output[i] = (np.exp(Input[i]) * (np.sum(np.exp(Input)) - np.exp(Input[i])))/(np.sum(np.exp(Input))) ** 2
-  return Output
+  Equation = np.vectorize(EquationForDerivativeOfStableSoftMax, otypes=[float])
+  return Equation(Input, np.sum(np.exp(Input)))
+def EquationForDerivativeOfStableSoftMax(Input, SumExpOfInput):
+  return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
 
 def ReLU(Input):
   Output = np.maximum(0, Input)
   return Output
 def DerivativeOfReLU(Input):
-  Output = np.zeros(Input.size)
-  for i in range(Input.size):
-    Output[i] = 0 if (Input[i] <= 0) else 1
-  return Output
+  Equation = np.vectorize(EquationForDerivativeOfReLU, otypes=[float])
+  return Equation(Input)
+def EquationForDerivativeOfReLU(Input):
+  return 0 if (Input <= 0) else 1
 
 def Tanh(Input):
   return np.tanh(Input)
@@ -38,7 +30,7 @@ def DerivativeOfTanh(Input):
 def LeakyReLU(Input):
   return np.maximum(0.01 * Input, Input)
 def DerivativeOfLeakyReLU(Input):
-  if (Input < 0):
-    return 0.01
-  else:
-    return 1
+  Equation = np.vectorize(EquationForDerivativeOfLeakyReLU, otypes=[float])
+  return Equation(Input)
+def EquationForDerivativeOfLeakyReLU(Input):
+  return 0.01 if (Input < 0) else 1
