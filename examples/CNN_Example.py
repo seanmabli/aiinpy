@@ -1,13 +1,11 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from CONV import CONV
-from NN import NN
 import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same')
+InputImageToConv1 = ai.CONV((4, 3, 3), LearningRate=0.005, Padding='Same')
 Conv1ToPool1 = ai.POOL(2)
-InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputToHid1 = ai.NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
@@ -25,7 +23,8 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     
     # Forward Propagation
     ConvolutionLayer1 = InputImageToConv1.ForwardProp(InputImage)
-    print(ConvolutionLayer1.shape)
+    print(ConvolutionLayer1.max())
+    print(ConvolutionLayer1.min())
     MaxPooling1 = Conv1ToPool1.ForwardProp(ConvolutionLayer1)
     Input = MaxPooling1.flatten()
     Output = InputToHid1.ForwardProp(Input)

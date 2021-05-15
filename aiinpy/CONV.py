@@ -17,7 +17,7 @@ class CONV:
       self.OutputHeight = int(len(InputImage) / self.Stride[1])
 
     self.OutputArray = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
-    
+
     for i in range(0, self.OutputWidth, self.Stride[0]):
       for j in range(0, self.OutputHeight, self.Stride[1]):
         self.OutputArray[:, i, j] = np.sum(np.multiply(self.InputImage[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
