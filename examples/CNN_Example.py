@@ -23,8 +23,6 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     
     # Forward Propagation
     ConvolutionLayer1 = InputImageToConv1.ForwardProp(InputImage)
-    print(ConvolutionLayer1.max())
-    print(ConvolutionLayer1.min())
     MaxPooling1 = Conv1ToPool1.ForwardProp(ConvolutionLayer1)
     Input = MaxPooling1.flatten()
     Output = InputToHid1.ForwardProp(Input)
