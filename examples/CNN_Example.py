@@ -1,11 +1,13 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
+from Functions.NN import NN
+from Functions.CONV import CONV
 import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = ai.CONV((4, 3, 3), LearningRate=0.005, Padding='Same')
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same')
 Conv1ToPool1 = ai.POOL(2)
-InputToHid1 = ai.NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
