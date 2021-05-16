@@ -5,9 +5,9 @@ from Functions.CONV import CONV
 import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same')
+InputImageToConv1 = CONV((64, 3, 3), LearningRate=0.005, Padding='Same', Stride=(2, 2))
 Conv1ToPool1 = ai.POOL(2)
-InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputToHid1 = NN(InputSize=(64 * 7 * 7), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
