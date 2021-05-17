@@ -18,13 +18,13 @@ class RNN:
     self.Hidden = np.zeros((len(self.InputLayer) + 1, self.WeightsHidToHid.shape[0]))
 
     for i in range(len(InputLayer)):
-      self.Hidden[i + 1, :] = Tanh.Tanh(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases)
+      self.Hidden[i + 1, :] = Tanh(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases)
     
     self.Output = StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
     return self.Output
 
   def BackProp(self, OutputError):
-    OutputGradient = np.multiply(DerivativeOfStableSoftMax(self.Output), OutputError)
+    OutputGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
     
     self.WeightsHidToOutDeltas = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
     self.OutputBiasesDeltas = OutputGradient
