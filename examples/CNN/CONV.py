@@ -35,10 +35,11 @@ class CONV:
   def BackProp(self, ConvolutionError):
     FilterGradients = np.zeros((self.NumOfFilters, 3, 3))
     
-    if self.Activation == 'Sigmoid': Derivative = DerivativeOfSigmoid(self.OutputArray)
-    if self.Activation == 'Tanh': Derivative = DerivativeOfTanh(self.OutputArray)
-    if self.Activation == 'ReLU': Derivative = DerivativeOfReLU(self.OutputArray)
-    if self.Activation == 'StableSoftMax': Derivative = DerivativeOfStableSoftMax(self.OutputArray)
+    if self.Activation == 'Sigmoid': Derivative = Sigmoid.Derivative(self.OutputArray)
+    if self.Activation == 'Tanh': Derivative = Tanh.Derivative(self.OutputArray)
+    if self.Activation == 'ReLU': Derivative = ReLU.Derivative(self.OutputArray)
+    if self.Activation == 'LeakyReLU': Derivative = LeakyReLU.Derivative(self.OutputArray)
+    if self.Activation == 'StableSoftMax': Derivative = StableSoftMax.Derivative(self.OutputArray)
     if self.Activation == 'None': Derivative = self.OutputArray
 
     for i in range(self.OutputHeight):
