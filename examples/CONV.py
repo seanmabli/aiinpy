@@ -1,9 +1,5 @@
 import numpy as np
-from ActivationFunctions import Sigmoid, DerivativeOfSigmoid
-from ActivationFunctions import Tanh, DerivativeOfTanh
-from ActivationFunctions import ReLU, DerivativeOfReLU
-from ActivationFunctions import LeakyReLU, DerivativeOfLeakyReLU
-from ActivationFunctions import StableSoftMax, DerivativeOfStableSoftMax
+from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 
 class CONV:
   def __init__(self, FilterShape, LearningRate, Activation='None', Padding='None', Stride=(1, 1)):
@@ -33,6 +29,7 @@ class CONV:
     if self.Activation == 'Sigmoid': self.OutputArray = Sigmoid(self.OutputArray)
     if self.Activation == 'Tanh': self.OutputArray = Tanh(self.OutputArray)
     if self.Activation == 'ReLU': self.OutputArray = ReLU(self.OutputArray)
+    if self.Activation == 'LeakyReLU': self.OutputArray = LeakyReLU.LeakyReLU(self.OutputArray)
     if self.Activation == 'StableSoftMax': self.OutputArray = StableSoftMax(self.OutputArray)
     if self.Activation == 'None': self.OutputArray = self.OutputArray
     return self.OutputArray

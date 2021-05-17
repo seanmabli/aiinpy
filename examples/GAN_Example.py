@@ -6,7 +6,7 @@ import aiinpy as ai
 from alive_progress import alive_bar
 
 def Discriminator():
-	model.add(Conv2D(64, (3,3), strides=(2, 2), padding='same', input_shape=in_shape))
+	DisInputToCONV1 = CONV((64, 3, 3), Activation='LeakyReLU', Padding='Same', Stride=(2, 2))
 	model.add(LeakyReLU(alpha=0.2))
 	model.add(Dropout(0.4))
 	model.add(Conv2D(64, (3,3), strides=(2, 2), padding='same'))

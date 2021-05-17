@@ -1,9 +1,5 @@
 import numpy as np
-from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid
-from .ActivationFunctions import Tanh, DerivativeOfTanh
-from .ActivationFunctions import ReLU, DerivativeOfReLU
-from .ActivationFunctions import LeakyReLU, DerivativeOfLeakyReLU
-from .ActivationFunctions import StableSoftMax, DerivativeOfStableSoftMax
+from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 
 class NN:
   def __init__(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0)):
@@ -17,20 +13,22 @@ class NN:
     self.Output = np.transpose(self.Weights) @ InputLayer + self.Biases
   
     # Apply Activation Function
-    if self.Activation == 'Sigmoid': self.Output = Sigmoid(self.Output)
-    if self.Activation == 'Tanh': self.Output = Tanh(self.Output)
-    if self.Activation == 'ReLU': self.Output = ReLU(self.Output)
-    if self.Activation == 'StableSoftMax': self.Output = StableSoftMax(self.Output)
+    if self.Activation == 'Sigmoid': self.Output = Sigmoid.Sigmoid(Input)(self.Output)
+    if self.Activation == 'Tanh': self.Output = Tanh.Tanh(self.Output)
+    if self.Activation == 'ReLU': self.Output = ReLU.ReLU(self.Output)
+    if self.Activation == 'LeakyReLU': self.Output = LeakyReLU.LeakyReLU(self.Output)
+    if self.Activation == 'StableSoftMax': self.Output = StableSoftMax.StableSoftMax(self.Output)
     if self.Activation == 'None': self.Output = self.Output
     return self.Output
 
   def BackProp(self, FollowingLayerError):
     # Calculate Gradients
     FollowingLayerGradient = np.zeros(self.Output.shape)
-    if self.Activation == 'Sigmoid': FollowingLayerGradient = np.multiply(DerivativeOfSigmoid(self.Output), FollowingLayerError)
-    if self.Activation == 'Tanh': FollowingLayerGradient = np.multiply(DerivativeOfTanh(self.Output), FollowingLayerError)
-    if self.Activation == 'ReLU': FollowingLayerGradient = np.multiply(DerivativeOfReLU(self.Output), FollowingLayerError)
-    if self.Activation == 'StableSoftMax': FollowingLayerGradient = np.multiply(DerivativeOfStableSoftMax(self.Output), FollowingLayerError)
+    if self.Activation == 'Sigmoid': FollowingLayerGradient = np.multiply(Sigmoid.Derivative(self.Output), FollowingLayerError)
+    if self.Activation == 'Tanh': FollowingLayerGradient = np.multiply(Tanh.Derivative(self.Output), FollowingLayerError)
+    if self.Activation == 'ReLU': FollowingLayerGradient = np.multiply(ReLU.Derivative(self.Output), FollowingLayerError)
+    if self.Activation == 'LeakyReLU': FollowingLayerGradient = np.multiply(LeakyReLU.Derivative(self.Output), FollowingLayerError)
+    if self.Activation == 'StableSoftMax': FollowingLayerGradient = np.multiply(StableSoftMax.Derivative(self.Output), FollowingLayerError)
     if self.Activation == 'None': FollowingLayerGradient = np.multiply(self.Output, FollowingLayerError)
       
     # Calculate Current Layer Error
