@@ -23,13 +23,16 @@ class ReLU:
     return 0 if (Input <= 0) else 1
 
 class LeakyReLU:
-  def __init__(Input):
+  def __init__(self, Input):
     return np.maximum(0.01 * Input, Input)
-  def Derivative(Input):
+  def Derivative(self, Input):
     Equation = np.vectorize(EquationForDerivativeOfLeakyReLU, otypes=[float])
     return Equation(Input)
-  def EquationForDerivative(Input):
-    return 0.01 if (Input < 0) else 1
+  def EquationForDerivative(self, Input):
+    if self.Slope is None:
+      return 0.01 if (Input < 0) else 1
+    else:
+      return self.Slope if (Input < 0) else 1
 
 class StableSoftMax:
   def __init__(Input):

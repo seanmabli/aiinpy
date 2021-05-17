@@ -1,8 +1,7 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from Functions.NN import NN
-from Functions.CONV import CONV
-import aiinpy as ai
+from NN import NN
+from CONV import CONV
 from alive_progress import alive_bar
 
 def Discriminator():
