@@ -7,8 +7,6 @@ class CONV:
     self.NumOfFilters = 64
     self.LearningRate, self.Activation, self.Padding, self.Stride = LearningRate, Activation, Padding, Stride
 
-  # def SetSlopeForLeakyReLU(Slope):
-
   def ForwardProp(self, InputImage):
     if (self.Padding == 'None'):
       self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
@@ -29,7 +27,7 @@ class CONV:
     if self.Activation == 'Sigmoid': self.OutputArray = Sigmoid(self.OutputArray)
     if self.Activation == 'Tanh': self.OutputArray = Tanh(self.OutputArray)
     if self.Activation == 'ReLU': self.OutputArray = ReLU(self.OutputArray)
-    if self.Activation == 'LeakyReLU': self.OutputArray = LeakyReLU.LeakyReLU(self.OutputArray)
+    if self.Activation == 'LeakyReLU': self.OutputArray = LeakyReLU(self.OutputArray)
     if self.Activation == 'StableSoftMax': self.OutputArray = StableSoftMax(self.OutputArray)
     if self.Activation == 'None': self.OutputArray = self.OutputArray
     return self.OutputArray
