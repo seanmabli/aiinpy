@@ -1,8 +1,4 @@
-from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid
-from .ActivationFunctions import Tanh, DerivativeOfTanh
-from .ActivationFunctions import ReLU, DerivativeOfReLU
-from .ActivationFunctions import LeakyReLU, DerivativeOfLeakyReLU
-from .ActivationFunctions import StableSoftMax, DerivativeOfStableSoftMax
+from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 from .NN import NN
 from .CONV import CONV
 from .POOL import POOL

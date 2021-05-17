@@ -2,11 +2,7 @@ import numpy as np
 from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid, StableSoftMax, DerivativeOfStableSoftMax, ReLU, DerivativeOfReLU, Tanh, DerivativeOfTanh
 
 import numpy as np
-from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid
-from .ActivationFunctions import Tanh, DerivativeOfTanh
-from .ActivationFunctions import ReLU, DerivativeOfReLU
-from .ActivationFunctions import LeakyReLU, DerivativeOfLeakyReLU
-from .ActivationFunctions import StableSoftMax, DerivativeOfStableSoftMax
+from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 
 class GRU:
   def __init__(self):

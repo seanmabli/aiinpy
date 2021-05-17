@@ -1,9 +1,5 @@
 import numpy as np
-from .ActivationFunctions import Sigmoid, DerivativeOfSigmoid
-from .ActivationFunctions import Tanh, DerivativeOfTanh
-from .ActivationFunctions import ReLU, DerivativeOfReLU
-from .ActivationFunctions import LeakyReLU, DerivativeOfLeakyReLU
-from .ActivationFunctions import StableSoftMax, DerivativeOfStableSoftMax
+from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 
 class LSTM:
   def __init__(self):
