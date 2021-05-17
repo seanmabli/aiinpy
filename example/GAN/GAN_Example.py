@@ -5,11 +5,9 @@ from CONV import CONV
 from alive_progress import alive_bar
 
 def Discriminator():
+	SetSlopeForLeakyReLU(0.2)
 	DisInputToCONV1 = CONV((64, 3, 3), Activation='LeakyReLU', Padding='Same', Stride=(2, 2))
-	model.add(LeakyReLU(alpha=0.2))
-	model.add(Dropout(0.4))
-	model.add(Conv2D(64, (3,3), strides=(2, 2), padding='same'))
-	model.add(LeakyReLU(alpha=0.2))
+	DisCONV1ToCONV2 = CONV((64, 3, 3), Activation='LeakyReLU', Padding='Same', Stride=(2, 2))
 	model.add(Dropout(0.4))
 	model.add(Flatten())
 	model.add(Dense(1, activation='sigmoid'))
