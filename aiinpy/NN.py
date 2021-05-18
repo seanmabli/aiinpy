@@ -2,7 +2,7 @@ import numpy as np
 from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 
 class NN:
-  def __init__(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0)):
+  def __init__(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
     self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (InputSize, OutputSize))
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], (OutputSize))
     self.Activation = Activation

@@ -2,9 +2,9 @@ import numpy as np
 from NN import NN
 
 # Neural Network Model
-InputToHidden1 = NN(InputSize=2, OutputSize=16, Activation='ReLU', LearningRate=0.1)
-Hidden1ToHidden2 = NN(InputSize=16, OutputSize=16, Activation='ReLU', LearningRate=0.1)
-Hidden2ToOutput = NN(InputSize=16, OutputSize=2, Activation='Sigmoid', LearningRate=0.1)
+InputToHidden1 = NN(InputSize=2, OutputSize=16, Activation='ReLU', LearningRate=0.1, DropoutRate=0.1)
+Hidden1ToHidden2 = NN(InputSize=16, OutputSize=16, Activation='ReLU', LearningRate=0.1, DropoutRate=0.1)
+Hidden2ToOutput = NN(InputSize=16, OutputSize=2, Activation='Sigmoid', LearningRate=0.1, DropoutRate=0.1)
 
 # Training
 for Generation in range(100):
