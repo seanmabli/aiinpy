@@ -7,6 +7,9 @@ class CONV:
     self.NumOfFilters = 64
     self.LearningRate, self.Activation, self.Padding, self.Stride = LearningRate, Activation, Padding, Stride
 
+  def SetSlopeForLeakyReLU(Slope):
+    LeakyReLU.Slope = Slope
+    
   def ForwardProp(self, InputImage):
     if (self.Padding == 'None'):
       self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
