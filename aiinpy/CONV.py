@@ -1,5 +1,6 @@
 import numpy as np
 from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
+Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
 
 class CONV:
   def __init__(self, FilterShape, LearningRate, Activation='None', Padding='None', Stride=(1, 1)):
@@ -27,11 +28,11 @@ class CONV:
         self.OutputArray[:, i, j] = np.sum(np.multiply(self.InputImage[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
     
-    if self.Activation == 'Sigmoid': self.OutputArray = Sigmoid(self.OutputArray)
-    if self.Activation == 'Tanh': self.OutputArray = Tanh(self.OutputArray)
-    if self.Activation == 'ReLU': self.OutputArray = ReLU(self.OutputArray)
-    if self.Activation == 'LeakyReLU': self.OutputArray = LeakyReLU(self.OutputArray)
-    if self.Activation == 'StableSoftMax': self.OutputArray = StableSoftMax(self.OutputArray)
+    if self.Activation == 'Sigmoid': self.OutputArray = Sigmoid.Sigmoid(self.OutputArray)
+    if self.Activation == 'Tanh': self.OutputArray = Tanh.Tanh(self.OutputArray)
+    if self.Activation == 'ReLU': self.OutputArray = ReLU.ReLU(self.OutputArray)
+    if self.Activation == 'LeakyReLU': self.OutputArray = LeakyReLU.LeakyReLU(self.OutputArray)
+    if self.Activation == 'StableSoftMax': self.OutputArray = StableSoftMax.StableSoftMax(self.OutputArray)
     if self.Activation == 'None': self.OutputArray = self.OutputArray
     return self.OutputArray
   

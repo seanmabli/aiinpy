@@ -38,7 +38,7 @@ class StableSoftMax:
   def StableSoftMax(self, Input):
     return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
   def Derivative(self, Input):
-    Equation = np.vectorize(self.EquationForDerivativeOfStableSoftMax, otypes=[float])
+    Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input, np.sum(np.exp(Input)))
   def EquationForDerivative(self, Input, SumExpOfInput):
     return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
