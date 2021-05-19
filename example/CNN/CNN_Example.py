@@ -11,10 +11,10 @@ InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftM
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
-TrainingImages, TrainingLabels = extract_training_samples('digits')
+TrainingImages, TrainingLabel= extract_training_samples('digits')
 TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
 
-NumOfTrainGen = 5000
+NumOfTrainGen = 35000
 with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
   for Generation in range(NumOfTrainGen):
     # Set Input
