@@ -6,9 +6,7 @@ class NN:
   def __init__(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
     self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (InputSize, OutputSize))
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], (OutputSize))
-    self.Activation = Activation
-    self.LearningRate = LearningRate
-    self.DropoutRate = DropoutRate
+    self.Activation, self.LearningRate, self.DropoutRate = Activation, LearningRate, DropoutRate
   
   def ForwardProp(self, InputLayer):
     self.InputLayer = InputLayer
