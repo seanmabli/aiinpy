@@ -5,6 +5,8 @@ from CONV import CONV
 from alive_progress import alive_bar
 
 SetSlopeForLeakyReLU(0.2)
-DisInputToCONV1 = CONV((64, 3, 3), Activation='LeakyReLU', Padding='Same', Stride=(2, 2))
-DisCONV1ToCONV2 = CONV((64, 3, 3), Activation='LeakyReLU', Padding='Same', Stride=(2, 2))
+# Dis -> Discrimanator
+DisInputToCONV1 = CONV((64, 3, 3), Activation='LeakyReLU', Padding='Same', Stride=(2, 2), DropoutRate=0.4)
+DisCONV1ToCONV2 = CONV((64, 3, 3), Activation='LeakyReLU', Padding='Same', Stride=(2, 2), DropoutRate=0.4)
 DisInputToOutput = NN((64, 7, 7), 1, Activation='Sigmoid', LearningRate=0.01)
+

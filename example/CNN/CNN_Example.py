@@ -14,7 +14,7 @@ TestImageLoaded = 1000
 TrainingImages, TrainingLabel= extract_training_samples('digits')
 TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
 
-NumOfTrainGen = 35000
+NumOfTrainGen = 10000
 with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
   for Generation in range(NumOfTrainGen):
     # Set Input
