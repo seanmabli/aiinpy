@@ -39,7 +39,7 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     
     bar()
   
-  ChangeDropoutRate(0)
+  InputImageToConv1.ChangeDropoutRate(0)
   NumberCorrect = 0
   for Generation in range(TestImageLoaded):
     InputImage = (TestImages[Generation] / 255) - 0.5

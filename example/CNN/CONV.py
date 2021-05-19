@@ -8,10 +8,10 @@ class CONV:
     self.NumOfFilters = FilterShape[0]
     self.LearningRate, self.Activation, self.Padding, self.Stride, self.DropoutRate = LearningRate, Activation, Padding, Stride, DropoutRate
 
-  def SetSlopeForLeakyReLU(Slope):
+  def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
     
-  def ChangeDropoutRate(NewRate):
+  def ChangeDropoutRate(self, NewRate):
     self.DropoutRate = NewRate
 
   def ForwardProp(self, InputImage):
