@@ -3,14 +3,17 @@ from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
 
 class CONV:
-  def __init__(self, FilterShape, LearningRate, Activation='None', Padding='None', Stride=(1, 1)):
+  def __init__(self, FilterShape, LearningRate, Activation='None', Padding='None', Stride=(1, 1), DropoutRate=0):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
     self.NumOfFilters = FilterShape[0]
-    self.LearningRate, self.Activation, self.Padding, self.Stride = LearningRate, Activation, Padding, Stride
+    self.LearningRate, self.Activation, self.Padding, self.Stride, self.DropoutRate = LearningRate, Activation, Padding, Stride, DropoutRate
 
   def SetSlopeForLeakyReLU(Slope):
     LeakyReLU.Slope = Slope
     
+  def ChangeDropoutRate(NewRate):
+    self.DropoutRate = NewRate
+
   def ForwardProp(self, InputImage):
     if (self.Padding == 'None'):
       self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
@@ -34,10 +37,16 @@ class CONV:
     if self.Activation == 'LeakyReLU': self.OutputArray = LeakyReLU.LeakyReLU(self.OutputArray)
     if self.Activation == 'StableSoftMax': self.OutputArray = StableSoftMax.StableSoftMax(self.OutputArray)
     if self.Activation == 'None': self.OutputArray = self.OutputArray
+
+    self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.OutputArray.shape)
+    self.Dropout = np.where(self.Dropout == 0, 1, 0)
+    self.OutputArray *= self.Dropout
+
     return self.OutputArray
   
   def BackProp(self, ConvolutionError):
     FilterGradients = np.zeros((self.NumOfFilters, 3, 3))
+    ConvolutionError *= self.Dropout
     
     if self.Activation == 'Sigmoid': Derivative = Sigmoid.Derivative(self.OutputArray)
     if self.Activation == 'Tanh': Derivative = Tanh.Derivative(self.OutputArray)

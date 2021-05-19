@@ -5,7 +5,7 @@ from CONV import CONV
 import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same')
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same', DropoutRate=0.5)
 Conv1ToPool1 = ai.POOL(2)
 InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
@@ -39,6 +39,7 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     
     bar()
   
+  ChangeDropoutRate(0)
   NumberCorrect = 0
   for Generation in range(TestImageLoaded):
     InputImage = (TestImages[Generation] / 255) - 0.5
