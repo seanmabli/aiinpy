@@ -11,7 +11,7 @@ InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftM
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
-TrainingImages, TrainingLabel= extract_training_samples('digits')
+TrainingImages, TrainingLabels = extract_training_samples('digits')
 TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
 
 NumOfTrainGen = 10000

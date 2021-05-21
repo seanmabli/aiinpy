@@ -20,6 +20,7 @@ for Generation in range(100):
   # Back Prop
   OutputError = RealOutput - Output
   Hidden2Error = Hidden2ToOutput.BackProp(OutputError)
+  print(Hidden2Error.dtype)
   Hidden1Error = Hidden1ToHidden2.BackProp(Hidden2Error)
   InputToHidden1.BackProp(Hidden1Error)
 

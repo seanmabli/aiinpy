@@ -16,14 +16,22 @@ class CONV:
 
   def ForwardProp(self, InputImage):
     if (self.Padding == 'None'):
-      self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
+      if(np.ndim(InputImage) == 2):
+        self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
+      else:
+        self.InputImage = InputImage
       self.OutputWidth = int((len(InputImage[0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
       self.OutputHeight = int((len(InputImage) - (len(self.Filter[0]) - 1)) / self.Stride[1])
     if (self.Padding == 'Same'):
-      self.InputImage = np.stack(([np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
-      self.OutputWidth = int(len(InputImage[0]) / self.Stride[0])
-      self.OutputHeight = int(len(InputImage) / self.Stride[1])
-
+      self.InputImage = np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant',)
+      if(np.ndim(InputImage) == 2):
+        self.InputImage = np.stack(([self.InputImage] * self.NumOfFilters))
+        self.OutputWidth = int(len(InputImage[0]) / self.Stride[0])
+        self.OutputHeight = int(len(InputImage) / self.Stride[1])
+      else:
+        self.InputImage = self.InputImage[1:65]
+        self.OutputWidth = int(len(InputImage[0, 0]) / self.Stride[0])
+        self.OutputHeight = int(len(InputImage[0]) / self.Stride[1])
     self.OutputArray = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
 
     for i in range(0, self.OutputWidth, self.Stride[0]):
@@ -41,7 +49,6 @@ class CONV:
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.OutputArray.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
     self.OutputArray *= self.Dropout
-
     return self.OutputArray
   
   def BackProp(self, ConvolutionError):

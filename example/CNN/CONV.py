@@ -41,7 +41,7 @@ class CONV:
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.OutputArray.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
     self.OutputArray *= self.Dropout
-
+    print(self.Dropout.dtype)
     return self.OutputArray
   
   def BackProp(self, ConvolutionError):
