@@ -55,7 +55,7 @@ class CONV:
     if self.Activation == 'StableSoftMax': Derivative = StableSoftMax.Derivative(self.OutputArray)
     if self.Activation == 'None': Derivative = self.OutputArray
 
-    for i in range(self.OutputHeight):
-      for j in range(self.OutputWidth):
+    for i in range(0, self.OutputWidth, self.Stride[0]):
+      for j in range(0, self.OutputHeight, self.Stride[1]):
         FilterGradients += self.InputImage[:, i : (i + 3), j : (j + 3)] * ConvolutionError[:, i, j][:, np.newaxis, np.newaxis] * Derivative[:, i, j][:, np.newaxis, np.newaxis]
     self.Filter += FilterGradients * self.LearningRate

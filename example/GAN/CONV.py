@@ -16,22 +16,14 @@ class CONV:
 
   def ForwardProp(self, InputImage):
     if (self.Padding == 'None'):
-      if(np.ndim(InputImage) == 2):
-        self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
-      else:
-        self.InputImage = InputImage
+      self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
       self.OutputWidth = int((len(InputImage[0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
       self.OutputHeight = int((len(InputImage) - (len(self.Filter[0]) - 1)) / self.Stride[1])
     if (self.Padding == 'Same'):
-      self.InputImage = np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant',)
-      if(np.ndim(InputImage) == 2):
-        self.InputImage = np.stack(([self.InputImage] * self.NumOfFilters))
-        self.OutputWidth = int(len(InputImage[0]) / self.Stride[0])
-        self.OutputHeight = int(len(InputImage) / self.Stride[1])
-      else:
-        self.InputImage = self.InputImage[1:65]
-        self.OutputWidth = int(len(InputImage[0, 0]) / self.Stride[0])
-        self.OutputHeight = int(len(InputImage[0]) / self.Stride[1])
+      self.InputImage = np.stack(([np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
+      self.OutputWidth = int(len(InputImage[0]) / self.Stride[0])
+      self.OutputHeight = int(len(InputImage) / self.Stride[1])
+
     self.OutputArray = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
 
     for i in range(0, self.OutputWidth, self.Stride[0]):
@@ -49,6 +41,7 @@ class CONV:
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.OutputArray.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
     self.OutputArray *= self.Dropout
+
     return self.OutputArray
   
   def BackProp(self, ConvolutionError):
@@ -62,7 +55,7 @@ class CONV:
     if self.Activation == 'StableSoftMax': Derivative = StableSoftMax.Derivative(self.OutputArray)
     if self.Activation == 'None': Derivative = self.OutputArray
 
-    for i in range(self.OutputHeight):
-      for j in range(self.OutputWidth):
+    for i in range(0, self.OutputWidth, self.Stride[0]):
+      for j in range(0, self.OutputHeight, self.Stride[1]):
         FilterGradients += self.InputImage[:, i : (i + 3), j : (j + 3)] * ConvolutionError[:, i, j][:, np.newaxis, np.newaxis] * Derivative[:, i, j][:, np.newaxis, np.newaxis]
     self.Filter += FilterGradients * self.LearningRate
