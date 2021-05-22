@@ -1,4 +1,4 @@
 - Add previous layer functionality for CONV
 - Create basic GRU
 - Create corresponding example to translate fr->en or en->fr
-- Bidirectional RNN in general
+- Bidirectional RNN
