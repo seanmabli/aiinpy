@@ -29,7 +29,6 @@ class CONV:
     for i in range(0, self.OutputWidth, self.Stride[0]):
       for j in range(0, self.OutputHeight, self.Stride[1]):
         self.OutputArray[:, i, j] = np.sum(np.multiply(self.InputImage[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
-
     
     if self.Activation == 'Sigmoid': self.OutputArray = Sigmoid.Sigmoid(self.OutputArray)
     if self.Activation == 'Tanh': self.OutputArray = Tanh.Tanh(self.OutputArray)
@@ -55,7 +54,15 @@ class CONV:
     if self.Activation == 'StableSoftMax': Derivative = StableSoftMax.Derivative(self.OutputArray)
     if self.Activation == 'None': Derivative = self.OutputArray
 
+    self.InputError = np.zeros((self.NumOfFilters, self.OutputHeight + 2, self.OutputWidth + 2))
+    ConvolutionErrorPad = np.pad(ConvolutionError, 1, mode='constant')[1 : self.NumOfFilters + 1]
+    for i in range(0, self.OutputWidth, self.Stride[0]):
+      for j in range(0, self.OutputHeight, self.Stride[1]):
+        self.InputError[:, i, j] = np.sum(np.multiply(ConvolutionErrorPad[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
+
     for i in range(0, self.OutputWidth, self.Stride[0]):
       for j in range(0, self.OutputHeight, self.Stride[1]):
         FilterGradients += self.InputImage[:, i : (i + 3), j : (j + 3)] * ConvolutionError[:, i, j][:, np.newaxis, np.newaxis] * Derivative[:, i, j][:, np.newaxis, np.newaxis]
     self.Filter += FilterGradients * self.LearningRate
+
+    return self.InputError

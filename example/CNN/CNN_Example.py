@@ -5,8 +5,9 @@ from CONV import CONV
 import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same', DropoutRate=0.5, Stride=(1, 1))
-InputToHid1 = NN(InputSize=(4 * 28 * 28), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='None', DropoutRate=0.5, Stride=(1, 1))
+Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.005, Padding='None', DropoutRate=0.5, Stride=(1, 1))
+InputToHid1 = NN(InputSize=(4 * 24 * 24), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
@@ -23,16 +24,18 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     RealOutput[TrainingLabels[Random]] = 1
     
     # Forward Propagation
-    ConvolutionLayer1 = InputImageToConv1.ForwardProp(InputImage)
-    Input = ConvolutionLayer1.flatten()
+    Conv1 = InputImageToConv1.ForwardProp(InputImage)
+    Conv2 = Conv1ToConv2.ForwardProp(Conv1)
+    Input = Conv2.flatten()
     Output = InputToHid1.ForwardProp(Input)
 
     # Back Propagation
     OutputError = RealOutput - Output
     InputError = InputToHid1.BackProp(OutputError) 
-    ConvolutionalError = InputError.reshape(ConvolutionLayer1.shape)
+    Conv1Error = InputError.reshape(ConvolutionLayer1.shape)
     
-    InputImageError = InputImageToConv1.BackProp(ConvolutionalError)
+    Conv2Error = Conv1ToConv2.BackProp(Conv1Error)
+    InputImageError = InputImageToConv1.BackProp(Conv2Error)
     
     bar()
   
@@ -40,8 +43,9 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
   NumberCorrect = 0
   for Generation in range(TestImageLoaded):
     InputImage = (TestImages[Generation] / 255) - 0.5
-    ConvolutionLayer1 = InputImageToConv1.ForwardProp(InputImage)
-    Input = ConvolutionLayer1.flatten()
+    Conv1 = InputImageToConv1.ForwardProp(InputImage)
+    Conv2 = Conv1ToConv2.ForwardProp(Conv1)
+    Input = Conv2.flatten()
     Output = InputToHid1.ForwardProp(Input)
     
     NumberCorrect += 1 if np.argmax(Output) == TestLabels[Generation] else 0
