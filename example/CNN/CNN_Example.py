@@ -5,16 +5,16 @@ from CONV import CONV
 import aiinpy as ai
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='None', DropoutRate=0.5, Stride=(1, 1))
-Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.005, Padding='None', DropoutRate=0.5, Stride=(1, 1))
-InputToHid1 = NN(InputSize=(4 * 24 * 24), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same', DropoutRate=0.5, Stride=(2, 2))
+Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same', DropoutRate=0.5, Stride=(2, 2))
+InputToHid1 = NN(InputSize=(4 * 7 * 7), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
 TrainingImages, TrainingLabels = extract_training_samples('digits')
 TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
 
-NumOfTrainGen = 1000
+NumOfTrainGen = 5000
 with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
   for Generation in range(NumOfTrainGen):
     # Set Input
@@ -26,16 +26,17 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     # Forward Propagation
     Conv1 = InputImageToConv1.ForwardProp(InputImage)
     Conv2 = Conv1ToConv2.ForwardProp(Conv1)
+
     Input = Conv2.flatten()
     Output = InputToHid1.ForwardProp(Input)
 
     # Back Propagation
     OutputError = RealOutput - Output
     InputError = InputToHid1.BackProp(OutputError) 
-    Conv1Error = InputError.reshape(ConvolutionLayer1.shape)
+    Conv2Error = InputError.reshape(Conv2.shape)
     
-    Conv2Error = Conv1ToConv2.BackProp(Conv1Error)
-    InputImageError = InputImageToConv1.BackProp(Conv2Error)
+    Conv1Error = Conv1ToConv2.BackProp(Conv2Error)
+    InputImageError = InputImageToConv1.BackProp(Conv1Error)
     
     bar()
   

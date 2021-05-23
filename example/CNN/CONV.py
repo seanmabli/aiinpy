@@ -16,16 +16,20 @@ class CONV:
 
   def ForwardProp(self, InputImage):
     if (self.Padding == 'None'):
-      self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
-      self.OutputWidth = int((len(InputImage[0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
-      self.OutputHeight = int((len(InputImage) - (len(self.Filter[0]) - 1)) / self.Stride[1])
+      if(InputImage.ndim == 2):
+        self.InputImage = np.stack(([InputImage] * self.NumOfFilters))
+      else:
+        self.InputImage = InputImage
     if (self.Padding == 'Same'):
-      self.InputImage = np.stack(([np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
-      self.OutputWidth = int(len(InputImage[0]) / self.Stride[0])
-      self.OutputHeight = int(len(InputImage) / self.Stride[1])
+      if(InputImage.ndim == 2):
+        self.InputImage = np.stack(([np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
+      else:
+        self.InputImage = np.pad(InputImage, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.NumOfFilters + 1]
+    
+    self.OutputWidth = int((len(self.InputImage[0, 0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
+    self.OutputHeight = int((len(self.InputImage[0]) - (len(self.Filter[0]) - 1)) / self.Stride[1])
 
     self.OutputArray = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
-
     for i in range(0, self.OutputWidth, self.Stride[0]):
       for j in range(0, self.OutputHeight, self.Stride[1]):
         self.OutputArray[:, i, j] = np.sum(np.multiply(self.InputImage[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
@@ -40,7 +44,7 @@ class CONV:
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.OutputArray.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
     self.OutputArray *= self.Dropout
-
+    
     return self.OutputArray
   
   def BackProp(self, ConvolutionError):
@@ -54,11 +58,15 @@ class CONV:
     if self.Activation == 'StableSoftMax': Derivative = StableSoftMax.Derivative(self.OutputArray)
     if self.Activation == 'None': Derivative = self.OutputArray
 
-    self.InputError = np.zeros((self.NumOfFilters, self.OutputHeight + 2, self.OutputWidth + 2))
+    if (self.Padding == 'None'):
+      self.InputError = np.zeros((self.NumOfFilters, self.OutputHeight + 2, self.OutputWidth + 2))
+    if (self.Padding == 'Same'):
+      self.InputError = np.zeros((self.NumOfFilters, self.OutputHeight * self.Stride[1], self.OutputWidth * self.Stride[0]))
     ConvolutionErrorPad = np.pad(ConvolutionError, 1, mode='constant')[1 : self.NumOfFilters + 1]
-    for i in range(0, self.OutputWidth, self.Stride[0]):
-      for j in range(0, self.OutputHeight, self.Stride[1]):
-        self.InputError[:, i, j] = np.sum(np.multiply(ConvolutionErrorPad[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
+    FliterFliped = np.flip(self.Filter, (1, 2))
+    for i in range(0, self.OutputWidth):
+      for j in range(0, self.OutputHeight):
+        self.InputError[:, i, j] = np.sum(np.multiply(ConvolutionErrorPad[:, i : i + 3, j : j + 3], FliterFliped), axis=(1, 2))
 
     for i in range(0, self.OutputWidth, self.Stride[0]):
       for j in range(0, self.OutputHeight, self.Stride[1]):
