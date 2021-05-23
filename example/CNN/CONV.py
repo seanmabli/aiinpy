@@ -61,11 +61,11 @@ class CONV:
     if (self.Padding == 'None'):
       self.InputError = np.zeros((self.NumOfFilters, self.OutputHeight + 2, self.OutputWidth + 2))
     if (self.Padding == 'Same'):
-      self.InputError = np.zeros((self.NumOfFilters, self.OutputHeight * self.Stride[1], self.OutputWidth * self.Stride[0]))
-    ConvolutionErrorPad = np.pad(ConvolutionError, 1, mode='constant')[1 : self.NumOfFilters + 1]
+      self.InputError = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
+    ConvolutionErrorPad = np.pad(ConvolutionError, 2, mode='constant')[1 : self.NumOfFilters + 1]
     FliterFliped = np.flip(self.Filter, (1, 2))
-    for i in range(0, self.OutputWidth):
-      for j in range(0, self.OutputHeight):
+    for i in range(0, len(self.InputError[0, 0])):
+      for j in range(0, len(self.InputError[0])):
         self.InputError[:, i, j] = np.sum(np.multiply(ConvolutionErrorPad[:, i : i + 3, j : j + 3], FliterFliped), axis=(1, 2))
 
     for i in range(0, self.OutputWidth, self.Stride[0]):
