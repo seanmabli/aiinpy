@@ -1,41 +1,48 @@
 import numpy as np
 from RNN import RNN
 from Data.PosNegCon import TrainingData, TestData
+from alive_progress import alive_bar
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
 Rnn = RNN(len(TrainingDataUniqueWords), 2, Type='ManyToOne', LearningRate=0.05)
 
-for Generation in range(15000):
-  items = list(TrainingData.items())
-  Random = np.random.randint(0, len(TrainingDataUniqueWords))
+NumOfTrainGen = 100000
+NumOfTestGen = len(list(TestData.items()))
 
-  InputSentenceSplit = list(items[Random][0].split(' '))
-  Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
-  for i in range(len(InputSentenceSplit)):
-    Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
+with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
+  for Generation in range(NumOfTrainGen):
+    items = list(TrainingData.items())
+    Random = np.random.randint(0, len(TrainingDataUniqueWords))
 
-  Output = Rnn.ForwardProp(Input)
+    InputSentenceSplit = list(items[Random][0].split(' '))
+    Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
+    for i in range(len(InputSentenceSplit)):
+      Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
 
-  RealOutput = np.zeros(Output.shape)
-  RealOutput[(1 if items[Random][1] == True else 0)] = 1
+    Output = Rnn.ForwardProp(Input)
 
-  NumberCorrect = int(np.argmax(Output) == (1 if items[Random][1] == True else 0))
+    RealOutput = np.zeros(Output.shape)
+    RealOutput[(1 if items[Random][1] == True else 0)] = 1
 
-  OutputError = RealOutput - Output
-  Rnn.BackProp(OutputError)
+    NumberCorrect = int(np.argmax(Output) == (1 if items[Random][1] == True else 0))
 
-items = list(TestData.items())
-np.random.shuffle(items)
+    OutputError = RealOutput - Output
+    Rnn.BackProp(OutputError)
+    bar()
 
-NumberCorrect = 0
+  items = list(TestData.items())
+  np.random.shuffle(items)
 
-for x, y in items:
-  InputSentenceSplit = list(x.split(' '))
-  Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
-  for i in range(len(InputSentenceSplit)):
-    Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
+  NumberCorrect = 0
 
-  Output = Rnn.ForwardProp(Input)
-  NumberCorrect += int(np.argmax(Output) == (1 if y == True else 0))
-  
-print(NumberCorrect / len(TestData))
+  for x, y in items:
+    InputSentenceSplit = list(x.split(' '))
+    Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
+    for i in range(len(InputSentenceSplit)):
+      Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
+
+    Output = Rnn.ForwardProp(Input)
+    NumberCorrect += int(np.argmax(Output) == (1 if y == True else 0))
+    bar()
+
+  print(NumberCorrect / len(TestData))

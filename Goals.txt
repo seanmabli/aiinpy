@@ -1,5 +1,6 @@
 - Music Generation With RNN
 - Add previous layer functionality for CONV
 - Create basic GRU
+- Create basic LSTM
 - Create corresponding example to translate fr->en or en->fr
 - Bidirectional RNN
