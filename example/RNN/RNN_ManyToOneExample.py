@@ -30,19 +30,17 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     Rnn.BackProp(OutputError)
     bar()
 
-  items = list(TestData.items())
-  np.random.shuffle(items)
-
   NumberCorrect = 0
+  for Generation in range(NumOfTestGen):
+    items = list(TestData.items())
 
-  for x, y in items:
-    InputSentenceSplit = list(x.split(' '))
+    InputSentenceSplit = list(items[Generation][0].split(' '))
     Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
     for i in range(len(InputSentenceSplit)):
       Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
 
     Output = Rnn.ForwardProp(Input)
-    NumberCorrect += int(np.argmax(Output) == (1 if y == True else 0))
+    NumberCorrect += int(np.argmax(Output) == (1 if items[Generation][1] == True else 0))
     bar()
 
-  print(NumberCorrect / len(TestData))
+  print(NumberCorrect / NumOfTestGen)
