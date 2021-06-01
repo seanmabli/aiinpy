@@ -3,8 +3,8 @@ from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
 
 class RNN:
-  def __init__(self, InputSize, OutputSize, Type, HidSize=64, LearningRate=0.05):
-    self.LearningRate, self.Type = LearningRate, Type
+  def __init__(self, InputSize, OutputSize, HidSize=64, LearningRate=0.05):
+    self.LearningRate, self.HidSize = LearningRate, HidSize
 
     self.WeightsHidToHid = np.random.uniform(-0.005, 0.005, (HidSize, HidSize))
     self.WeightsInputToHid = np.random.uniform(-0.005, 0.005, (HidSize, InputSize))
@@ -15,11 +15,11 @@ class RNN:
 
   def ForwardProp(self, InputLayer):
     self.InputLayer = InputLayer
-    self.Hidden = np.zeros((len(self.InputLayer) + 1, self.WeightsHidToHid.shape[0]))
+    self.Hidden = np.zeros((len(self.InputLayer) + 1, self.HidSize))
 
     for i in range(len(InputLayer)):
       self.Hidden[i + 1, :] = Tanh.Tanh(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases)
-    
+
     self.Output = StableSoftMax.StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
     return self.Output
 
