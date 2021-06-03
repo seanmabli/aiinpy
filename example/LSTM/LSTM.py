@@ -28,7 +28,7 @@ class LSTM:
     self.InputLayer = InputLayer
     self.Hid = np.zeros((len(self.InputLayer) + 1, self.HidSize))
     self.CellMem = np.zeros((len(self.InputLayer) + 1, self.HidSize))
-    self.Output = np.zeros((len(self.InputLayer), self.OutSize))
+    self.Out = np.zeros((len(self.InputLayer), self.OutSize))
 
     for i in range(len(InputLayer)):
       self.ForgetGate = Sigmoid((self.WeightsInToForgetGate @ self.InputLayer) + (self.WeightsHidToForgetGate @ self.Hid[i, :]) + self.ForgetGateBiases)
@@ -38,9 +38,39 @@ class LSTM:
 
       self.CellMem[i + 1, :] = (self.ForgetGate * self.CellMem[i, :]) + (self.InGate * self.CellMemGate)
       self.Hid[i + 1, :] = self.OutGate * Tanh(self.CellMem[i + 1, :])
-      self.Output[i, :] = StableSoftMax((self.WeightsHidToOut @ self.Hid[i + 1, :]) + self.OutBias)
+      self.Out[i, :] = StableSoftMax((self.WeightsHidToOut @ self.Hid[i + 1, :]) + self.OutBias)
+  '''
+  Errors:
+  x - HidOut
+  - HidIn
+  x - CellMemOut
+  x - CellMemIn
+  - ForgetGate
+  - InGate
+  - OutGate
+  - CellMemGate
+  - In
+  '''
 
   def BackProp(self, OutError):
+    self.HidOutError = np.transpose(self.WeightsHidToOut) @ OutputError
+    self.HidInError = 
+    self.CellMemOutError = self.HidOutError * self.Out * Tanh.Derivative(self.CellMem[len(self.InputLayer)])
+    self.CellMemInError = self.CellMemOutError * self.ForgetGate
+
+    self.ForgetGateError = self.CellMemOutError * self.CellMem[len(self.InputLayer) - 1]
+    self.InGateError = 
+
+
+    for i in reversed(range(len(self.InputLayer))):
+      self.HiddenGradient = np.multiply(Tanh.Derivative(self.Hid[i + 1]), self.HidError)
+
+      self.HiddenBiasesDeltas += self.HidGradient
+      self.WeightsHidToHidDeltas += np.outer(self.HidGradient, np.transpose(self.Hid[i]))
+      self.WeightsInputToHidDeltas += np.outer(self.HidGradient, np.transpose(self.InputLayer[i]))
+
+      self.HidError = np.transpose(self.WeightsHidToHid) @ self.HidGradient
+
 
 '''
 # With Deltas
