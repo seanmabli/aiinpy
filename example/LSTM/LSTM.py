@@ -26,19 +26,29 @@ class LSTM:
   
   def ForwardProp(self, Input):
     self.InputLayer = InputLayer
-    self.Hid = np.zeros((len(self.InputLayer) + 1, self.HidSize))
-    self.CellMem = np.zeros((len(self.InputLayer) + 1, self.HidSize))
-    self.Out = np.zeros((len(self.InputLayer), self.OutSize))
+    self.CellSize = len(InputLayer)
 
-    for i in range(len(InputLayer)):
-      self.ForgetGate = Sigmoid((self.WeightsInToForgetGate @ self.InputLayer) + (self.WeightsHidToForgetGate @ self.Hid[i, :]) + self.ForgetGateBiases)
-      self.InGate = Sigmoid((self.WeightsInToInGate @ self.InputLayer) + (self.WeightsHidToInputGate @ self.Hid[i, :]) + self.InGateBiases)
-      self.OutGate = Sigmoid((self.WeightsInToOutGate @ self.InputLayer) + (self.WeightsHidToOutputGate @ self.Hid[i, :]) + self.OutGateBiases)
-      self.CellMemGate = Tanh((self.WeightsInToCellMemGate @ self.InputLayer) + (self.WeightsHidToCellMemGate @ self.Hid[i, :]) + self.CellMemGateBiases)
+    self.Hid = np.zeros((self.CellSize + 1, self.HidSize))
+    self.CellMem = np.zeros((self.CellSize + 1, self.HidSize))
+    self.Out = np.zeros((self.CellSize, self.OutSize))
+
+    self.ForgetGate = np.zeros((self.CellSize, self.HidSize))
+    self.InGate = np.zeros((self.CellSize, self.HidSize))
+    self.OutGate = np.zeros((self.CellSize, self.HidSize))
+    self.CellMemGate = np.zeros((self.CellSize, self.HidSize))
+
+    for i in range(self.CellSize):
+      self.ForgetGate[i, :] = Sigmoid((self.WeightsInToForgetGate @ self.InputLayer) + (self.WeightsHidToForgetGate @ self.Hid[i, :]) + self.ForgetGateBiases)
+      self.InGate[i, :] = Sigmoid((self.WeightsInToInGate @ self.InputLayer) + (self.WeightsHidToInputGate @ self.Hid[i, :]) + self.InGateBiases)
+      self.OutGate[i, :] = Sigmoid((self.WeightsInToOutGate @ self.InputLayer) + (self.WeightsHidToOutputGate @ self.Hid[i, :]) + self.OutGateBiases)
+      self.CellMemGate[i, :] = Tanh((self.WeightsInToCellMemGate @ self.InputLayer) + (self.WeightsHidToCellMemGate @ self.Hid[i, :]) + self.CellMemGateBiases)
 
       self.CellMem[i + 1, :] = (self.ForgetGate * self.CellMem[i, :]) + (self.InGate * self.CellMemGate)
       self.Hid[i + 1, :] = self.OutGate * Tanh(self.CellMem[i + 1, :])
       self.Out[i, :] = StableSoftMax((self.WeightsHidToOut @ self.Hid[i + 1, :]) + self.OutBias)
+      
+    return self.Out
+
   '''
   Errors:
   x - HidOut
@@ -58,19 +68,10 @@ class LSTM:
     self.CellMemOutError = self.HidOutError * self.Out * Tanh.Derivative(self.CellMem[len(self.InputLayer)])
     self.CellMemInError = self.CellMemOutError * self.ForgetGate
 
-    self.ForgetGateError = self.CellMemOutError * self.CellMem[len(self.InputLayer) - 1]
-    self.InGateError = 
-
-
-    for i in reversed(range(len(self.InputLayer))):
-      self.HiddenGradient = np.multiply(Tanh.Derivative(self.Hid[i + 1]), self.HidError)
-
-      self.HiddenBiasesDeltas += self.HidGradient
-      self.WeightsHidToHidDeltas += np.outer(self.HidGradient, np.transpose(self.Hid[i]))
-      self.WeightsInputToHidDeltas += np.outer(self.HidGradient, np.transpose(self.InputLayer[i]))
-
-      self.HidError = np.transpose(self.WeightsHidToHid) @ self.HidGradient
-
+    self.ForgetGateError = self.CellMemOutError * self.CellMem[self.CellSize - 1]
+    self.InGateError = self.CellMemOutError * self.CellMemGate[self.CellSize - 1]
+    self.OutGateError = 
+    self.CellMemGateError = 
 
 '''
 # With Deltas
