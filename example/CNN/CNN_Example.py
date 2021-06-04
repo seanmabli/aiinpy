@@ -2,12 +2,12 @@ import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 from NN import NN
 from CONV import CONV
-import aiinpy as ai
+from POOL import POOL
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same', DropoutRate=0.5, Stride=(1, 1))
-Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.005, Padding='Same', DropoutRate=0.5, Stride=(1, 1))
-InputToHid1 = NN(InputSize=(4 * 28 * 28), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='None')
+Conv1ToMax1 = POOL(2)
+InputToHid1 = NN(InputSize=(4 * 13 * 13), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
@@ -25,17 +25,17 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     
     # Forward Propagation
     Conv1 = InputImageToConv1.ForwardProp(InputImage)
-    Conv2 = Conv1ToConv2.ForwardProp(Conv1)
+    Max1 = Conv1ToMax1.ForwardProp(Conv1)
 
-    Input = Conv2.flatten()
+    Input = Max1.flatten()
     Output = InputToHid1.ForwardProp(Input)
 
     # Back Propagation
     OutputError = RealOutput - Output
     InputError = InputToHid1.BackProp(OutputError) 
-    Conv2Error = InputError.reshape(Conv2.shape)
+    Max1Error = InputError.reshape(Max1.shape)
     
-    Conv1Error = Conv1ToConv2.BackProp(Conv2Error)
+    Conv1Error = Conv1ToMax1.BackProp(Max1Error)
     InputImageError = InputImageToConv1.BackProp(Conv1Error)
     
     bar()
@@ -45,8 +45,8 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
   for Generation in range(TestImageLoaded):
     InputImage = (TestImages[Generation] / 255) - 0.5
     Conv1 = InputImageToConv1.ForwardProp(InputImage)
-    Conv2 = Conv1ToConv2.ForwardProp(Conv1)
-    Input = Conv2.flatten()
+    Max1 = Conv1ToMax1.ForwardProp(Conv1)
+    Input = Max1.flatten()
     Output = InputToHid1.ForwardProp(Input)
     
     NumberCorrect += 1 if np.argmax(Output) == TestLabels[Generation] else 0
