@@ -5,7 +5,7 @@ from CONV import CONV
 from POOL import POOL
 from alive_progress import alive_bar
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.005, Padding='None')
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding='None')
 Conv1ToMax1 = POOL(2)
 InputToHid1 = NN(InputSize=(4 * 13 * 13), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
@@ -52,4 +52,4 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     NumberCorrect += 1 if np.argmax(Output) == TestLabels[Generation] else 0
     bar()
 
-  print(NumberCorrect / Generation)
+  print(NumberCorrect / TestImageLoaded)
