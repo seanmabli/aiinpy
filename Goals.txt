@@ -2,5 +2,4 @@
 - Add previous layer functionality for CONV
 - Create basic GRU
 - Create basic LSTMs
-- Bidirectional RNN
-- CONV doesn't work (first priority)
+- Bidirectional RNNd
