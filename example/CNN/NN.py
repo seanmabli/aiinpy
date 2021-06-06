@@ -8,6 +8,9 @@ class NN:
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], (OutputSize))
     self.Activation, self.LearningRate, self.DropoutRate = Activation, LearningRate, DropoutRate
   
+  def ChangeDropoutRate(self, NewRate):
+    self.DropoutRate = NewRate
+    
   def ForwardProp(self, InputLayer):
     self.InputLayer = InputLayer
     self.Output = np.transpose(self.Weights) @ InputLayer + self.Biases

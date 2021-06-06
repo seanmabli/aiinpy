@@ -1,4 +1,5 @@
 import numpy as np
+# POOL doesn't work with stride != 1
 
 class POOL: 
   def __init__(self, Stride):
@@ -8,8 +9,7 @@ class POOL:
     self.InputArray = InputArray
     OutputWidth = int(len(InputArray[0, 0]) / 2)
     OutputHeight = int(len(InputArray[0]) / 2)
-    NumOfFilters = len(InputArray)
-    self.OutputArray = np.zeros((NumOfFilters, OutputHeight, OutputWidth))
+    self.OutputArray = np.zeros((len(InputArray), OutputHeight, OutputWidth))
     for i in range(OutputHeight):
       for j in range(OutputWidth):
         self.OutputArray[:, i, j] = np.amax(InputArray[:, i * self.Stride : i * self.Stride + 2, j * self.Stride : j * self.Stride + 2], axis=(1, 2))
