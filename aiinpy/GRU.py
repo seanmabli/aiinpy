@@ -1,5 +1,5 @@
 import numpy as np
-from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
+from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
 
 class GRU:
