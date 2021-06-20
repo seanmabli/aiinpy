@@ -7,10 +7,10 @@ TrainingData = pd.read_csv("data/train.csv")[0:10000].to_numpy()
 # ValidationData = pd.read_csv("data/val.csv")[1:].to_numpy()
 TestData = pd.read_csv("data/test.csv")[0:1000].to_numpy()
 
-TrainingDataUniqueWords = list(set([w for Sentence in TrainingData[:, 0] for w in Sentence.split(' ')]))
+TrainingDataUniqueWords = list(set([w for Sentence in TrainingData[:, 0] for w in Sentence]))
 Rnn = RNN(len(TrainingDataUniqueWords), 2, LearningRate=0.05)
 
-print(TrainingDataUniqueWords)
+print(list(TrainingData[0, 0]))
 
 NumOfTrainGen = 15000
 NumOfTestGen = 1000
@@ -19,7 +19,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
   for Generation in range(NumOfTrainGen):
     Random = np.random.randint(0, len(TrainingData))
 
-    InputSentenceSplit = list(TrainingData[Random, 0].split(' '))
+    InputSentenceSplit = list(TrainingData[Random, 0])
     Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
     for i in range(len(InputSentenceSplit)):
       Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
@@ -37,15 +37,13 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
 
   NumberCorrect = 0
   for Generation in range(NumOfTestGen):
-    items = list(TestData)
-
-    InputSentenceSplit = list(items[Generation, 0].split(' '))
+    InputSentenceSplit = list(TestData[Generation, 0])
     Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
     for i in range(len(InputSentenceSplit)):
       Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
 
     Output = Rnn.ForwardProp(Input)
-    NumberCorrect += int(np.argmax(Output) == (1 if items[Generation, 1] == True else 0))
+    NumberCorrect += int(np.argmax(Output) == (1 if TestData[Generation, 1] == True else 0))
     bar()
 
   print(NumberCorrect / NumOfTestGen)
