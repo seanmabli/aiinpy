@@ -70,4 +70,4 @@ class CONV:
         FilterGradients += self.InputImage[:, i : (i + 3), j : (j + 3)] * x[:, i, j][:, np.newaxis, np.newaxis]
     
     self.Filter += FilterGradients * self.LearningRate
-    # self.Bias += np.sum(ConvolutionError, axis=(1, 2)) * self.LearningRate
+    # self.Bias += np.clip(np.sum(ConvolutionError, axis=(1, 2)), -1, 1) * self.LearningRate
