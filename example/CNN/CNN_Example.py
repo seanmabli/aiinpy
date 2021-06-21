@@ -4,6 +4,8 @@ from NN import NN
 from CONV import CONV
 from POOL import POOL
 from alive_progress import alive_bar
+import sys
+import time
 
 InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding='None', Activation='ReLU')
 Conv1ToMax1 = POOL(2)
