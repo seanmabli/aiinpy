@@ -63,6 +63,12 @@ class LSTM:
   '''
 
   def BackProp(self, OutError):
+    OutputGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
+    self.WeightsHidToOutDeltas = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
+
+
+
+'''
     self.HidOutError = np.transpose(self.WeightsHidToOut) @ OutputError
     self.HidInError = 
     self.CellMemOutError = self.HidOutError * self.Out * Tanh.Derivative(self.CellMem[len(self.InputLayer)])
@@ -71,7 +77,8 @@ class LSTM:
     self.ForgetGateError = self.CellMemOutError * self.CellMem[self.CellSize - 1]
     self.InGateError = self.CellMemOutError * self.CellMemGate[self.CellSize - 1]
     self.OutGateError = 
-    self.CellMemGateError = 
+    self.CellMemGateError =
+''' 
 
 '''
 # With Deltas
