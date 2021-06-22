@@ -7,10 +7,10 @@ from alive_progress import alive_bar
 import sys
 import time
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
-Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
+Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
 Conv2ToMax1 = POOL(2)
-InputToHid1 = NN(InputSize=(4 * 14 * 14), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputToHid1 = NN(InputSize=(4 * 12 * 12), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000

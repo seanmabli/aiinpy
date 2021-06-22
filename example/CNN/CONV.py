@@ -79,8 +79,8 @@ class CONV:
     self.FilterFliped = np.rot90(np.rot90(self.Filter))
     y = np.pad(OutputError, 2, mode='constant')[2 : self.NumOfFilters + 2, :, :]
 
-    self.PreviousError = np.zeros(self.OrginalInput.shape)
-    for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1 - (int(self.Padding) * 2)):
-      for j in range(self.OutputHeight + len(self.Filter[0]) - 1 - (int(self.Padding) * 2)):
+    self.PreviousError = np.zeros(self.Input.shape)
+    for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1):
+      for j in range(self.OutputHeight + len(self.Filter[0]) - 1):
         self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i+3, j:j+3]), axis=(1, 2))
-    return self.PreviousError
+    return self.PreviousError[:, int(self.Padding) : self.OutputWidth + len(self.Filter[0, 0]) - 1 - int(self.Padding), int(self.Padding) : self.OutputHeight + len(self.Filter[0]) - 1 - int(self.Padding)]
