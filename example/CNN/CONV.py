@@ -37,8 +37,6 @@ class CONV:
       for j in range(0, self.OutputHeight, self.Stride[1]):
         self.Output[:, i, j] = np.sum(np.multiply(self.Input[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
-    # self.Output += self.Bias[:, np.newaxis, np.newaxis]
-
     if self.Activation == 'Sigmoid': self.Output = Sigmoid.Sigmoid(self.Output)
     if self.Activation == 'Tanh': self.Output = Tanh.Tanh(self.Output)
     if self.Activation == 'ReLU': self.Output = ReLU.ReLU(self.Output)
@@ -52,9 +50,9 @@ class CONV:
 
     return self.Output
   
-  def BackProp(self, ConvolutionError):
+  def BackProp(self, OutputError):
     FilterGradients = np.zeros((self.NumOfFilters, 3, 3))
-    ConvolutionError *= self.Dropout
+    OutputError *= self.Dropout
     
     if self.Activation == 'Sigmoid': Derivative = Sigmoid.Derivative(self.Output)
     if self.Activation == 'Tanh': Derivative = Tanh.Derivative(self.Output)
@@ -63,15 +61,20 @@ class CONV:
     if self.Activation == 'StableSoftMax': Derivative = StableSoftMax.Derivative(self.Output)
     if self.Activation == 'None': Derivative = self.Output
 
-    x = ConvolutionError * Derivative
+    x = OutputError * Derivative
 
     for i in range(0, self.OutputWidth, self.Stride[0]):
       for j in range(0, self.OutputHeight, self.Stride[1]):
         FilterGradients += self.Input[:, i : (i + 3), j : (j + 3)] * x[:, i, j][:, np.newaxis, np.newaxis]
     
     self.Filter += FilterGradients * self.LearningRate
-    # self.Bias += np.clip(np.sum(ConvolutionError, axis=(1, 2)), -1, 1) * self.LearningRate
 
-    for i in range(self.OutputWidth):
-      for j in range():
-        self.OutputError = 
+    self.FilterFliped = np.rot90(np.rot90(self.Filter))
+    y = np.pad(OutputError, 2, mode='constant')[2 : self.NumOfFilters + 2, :, :]
+
+    self.PreviousError = np.zeros(self.Input.shape)
+    for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1):
+      for j in range(self.OutputHeight + len(self.Filter[0]) - 1):
+        self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i+3, j:j+3]), axis=(1, 2))
+
+    return self.PreviousError
