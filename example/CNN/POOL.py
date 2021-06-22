@@ -1,5 +1,5 @@
 import numpy as np
-# POOL doesn't work with stride != 1
+# POOL doesn't work with stride != 2 and when Pool Area != (2,2)
 
 class POOL: 
   def __init__(self, Stride, PoolArea=(2, 2)):

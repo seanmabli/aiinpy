@@ -4,7 +4,7 @@ Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), Leaky
 import sys
 
 class CONV:
-  def __init__(self, FilterShape, LearningRate, Activation='None', Padding='None', Stride=(1, 1), DropoutRate=0):
+  def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1), DropoutRate=0):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
     self.Bias = np.zeros(FilterShape[0])
     self.NumOfFilters = FilterShape[0]
@@ -17,12 +17,19 @@ class CONV:
     self.DropoutRate = NewRate
 
   def ForwardProp(self, Input):
-    if (self.Padding == 'None'):
+    if(Input.ndim == 2):
+      self.OrginalInput = np.stack(([Input] * self.NumOfFilters))
+    else:
+      self.OrginalInput = Input
+
+    if (self.Padding == False):
       if(Input.ndim == 2):
+        self.OrginalInput = np.stack(([Input] * self.NumOfFilters))
         self.Input = np.stack(([Input] * self.NumOfFilters))
       else:
+        self.OrginalInput = Input
         self.Input = Input
-    if (self.Padding == 'Same'):
+    if (self.Padding == True):
       if(Input.ndim == 2):
         self.Input = np.stack(([np.pad(Input, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
       else:
@@ -72,9 +79,8 @@ class CONV:
     self.FilterFliped = np.rot90(np.rot90(self.Filter))
     y = np.pad(OutputError, 2, mode='constant')[2 : self.NumOfFilters + 2, :, :]
 
-    self.PreviousError = np.zeros(self.Input.shape)
-    for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1):
-      for j in range(self.OutputHeight + len(self.Filter[0]) - 1):
+    self.PreviousError = np.zeros(self.OrginalInput.shape)
+    for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1 - (int(self.Padding) * 2)):
+      for j in range(self.OutputHeight + len(self.Filter[0]) - 1 - (int(self.Padding) * 2)):
         self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i+3, j:j+3]), axis=(1, 2))
-
     return self.PreviousError
