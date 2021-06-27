@@ -17,11 +17,6 @@ class CONV:
     self.DropoutRate = NewRate
 
   def ForwardProp(self, Input):
-    if(Input.ndim == 2):
-      self.OrginalInput = np.stack(([Input] * self.NumOfFilters))
-    else:
-      self.OrginalInput = Input
-
     if (self.Padding == False):
       if(Input.ndim == 2):
         self.OrginalInput = np.stack(([Input] * self.NumOfFilters))
@@ -77,10 +72,17 @@ class CONV:
     self.Filter += FilterGradients * self.LearningRate
 
     self.FilterFliped = np.rot90(np.rot90(self.Filter))
-    y = np.pad(OutputError, 2, mode='constant')[2 : self.NumOfFilters + 2, :, :]
+    if self.Stride != (1, 1):
+      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[1] + 1, self.Stride[0] - 1), 0, axis=1)
+      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[2] + 1, self.Stride[1] - 1), 0, axis=2)
+
+    OutputError = np.pad(OutputError, 2, mode='constant')[2 : self.NumOfFilters + 2, :, :]
 
     self.PreviousError = np.zeros(self.Input.shape)
-    for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1):
-      for j in range(self.OutputHeight + len(self.Filter[0]) - 1):
-        self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i+3, j:j+3]), axis=(1, 2))
-    return self.PreviousError[:, int(self.Padding) : self.OutputWidth + len(self.Filter[0, 0]) - 1 - int(self.Padding), int(self.Padding) : self.OutputHeight + len(self.Filter[0]) - 1 - int(self.Padding)]
+    for i in range(0, self.OutputWidth + len(self.Filter[0, 0]) - 1, self.Stride[0]):
+      for j in range(0, self.OutputHeight + len(self.Filter[0]) - 1, self.Stride[1]):
+        self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, OutputError[:, i:i+3, j:j+3]), axis=(1, 2))
+    # print(self.PreviousError.shape)
+    self.PreviousError =  self.PreviousError[:, int(self.Padding) : (self.OutputWidth * 2) + len(self.Filter[0, 0]) - 1 - int(self.Padding), int(self.Padding) : (self.OutputHeight * 2) + len(self.Filter[0]) - 1 - int(self.Padding)]
+    # print(self.PreviousError.shape)
+    return self.PreviousError

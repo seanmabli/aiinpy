@@ -7,17 +7,16 @@ from alive_progress import alive_bar
 import sys
 import time
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
-Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
-Conv2ToMax1 = POOL(2)
-InputToHid1 = NN(InputSize=(4 * 12 * 12), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Stride=(2, 2), Activation='ReLU')
+Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Stride=(2, 2), Activation='ReLU')
+InputToHid1 = NN(InputSize=(4 * 7 * 7), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
 TestImageLoaded = 1000
 TrainingImages, TrainingLabels = extract_training_samples('digits')
 TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
 
-NumOfTrainGen = 5000
+NumOfTrainGen = 20000
 with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
   for Generation in range(NumOfTrainGen):
     # Set Input
@@ -29,17 +28,15 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     # Forward Propagation
     Conv1 = InputImageToConv1.ForwardProp(InputImage)
     Conv2 = Conv1ToConv2.ForwardProp(Conv1)
-    Max1 = Conv2ToMax1.ForwardProp(Conv2)
 
-    Input = Max1.flatten()
+    Input = Conv2.flatten()
     Output = InputToHid1.ForwardProp(Input)
 
     # Back Propagation
     OutputError = RealOutput - Output
     InputError = InputToHid1.BackProp(OutputError) 
-    Max1Error = InputError.reshape(Max1.shape)
+    Conv2Error = InputError.reshape(Conv2.shape)
 
-    Conv2Error = Conv2ToMax1.BackProp(Max1Error)
     Conv1Error = Conv1ToConv2.BackProp(Conv2Error)
     InputImageError = InputImageToConv1.BackProp(Conv1Error)
 
@@ -51,8 +48,8 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     InputImage = (TestImages[Generation] / 255) - 0.5
     Conv1 = InputImageToConv1.ForwardProp(InputImage)
     Conv2 = Conv1ToConv2.ForwardProp(Conv1)
-    Max1 = Conv2ToMax1.ForwardProp(Conv2)
-    Input = Max1.flatten()
+
+    Input = Conv2.flatten()
     Output = InputToHid1.ForwardProp(Input)
     
     NumberCorrect += 1 if np.argmax(Output) == TestLabels[Generation] else 0
