@@ -7,11 +7,11 @@ from alive_progress import alive_bar
 import sys
 import time
 
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Stride=(2, 2), Activation='ReLU')
-Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Stride=(2, 2), Activation='ReLU')
-InputToHid1 = NN(InputSize=(4 * 7 * 7), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
+Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
+InputToHid1 = NN(InputSize=(4 *28 * 28), OutputSize=10, Activation='StableSoftMax', LearningRate=0.1, WeightsInit=(0, 0))
 
-# Load EMNIST Training And Testing Images
+# Load EMNIST Training An1d Testing Images
 TestImageLoaded = 1000
 TrainingImages, TrainingLabels = extract_training_samples('digits')
 TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
