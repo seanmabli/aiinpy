@@ -34,15 +34,6 @@ class LeakyReLU:
     else:
       return self.Slope if (Input < 0) else 1
 
-class StableSoftmax:
-  def StableSoftmax(self, Input):
-    return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
-  def Derivative(self, Input):
-    Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
-    return Equation(Input, np.sum(np.exp(Input)))
-  def EquationForDerivative(self, Input, SumExpOfInput):
-    return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
-
 class Identity:
   def Indentity(self, Input):
     return Input
@@ -51,33 +42,36 @@ class Identity:
   
 class BinaryStep:
   def BinaryStep(self, Input):
-
+    Equation = np.vectorize(self.EquationForBinaryStep, otypes=[float])
+    return Equation(Input)
+  def EquationForBinaryStep(self, Input):
+    return 0 if (Input < 0) else 1
   def Derivative(self, Input):
- 
-
+    return 1
+    
+'''
 class GELU:
   def GELU(self, Input):
     return (0.5 * Input) * (1 + )
   def Derivative(self, Input):
 
-  
-class Softplus:
-  def Softplus(self, Input):
-    return np.log(1 + np.exp(Input))
-  def Derivative(self, Input):
-    return 1 / (1 + np.exp(-Input))
-
 class ELU:
   def ELU(self, Input):
 
   def Derivative(self, Input):
-
+'''
 
 class SELU:
   def SELU(self, Input):
-
+    Equation = np.vectorize(self.EquationForSELU, otypes=[float])
+    return 1.0507 * Equation(Input)
+  def EquationForSELU(self, Input):
+    return 1.67326 * (np.exp(Input) - 1) if (Input < 0) else Input
   def Derivative(self, Input):
-
+    Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
+    return 1.0507 * Equation(Input)
+  def EquationForDerivative(self, Input):
+    return 1.67326 * np.exp(Input) if (Input < 0) else 1
 
 class SiLU:
   def SiLU(self, Input):
@@ -98,12 +92,26 @@ class Gaussian:
   def Derivative(self, Input):
     return -2 * Input * np.exp(-np.square(Input))
 
-class Maxout:
-  def Maxout(self, Input):
-
+class Softplus:
+  def Softplus(self, Input):
+    return np.log(1 + np.exp(Input))
   def Derivative(self, Input):
+    return 1 / (1 + np.exp(-Input))
 
 class Softmax:
   def Softmax(self, Input):
-
+    return (Input - np.max(Input)) / np.sum(Input - np.max(Input)) # Check
   def Derivative(self, Input):
+    Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
+    return Equation(Input, np.sum(np.exp(Input)))
+  def EquationForDerivative(self, Input, SumExpOfInput):
+    return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
+
+class StableSoftmax:
+  def StableSoftmax(self, Input):
+    return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
+  def Derivative(self, Input):
+    Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
+    return Equation(Input, np.sum(np.exp(Input)))
+  def EquationForDerivative(self, Input, SumExpOfInput):
+    return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
