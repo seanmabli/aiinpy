@@ -63,9 +63,9 @@ class GELU:
   
 class Softplus:
   def Softplus(self, Input):
-    return np.log
+    return np.log(1 + np.exp(Input))
   def Derivative(self, Input):
-
+    return 1 / (1 + np.exp(-Input))
 
 class ELU:
   def ELU(self, Input):
@@ -79,32 +79,31 @@ class SELU:
   def Derivative(self, Input):
 
 
-class PReLU:
-  def PReLU(self, Input):
-
-  def Derivative(self, Input):
-
-
 class SiLU:
   def SiLU(self, Input):
-
+    return Input / (1 + np.exp(-Input))
   def Derivative(self, Input):
-
+    return (1 + np.exp(-Input) + (Input * np.exp(-Input))) / np.square(1 + np.exp(-Input))
   
 class Mish:
   def Mish(self, Input):
-
+    Tanh = Tanh()
+    return Input * Tanh.Tanh(np.log(1 + np.exp(Input)))
   def Derivative(self, Input):
-
+    return (np.exp(Input) * ((4 * np.exp(2 * Input)) + np.exp(3 * Input) + (4 * (1 + Input)) + (np.exp(Input) * (6 + (4 * Input))))) / np.square(2 + (2 * np.exp(Input)) + np.exp(2 * Input))
 
 class Gaussian:
   def Gaussian(self, Input):
-
+    return np.exp(-np.square(Input))
   def Derivative(self, Input):
+    return -2 * Input * np.exp(-np.square(Input))
 
 class Maxout:
   def Maxout(self, Input):
 
   def Derivative(self, Input):
 
-class Softmax
+class Softmax:
+  def Softmax(self, Input):
+
+  def Derivative(self, Input):
