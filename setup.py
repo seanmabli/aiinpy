@@ -5,5 +5,5 @@ setup(name='aiinpy',
       description='An artificial intelligence library',
       license='MIT',
       packages=['aiinpy'],
-      install_requires=['numpy']
+      install_requires=['numpy', 'sys']
       )
