@@ -1,11 +1,9 @@
 import numpy as np
-from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
-Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
+from ActivationFunctions import ForwardProp, BackProp
 
 class RNN:
   def __init__(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05):
-    self.LearningRate = LearningRate
-    self.Type = Type
+    self.LearningRate, self.Type = LearningRate, Type
 
     self.WeightsHidToHid = np.random.randn(HiddenSize, HiddenSize) / 1000
     self.WeightsInputToHid = np.random.randn(HiddenSize, InputSize) / 1000
@@ -19,13 +17,13 @@ class RNN:
     self.Hidden = np.zeros((len(self.InputLayer) + 1, self.WeightsHidToHid.shape[0]))
 
     for i in range(len(InputLayer)):
-      self.Hidden[i + 1, :] = Tanh(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases)
+      self.Hidden[i + 1, :] = ForwardProp(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases, "Tanh")
     
-    self.Output = StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
+    self.Output = ForwardProp(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases, "StableSoftmax")
     return self.Output
 
   def BackProp(self, OutputError):
-    OutputGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
+    OutputGradient = np.multiply(BackProp(self.Output, "StableSoftmax"), OutputError)
     
     self.WeightsHidToOutDeltas = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
     self.OutputBiasesDeltas = OutputGradient
@@ -37,7 +35,7 @@ class RNN:
     self.HiddenError = np.transpose(self.WeightsHidToOut) @ OutputError
 
     for i in reversed(range(len(self.InputLayer))):
-      self.HiddenGradient = np.multiply(Tanh.Derivative(self.Hidden[i + 1]), self.HiddenError)
+      self.HiddenGradient = np.multiply(BackProp(self.Hidden[i + 1], "Tanh"), self.HiddenError)
 
       self.HiddenBiasesDeltas += self.HiddenGradient
       self.WeightsHidToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.Hidden[i]))

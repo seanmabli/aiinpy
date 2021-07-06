@@ -1,5 +1,16 @@
 import numpy as np
 
+'''
+Need to work on:
+- LeakyReLU
+'''
+
+def ForwardProp(Input, Activation):
+  return eval(str(Activation) + "()." + str(Activation) + "(Input)")
+
+def BackProp(Input, Activation):
+  return eval(str(Activation) + "().Derivative(Input)")
+
 class Sigmoid:
   def Sigmoid(self, Input):
     return 1 / (1 + np.exp(-Input))
@@ -35,7 +46,7 @@ class LeakyReLU:
       return self.Slope if (Input < 0) else 1
 
 class Identity:
-  def Indentity(self, Input):
+  def Identity(self, Input):
     return Input
   def Derivative(self, Input):
     return 1
@@ -81,8 +92,7 @@ class SiLU:
   
 class Mish:
   def Mish(self, Input):
-    Tanh = Tanh()
-    return Input * Tanh.Tanh(np.log(1 + np.exp(Input)))
+    return Input * Tanh().Tanh(np.log(1 + np.exp(Input)))
   def Derivative(self, Input):
     return (np.exp(Input) * ((4 * np.exp(2 * Input)) + np.exp(3 * Input) + (4 * (1 + Input)) + (np.exp(Input) * (6 + (4 * Input))))) / np.square(2 + (2 * np.exp(Input)) + np.exp(2 * Input))
 

@@ -1,6 +1,5 @@
 import numpy as np
-from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
-Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
+from ActivationFunctions import ForwardProp, BackProp
 
 class NN:
   def __init__(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
@@ -13,12 +12,7 @@ class NN:
     self.Output = np.transpose(self.Weights) @ InputLayer + self.Biases
   
     # Apply Activation Function
-    if self.Activation == 'Sigmoid': self.Output = Sigmoid.Sigmoid(self.Output)
-    if self.Activation == 'Tanh': self.Output = Tanh.Tanh(self.Output)
-    if self.Activation == 'ReLU': self.Output = ReLU.ReLU(self.Output)
-    if self.Activation == 'LeakyReLU': self.Output = LeakyReLU.LeakyReLU(self.Output)
-    if self.Activation == 'StableSoftMax': self.Output = StableSoftMax.StableSoftMax(self.Output)
-    if self.Activation == 'None': self.Output = self.Output
+    self.Output = ForwardProp(self.Output, self.Activation)
 
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=len(self.Output))
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
@@ -29,14 +23,8 @@ class NN:
   def BackProp(self, FollowingLayerError):
     FollowingLayerError *= self.Dropout
 
-    # Calculate Gradients
-    FollowingLayerGradient = np.zeros(self.Output.shape)
-    if self.Activation == 'Sigmoid': FollowingLayerGradient = np.multiply(Sigmoid.Derivative(self.Output), FollowingLayerError)
-    if self.Activation == 'Tanh': FollowingLayerGradient = np.multiply(Tanh.Derivative(self.Output), FollowingLayerError)
-    if self.Activation == 'ReLU': FollowingLayerGradient = np.multiply(ReLU.Derivative(self.Output), FollowingLayerError)
-    if self.Activation == 'LeakyReLU': FollowingLayerGradient = np.multiply(LeakyReLU.Derivative(self.Output), FollowingLayerError)
-    if self.Activation == 'StableSoftMax': FollowingLayerGradient = np.multiply(StableSoftMax.Derivative(self.Output), FollowingLayerError)
-    if self.Activation == 'None': FollowingLayerGradient = np.multiply(self.Output, FollowingLayerError)
+    # Apply Activation Function Derivative
+    FollowingLayerGradient = np.multiply(BackProp(self.Output, self.Activation), FollowingLayerError)
       
     # Calculate Current Layer Error
     CurrentLayerError = self.Weights @ FollowingLayerError
