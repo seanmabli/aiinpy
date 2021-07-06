@@ -3,11 +3,11 @@ from ActivationFunctions import ForwardProp, BackProp
 import sys
 
 class CONV:
-  def __init__(self, FilterShape, LearningRate, Activation='None', Padding='None', Stride=(1, 1), DropoutRate=0):
+  def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1), DropoutRate=0):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
     self.Bias = np.zeros(FilterShape[0])
     self.NumOfFilters = FilterShape[0]
-    self.LearningRate, self.Activation, self.Padding, self.Stride, self.DropoutRate = LearningRate, Activation, Padding, Stride, DropoutRate
+    self.LearningRate, self.Activation, self.Padding, self.Stride, self.DropoutRate, self.FilterShape = LearningRate, Activation, Padding, Stride, DropoutRate, FilterShape
 
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
@@ -16,12 +16,13 @@ class CONV:
     self.DropoutRate = NewRate
 
   def ForwardProp(self, Input):
-    if (self.Padding == 'None'):
+    if (self.Padding == False):
       if(Input.ndim == 2):
         self.Input = np.stack(([Input] * self.NumOfFilters))
       else:
         self.Input = Input
-    if (self.Padding == 'Same'):
+
+    if (self.Padding == True):
       if(Input.ndim == 2):
         self.Input = np.stack(([np.pad(Input, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
       else:
@@ -64,6 +65,6 @@ class CONV:
     self.PreviousError = np.zeros(self.Input.shape)
     for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1):
       for j in range(self.OutputHeight + len(self.Filter[0]) - 1):
-        self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i+3, j:j+3]), axis=(1, 2))
+       self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
 
-    return self.PreviousError
+    return self.PreviousError[:, int(self.Padding) : self.OutputWidth + len(self.Filter[0, 0]) - 1 - int(self.Padding), int(self.Padding) : self.OutputHeight + len(self.Filter[0]) - 1 - int(self.Padding)]

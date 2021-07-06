@@ -24,7 +24,7 @@ class NN:
     FollowingLayerError *= self.Dropout
 
     # Apply Activation Function Derivative
-    FollowingLayerGradient = np.multiply(BackProp(np.array(self.Output), self.Activation), FollowingLayerError)
+    FollowingLayerGradient = np.multiply(BackProp(self.Output, self.Activation), FollowingLayerError)
       
     # Calculate Current Layer Error
     CurrentLayerError = self.Weights @ FollowingLayerError

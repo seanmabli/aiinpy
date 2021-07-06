@@ -1,6 +1,5 @@
 import numpy as np
-from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
-Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
+from ActivationFunctions import ForwardProp, BackProp
 import sys
 
 class CONV:
@@ -38,12 +37,7 @@ class CONV:
       for j in range(0, self.OutputHeight, self.Stride[1]):
         self.Output[:, i, j] = np.sum(np.multiply(self.Input[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
-    if self.Activation == 'Sigmoid': self.Output = Sigmoid.Sigmoid(self.Output)
-    if self.Activation == 'Tanh': self.Output = Tanh.Tanh(self.Output)
-    if self.Activation == 'ReLU': self.Output = ReLU.ReLU(self.Output)
-    if self.Activation == 'LeakyReLU': self.Output = LeakyReLU.LeakyReLU(self.Output)
-    if self.Activation == 'StableSoftMax': self.Output = StableSoftMax.StableSoftMax(self.Output)
-    if self.Activation == 'None': self.Output = self.Output
+    self.Output = ForwardProp(self.Output, self.Activation)
 
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.Output.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
@@ -55,12 +49,7 @@ class CONV:
     FilterGradients = np.zeros((self.NumOfFilters, 3, 3))
     OutputError *= self.Dropout
     
-    if self.Activation == 'Sigmoid': Derivative = Sigmoid.Derivative(self.Output)
-    if self.Activation == 'Tanh': Derivative = Tanh.Derivative(self.Output)
-    if self.Activation == 'ReLU': Derivative = ReLU.Derivative(self.Output)
-    if self.Activation == 'LeakyReLU': Derivative = LeakyReLU.Derivative(self.Output)
-    if self.Activation == 'StableSoftMax': Derivative = StableSoftMax.Derivative(self.Output)
-    if self.Activation == 'None': Derivative = self.Output
+    Derivative = BackProp(self.Output, self.Activation)
 
     x = OutputError * Derivative
 
@@ -76,6 +65,6 @@ class CONV:
     self.PreviousError = np.zeros(self.Input.shape)
     for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1):
       for j in range(self.OutputHeight + len(self.Filter[0]) - 1):
-        self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
+       self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
 
     return self.PreviousError[:, int(self.Padding) : self.OutputWidth + len(self.Filter[0, 0]) - 1 - int(self.Padding), int(self.Padding) : self.OutputHeight + len(self.Filter[0]) - 1 - int(self.Padding)]
