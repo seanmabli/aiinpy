@@ -1,9 +1,9 @@
 import numpy as np
-# POOL doesn't work with stride != 2 and when Pool Area != (2,2)
+# POOL doesn't work with stride != 1
 
 class POOL: 
-  def __init__(self, Stride, PoolArea=(2, 2)):
-    self.Stride, self.PoolArea = Stride, PoolArea
+  def __init__(self, Stride):
+    self.Stride = Stride
     
   def ForwardProp(self, InputArray):
     self.InputArray = InputArray
