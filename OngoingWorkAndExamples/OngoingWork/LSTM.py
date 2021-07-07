@@ -63,9 +63,14 @@ class LSTM:
   '''
 
   def BackProp(self, OutError):
+    
+
+
+
+'''
     OutputGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
     self.WeightsHidToOutDeltas = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
-
+'''
 
 
 '''

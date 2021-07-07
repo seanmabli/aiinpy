@@ -1,5 +1,0 @@
-- Music Generation With RNN
-- Add previous layer functionality for CONV
-- Create basic GRU
-- Create basic LSTMs
-- Bidirectional RNNd

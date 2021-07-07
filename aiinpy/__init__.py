@@ -1,4 +1,4 @@
-from .ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
+from .ActivationFunctions import ForwardProp, BackProp
 from .NN import NN
 from .CONV import CONV
 from .POOL import POOL

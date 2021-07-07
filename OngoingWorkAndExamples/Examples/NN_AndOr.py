@@ -1,10 +1,10 @@
 import numpy as np
-from NN import NN
+from OngoingWork.NN import NN
 from alive_progress import alive_bar
 
 # Neural Network Model
-InputToHidden1 = NN(InputSize=2, OutputSize=16, Activation='LeakyReLU', LearningRate=0.1)
-Hidden1ToHidden2 = NN(InputSize=16, OutputSize=16, Activation='LeakyReLU', LearningRate=0.1)
+InputToHidden1 = NN(InputSize=2, OutputSize=16, Activation='ReLU', LearningRate=0.1)
+Hidden1ToHidden2 = NN(InputSize=16, OutputSize=16, Activation='ReLU', LearningRate=0.1)
 Hidden2ToOutput = NN(InputSize=16, OutputSize=2, Activation='Sigmoid', LearningRate=0.1)
 
 # Training
