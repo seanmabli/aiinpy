@@ -12,9 +12,9 @@ Padding=True & Stride=(1, 1): Done
 Padding=False & Stride=(2, 2): Not Complete
 Padding=True & Stride=(2, 2): Working on now
 '''
-InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Stride=(2, 2), Activation='ReLU')
-Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Stride=(2, 2), Activation='ReLU')
-InputToHid1 = NN(InputSize=(4 * 28 * 28), OutputSize=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
+InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
+Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
+InputToHid1 = NN(InputSize=(4 * 24 * 24), OutputSize=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training An1d Testing Images
 TestImageLoaded = 1000
@@ -44,6 +44,7 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
 
     Conv1Error = Conv1ToConv2.BackProp(Conv2Error)
     InputImageError = InputImageToConv1.BackProp(Conv1Error)
+    # sys.exit()
     bar()
   
   InputToHid1.ChangeDropoutRate(0)

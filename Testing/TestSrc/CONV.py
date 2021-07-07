@@ -5,7 +5,7 @@ import sys
 class CONV:
   def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1), DropoutRate=0):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
-    self.Bias = np.zeros(FilterShape[0])
+    self.Bias = 0
     self.NumOfFilters = FilterShape[0]
     self.LearningRate, self.Activation, self.Padding, self.Stride, self.DropoutRate, self.FilterShape = LearningRate, Activation, Padding, Stride, DropoutRate, FilterShape
 
@@ -32,6 +32,7 @@ class CONV:
       for j in range(0, self.OutputHeight, self.Stride[1]):
         self.Output[:, i, j] = np.sum(np.multiply(self.Input[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
+    self.Output += self.Bias
     self.Output = ForwardProp(self.Output, self.Activation)
 
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.Output.shape)
@@ -52,10 +53,16 @@ class CONV:
       for j in range(0, self.OutputHeight, self.Stride[1]):
         FilterGradients += self.Input[:, i : (i + 3), j : (j + 3)] * x[:, i, j][:, np.newaxis, np.newaxis]
     
+    self.Bias += OutputError * self.LearningRate
     self.Filter += FilterGradients * self.LearningRate
 
     self.RotFilter = np.rot90(np.rot90(self.Filter))
     z = self.FilterShape[1] - 1
+
+    if self.Stride != (1, 1):
+      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[1], self.Stride[0] - 1), 0, axis=1)
+      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[2], self.Stride[1] - 1), 0, axis=2)
+      
     y = np.pad(OutputError, z, mode='constant')[z : self.NumOfFilters + z, :, :]
 
     self.PreviousError = np.zeros(self.InputShape)
@@ -68,5 +75,5 @@ class CONV:
       for i in range(self.InputShape[0]):
         for j in range(self.InputShape[1]):
          self.PreviousError[i, j] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]))
-         
+
     return self.PreviousError
