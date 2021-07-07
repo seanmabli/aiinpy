@@ -16,18 +16,13 @@ class CONV:
     self.DropoutRate = NewRate
 
   def ForwardProp(self, Input):
-    if (self.Padding == False):
-      if(Input.ndim == 2):
-        self.Input = np.stack(([Input] * self.NumOfFilters))
-      else:
-        self.Input = Input
-
+    self.Input = Input
+    self.InputShape = self.Input.shape
+    if(Input.ndim == 2):
+      self.Input = np.stack(([self.Input] * self.NumOfFilters))
     if (self.Padding == True):
-      if(Input.ndim == 2):
-        self.Input = np.stack(([np.pad(Input, int((len(self.Filter[0]) - 1) / 2), mode='constant')] * self.NumOfFilters))
-      else:
-        self.Input = np.pad(Input, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.NumOfFilters + 1]
-    
+      self.Input = np.pad(self.Input, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.NumOfFilters + 1]
+
     self.OutputWidth = int((len(self.Input[0, 0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
     self.OutputHeight = int((len(self.Input[0]) - (len(self.Filter[0]) - 1)) / self.Stride[1])
 
@@ -59,12 +54,19 @@ class CONV:
     
     self.Filter += FilterGradients * self.LearningRate
 
-    self.FilterFliped = np.rot90(np.rot90(self.Filter))
-    y = np.pad(OutputError, 2, mode='constant')[2 : self.NumOfFilters + 2, :, :]
+    self.RotFilter = np.rot90(np.rot90(self.Filter))
+    z = self.FilterShape[1] - 1
+    y = np.pad(OutputError, z, mode='constant')[z : self.NumOfFilters + z, :, :]
 
-    self.PreviousError = np.zeros(self.Input.shape)
-    for i in range(self.OutputWidth + len(self.Filter[0, 0]) - 1):
-      for j in range(self.OutputHeight + len(self.Filter[0]) - 1):
-       self.PreviousError[:, i, j] = np.sum(np.multiply(self.FilterFliped, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
-
-    return self.PreviousError[:, int(self.Padding) : self.OutputWidth + len(self.Filter[0, 0]) - 1 - int(self.Padding), int(self.Padding) : self.OutputHeight + len(self.Filter[0]) - 1 - int(self.Padding)]
+    self.PreviousError = np.zeros(self.InputShape)
+    if np.ndim(self.PreviousError) == 3:
+      for i in range(self.InputShape[1]):
+        for j in range(self.InputShape[2]):
+         self.PreviousError[:, i, j] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
+       
+    if np.ndim(self.PreviousError) == 2:
+      for i in range(self.InputShape[0]):
+        for j in range(self.InputShape[1]):
+         self.PreviousError[i, j] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]))
+         
+    return self.PreviousError
