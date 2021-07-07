@@ -1,5 +1,5 @@
 import numpy as np
-from ActivationFunctions import ForwardProp, BackProp
+from .ActivationFunctions import ForwardProp, BackProp
 
 class RNN:
   def __init__(self, InputSize, OutputSize, HidSize=64, LearningRate=0.05):

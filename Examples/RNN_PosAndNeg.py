@@ -1,5 +1,5 @@
 import numpy as np
-from RNN import RNN
+from OngoingWork.RNN import RNN
 from Data.PosNegCon import TrainingData, TestData
 from alive_progress import alive_bar
 

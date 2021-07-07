@@ -1,6 +1,5 @@
 import numpy as np
-from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
-Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
+from .ActivationFunctions import ForwardProp, BackProp
 
 class LSTM:
   def __init__(self, InSize, OutSize, HidSize=64, LearningRate=0.05):
