@@ -1,8 +1,8 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from OngoingWork.NN import NN
-from OngoingWork.CONV import CONV
-from OngoingWork.POOL import POOL
+from TestSrc.NN import NN
+from TestSrc.CONV import CONV
+from TestSrc.POOL import POOL
 from alive_progress import alive_bar
 import sys
 import time
