@@ -48,7 +48,33 @@ class LSTM:
       
     return self.Out
 
-  '''
+  def BackProp(self, OutError):
+    self.ForgetGateError = np.zeros(self.ForgetGate.shape)
+    self.InGateError = np.zeros(self.InGate.shape)
+    self.OutGateError = np.zeros(self.OutGate.shape)
+    self.CellMemGateError = np.zeros(self.CellMemGate.shape)
+
+    self.HidError = np.zeros(self.Hid.shape)
+    self.CellMemError = np.zeros(self.CellMem.shape)
+
+    for i in reversed(range(self.CellSize)):
+      OutGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
+  
+      self.HidError[i] = self.WeightsHidToOut @ OutError
+  
+
+  
+      self.WeightsHidToOut += np.outer(OutGradient, np.transpose(self.Hidden[self.CellSize - 1])) * self.LearningRate
+      self.OutBias += OutGradient * self.LearningRate
+
+
+    
+
+
+
+
+
+'''
   Errors:
   x - HidOut
   - HidIn
@@ -59,18 +85,7 @@ class LSTM:
   - OutGate
   - CellMemGate
   - In
-  '''
-
-  def BackProp(self, OutError):
-    
-
-
-
 '''
-    OutputGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
-    self.WeightsHidToOutDeltas = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
-'''
-
 
 '''
     self.HidOutError = np.transpose(self.WeightsHidToOut) @ OutputError

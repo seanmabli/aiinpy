@@ -10,7 +10,7 @@ import time
 Padding=False & Stride=(1, 1): Done
 Padding=True & Stride=(1, 1): Done
 Padding=False & Stride=(2, 2): Not Complete
-Padding=True & Stride=(2, 2): Working on now
+Padding=True & Stride=(2, 2): Not Complete
 '''
 InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
 Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
