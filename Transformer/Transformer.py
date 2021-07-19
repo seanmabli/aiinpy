@@ -14,7 +14,7 @@ class Transformer:
     self.ToQuery = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
     self.ToValue = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
     self.UnifyHeads = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape * Heads, InputShape))
-
+  
   def SelfAttention(self, Input):
     self.Weights = (Input @ np.transpose(Input)) / np.sqrt(Input.size)
     self.Weights = ai.StableSoftMax(self.Weights)

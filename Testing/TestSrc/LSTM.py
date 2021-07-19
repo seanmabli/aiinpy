@@ -62,16 +62,9 @@ class LSTM:
   
       self.HidError[i] = self.WeightsHidToOut @ OutError
   
-
-  
       self.WeightsHidToOut += np.outer(OutGradient, np.transpose(self.Hidden[self.CellSize - 1])) * self.LearningRate
       self.OutBias += OutGradient * self.LearningRate
-
-
-    
-
-
-
+      
 
 
 '''
