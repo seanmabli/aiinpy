@@ -1,0 +1,60 @@
+from TestSrc.ActivationFunctions import *
+from TestSrc.NN import NN
+import numpy as np
+
+def WordToBinary(Input):
+  Dec = list(bytearray(Input, "utf8"))
+  Output = [''] * len(Input)
+  for i in range(len(Input)):
+    Output[i] = bin(Dec[i]).replace("b", ("0"*(9-len(bin(Dec[i])))))
+  return Output
+
+class StableSoftmax:
+  def StableSoftmax(self, Input):
+    return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
+  def Derivative(self, Input):
+    Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
+    return Equation(Input, np.sum(np.exp(Input)))
+  def EquationForDerivative(self, Input, SumExpOfInput):
+    return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
+
+def SelfAttention(Input, NumOfHeads):
+  InToKey = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
+  InToQuery = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
+  InToValue = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
+  Key = np.zeros((Input.shape[0], Input.shape[1] * NumOfHeads))
+  Query = np.zeros((Input.shape[0], Input.shape[1] * NumOfHeads))
+  Value = np.zeros((Input.shape[0], Input.shape[1] * NumOfHeads))
+  for i in range(Input.shape[0]):
+    Key[i, :] = InToKey.ForwardProp(Input[i, :])
+    Query[i, :] = InToQuery.ForwardProp(Input[i, :])
+    Value[i, :] = InToValue.ForwardProp(Input[i, :])
+  Weights = np.dot(Key, np.transpose(Query))
+  Weights = ForwardProp(Weights, "StableSoftmax")
+  return np.dot(Weights, Value)
+
+'''
+class Transformer:
+  def __init__(self, Heads, InputShape):
+    self.ToKey = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
+    self.ToQuery = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
+    self.ToValue = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
+    self.UnifyHeads = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape * Heads, InputShape))
+
+# Input To Binary
+Input = "hello"
+BinaryInput = np.zeros((len(WordToBinary(Input)), 8))
+for i in range(len(WordToBinary(Input))):
+  BinaryInput[i, :] = np.array(list(WordToBinary(Input)[i]))
+
+Output = Bob.SelfAttention(BinaryInput)
+'''
+
+'''
+- Scaled self-attention
+- Multi-head self-attention
+- Add key, query, value
+'''
+
+Input = np.array([[1, 0, 0], [0, 0, 1]])
+print(SimpleSelfAttention(Input, 2))

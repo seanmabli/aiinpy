@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='aiinpy',
-      version='0.0.13',
+      version='0.0.14',
       description='An artificial intelligence library',
       license='MIT',
       packages=['aiinpy'],
