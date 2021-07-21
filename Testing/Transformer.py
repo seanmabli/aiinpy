@@ -29,9 +29,23 @@ def SelfAttention(Input, NumOfHeads):
     Key[i, :] = InToKey.ForwardProp(Input[i, :])
     Query[i, :] = InToQuery.ForwardProp(Input[i, :])
     Value[i, :] = InToValue.ForwardProp(Input[i, :])
+
+  Key /= Input.shape[1] ** 0.25
+  Query /= Input.shape[1] ** 0.25
+  Value /= Input.shape[1] ** 0.25
+
+  # Everything above here works
+
+  # Key = Key.reshape((NumOfHeads, 2, 3))
+  # Query = Query.reshape((NumOfHeads, 2, 3))
+  # Value = Value.reshape((NumOfHeads, 2, 3))
+  # Weights = np.zeros((NumOfHeads, 2, 2))
+  
   Weights = np.dot(Key, np.transpose(Query))
+
   Weights = ForwardProp(Weights, "StableSoftmax")
-  return np.dot(Weights, Value)
+  print(Weights)
+  # return np.dot(Weights, Value)
 
 '''
 class Transformer:
@@ -57,4 +71,7 @@ Output = Bob.SelfAttention(BinaryInput)
 '''
 
 Input = np.array([[1, 0, 0], [0, 0, 1]])
-print(SimpleSelfAttention(Input, 2))
+# x = np.array([1, 0, 0, 0, 0, 1])
+# Heads = 2
+# print(x.reshape((Heads,int(len(x)/Heads))))
+print(SelfAttention(Input, 1))
