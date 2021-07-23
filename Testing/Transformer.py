@@ -34,8 +34,6 @@ def SelfAttention(Input, NumOfHeads):
   Query /= Input.shape[1] ** 0.25
   Value /= Input.shape[1] ** 0.25
 
-  # Everything above here works
-
   # Key = Key.reshape((NumOfHeads, 2, 3))
   # Query = Query.reshape((NumOfHeads, 2, 3))
   # Value = Value.reshape((NumOfHeads, 2, 3))
