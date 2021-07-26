@@ -1,5 +1,5 @@
 import numpy as np
-from .ActivationFunctions import ForwardProp, BackProp
+from ActivationFunctions import ForwardProp, BackProp
 
 class NN:
   def __init__(self, InputSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
