@@ -2,8 +2,8 @@ import numpy as np
 from ActivationFunctions import ForwardProp, BackProp
 
 class NN:
-  def __init__(self, InputSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
-    self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (InputSize, OutSize))
+  def __init__(self, InSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
+    self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (InSize, OutSize))
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], (OutSize))
     self.Activation, self.LearningRate, self.DropoutRate = Activation, LearningRate, DropoutRate
   
