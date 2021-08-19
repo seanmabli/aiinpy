@@ -1,8 +1,6 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from TestSrc.NN import NN
-from TestSrc.CONV import CONV
-from TestSrc.POOL import POOL
+from aiinpy import NN, CONV, POOL
 from alive_progress import alive_bar
 import sys
 import time
@@ -14,7 +12,7 @@ Padding=True & Stride=(2, 2): Not Complete
 '''
 InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
 Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
-InputToHid1 = NN(InputSize=(4 * 24 * 24), OutputSize=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
+InputToHid1 = NN(InSize=(4 * 24 * 24), OutSize=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training An1d Testing Images
 TestImageLoaded = 1000

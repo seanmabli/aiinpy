@@ -1,5 +1,5 @@
 import numpy as np
-from .ActivationFunctions import ForwardProp, BackProp
+from ActivationFunctions import ForwardProp, BackProp
 import sys
 
 class CONV:

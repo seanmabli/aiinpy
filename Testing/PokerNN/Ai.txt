@@ -1,5 +1,5 @@
 (IToEq) = (In Terms Of Eq)
-(Po)
+(PoPM) = (Percent Of Players Money)
 Out = Fold, Call, 1% Eq, 2% Eq, 5% Eq, 10 Eq, 25% Eq, 50% Eq, 75% Eq, All In (Out is The Same For All Networks)
 
 Preflop NN

@@ -1,18 +1,18 @@
 import numpy as np
-from .ActivationFunctions import ForwardProp, BackProp
+from ActivationFunctions import ForwardProp, BackProp
 
 class NN:
-  def __init__(self, InputSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
-    self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (InputSize, OutSize))
+  def __init__(self, InSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
+    self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (InSize, OutSize))
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], (OutSize))
     self.Activation, self.LearningRate, self.DropoutRate = Activation, LearningRate, DropoutRate
-  
+
   def ChangeDropoutRate(self, NewRate):
     self.DropoutRate = NewRate
     
-  def ForwardProp(self, InputLayer):
-    self.InputLayer = InputLayer
-    self.Out = np.transpose(self.Weights) @ InputLayer + self.Biases
+  def ForwardProp(self, In):
+    self.In = In
+    self.Out = np.transpose(self.Weights) @ In + self.Biases
   
     # Apply Activation Function
     self.Out = ForwardProp(self.Out, self.Activation)
@@ -34,5 +34,5 @@ class NN:
       
     # Apply Deltas To The Weights And Biases
     self.Biases += OutGradient * self.LearningRate
-    self.Weights += np.outer(np.transpose(self.InputLayer), OutGradient) * self.LearningRate
+    self.Weights += np.outer(np.transpose(self.In), OutGradient) * self.LearningRate
     return InputError

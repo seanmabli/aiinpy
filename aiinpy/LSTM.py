@@ -2,6 +2,8 @@ import numpy as np
 from ActivationFunctions import Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax
 Sigmoid, Tanh, ReLU, LeakyReLU, StableSoftMax = Sigmoid(), Tanh(), ReLU(), LeakyReLU(), StableSoftMax()
 
+# This code can not be accesed through version 0.0.15
+
 class LSTM:
   def __init__(self, InSize, OutSize, HidSize=64, LearningRate=0.05):
     self.LearningRate, self.HidSize, self.OutSize = LearningRate, HidSize, OutSize

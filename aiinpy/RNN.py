@@ -1,5 +1,5 @@
 import numpy as np
-from ActivationFunctions import ForwardProp, BackProp
+from .Activation import ApplyActivation, ActivationDerivative
 
 class RNN:
   def __init__(self, InputSize, OutputSize, HidSize=64, LearningRate=0.05):
@@ -17,13 +17,13 @@ class RNN:
     self.Hidden = np.zeros((len(self.InputLayer) + 1, self.HidSize))
 
     for i in range(len(InputLayer)):
-      self.Hidden[i + 1, :] = ForwardProp(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases, "Tanh")
+      self.Hidden[i + 1, :] = ApplyActivation(self.WeightsInputToHid @ InputLayer[i] + self.WeightsHidToHid @ self.Hidden[i, :] + self.HiddenBiases, 'Tanh')
     
-    self.Output = StableSoftMax.StableSoftMax(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases)
-    return self.Output
+    self.Out = ApplyActivation(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases, 'StableSoftmax')
+    return self.Out
 
   def BackProp(self, OutputError):
-    OutputGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
+    OutputGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutputError)
     
     self.WeightsHidToOutDeltas = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
     self.OutputBiasesDeltas = OutputGradient
@@ -35,7 +35,7 @@ class RNN:
     self.HiddenError = np.transpose(self.WeightsHidToOut) @ OutputError
 
     for i in reversed(range(len(self.InputLayer))):
-      self.HiddenGradient = np.multiply(Tanh.Derivative(self.Hidden[i + 1]), self.HiddenError)
+      self.HiddenGradient = np.multiply(ActivationDerivative(self.Hidden[i + 1], 'Tanh'), self.HiddenError)
 
       self.HiddenBiasesDeltas += self.HiddenGradient
       self.WeightsHidToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.Hidden[i]))
