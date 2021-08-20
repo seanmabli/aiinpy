@@ -1,6 +1,6 @@
 import numpy as np
 from aiinpy import RNN
-from Data.PosNegCon import TrainingData, TestData
+from Data.PosNegCon.Simple.VictorZhouData import TrainingData, TestData
 from alive_progress import alive_bar
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))

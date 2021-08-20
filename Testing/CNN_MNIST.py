@@ -1,9 +1,10 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from aiinpy import NN, CONV, POOL
+from TestSrc.NN import NN
+from TestSrc.CONV import CONV
+from TestSrc.POOL import POOL
 from alive_progress import alive_bar
-import sys
-import time
+
 '''
 Padding=False & Stride=(1, 1): Done
 Padding=True & Stride=(1, 1): Done

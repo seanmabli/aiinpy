@@ -1,5 +1,5 @@
 import numpy as np
-from aiinpy import NN
+from TestSrc.NN import NN
 from alive_progress import alive_bar
 
 # Neural Network Model

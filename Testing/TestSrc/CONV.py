@@ -1,6 +1,5 @@
 import numpy as np
-from ActivationFunctions import ForwardProp, BackProp
-import sys
+from .Activation import ApplyActivation, ActivationDerivative
 
 class CONV:
   def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1), DropoutRate=0):
@@ -33,7 +32,7 @@ class CONV:
         self.Output[:, i, j] = np.sum(np.multiply(self.Input[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
     self.Output += self.Bias
-    self.Output = ForwardProp(self.Output, self.Activation)
+    self.Output = ApplyActivation(self.Output, self.Activation)
 
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.Output.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
@@ -45,7 +44,7 @@ class CONV:
     FilterGradients = np.zeros((self.NumOfFilters, 3, 3))
     OutputError *= self.Dropout
     
-    Derivative = BackProp(self.Output, self.Activation)
+    Derivative = ActivationDerivative(self.Output, self.Activation)
 
     x = OutputError * Derivative
 

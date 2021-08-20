@@ -5,10 +5,10 @@ Need to work on:
 - LeakyReLU
 '''
 
-def ForwardProp(Input, Activation):
+def ApplyActivation(Input, Activation):
   return eval(str(Activation) + "()." + str(Activation) + "(Input)")
 
-def BackProp(Input, Activation):
+def ActivationDerivative(Input, Activation):
   return eval(str(Activation) + "().Derivative(Input)")
 
 class Sigmoid:

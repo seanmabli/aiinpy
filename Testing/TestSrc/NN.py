@@ -1,5 +1,5 @@
 import numpy as np
-from ActivationFunctions import ForwardProp, BackProp
+from .Activation import ApplyActivation, ActivationDerivative
 
 class NN:
   def __init__(self, InSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
@@ -15,19 +15,19 @@ class NN:
     self.Out = np.transpose(self.Weights) @ In + self.Biases
   
     # Apply Activation Function
-    self.Out = ForwardProp(self.Out, self.Activation)
+    self.Out = ApplyActivation(self.Out, self.Activation)
 
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=len(self.Out))
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
     self.Out *= self.Dropout
-    
+
     return self.Out
 
   def BackProp(self, OutError):
     OutError *= self.Dropout
 
     # Apply Activation Function Derivative
-    OutGradient = np.multiply(BackProp(self.Out, self.Activation), OutError)
+    OutGradient = np.multiply(ActivationDerivative(self.Out, self.Activation), OutError)
       
     # Calculate Current Layer Error
     InputError = self.Weights @ OutError
