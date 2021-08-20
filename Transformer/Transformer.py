@@ -1,5 +1,5 @@
-from TestSrc.ActivationFunctions import *
-from TestSrc.NN import NN
+from Activation import *
+from NN import NN
 import numpy as np
 
 def WordToBinary(Input):
@@ -8,15 +8,6 @@ def WordToBinary(Input):
   for i in range(len(Input)):
     Output[i] = bin(Dec[i]).replace("b", ("0"*(9-len(bin(Dec[i])))))
   return Output
-
-class StableSoftmax:
-  def StableSoftmax(self, Input):
-    return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
-  def Derivative(self, Input):
-    Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
-    return Equation(Input, np.sum(np.exp(Input)))
-  def EquationForDerivative(self, Input, SumExpOfInput):
-    return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
 
 def SelfAttention(Input, NumOfHeads):
   InToKey = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
@@ -41,7 +32,7 @@ def SelfAttention(Input, NumOfHeads):
   
   Weights = np.dot(Key, np.transpose(Query))
 
-  Weights = ForwardProp(Weights, "StableSoftmax")
+  Weights = ApplyActivation(Weights, "StableSoftmax")
   print(Weights)
   # return np.dot(Weights, Value)
 

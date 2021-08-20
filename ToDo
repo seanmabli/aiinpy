@@ -1,0 +1,4 @@
+- CNN In Error with Stride = (2, 2)
+- Create GAN Forward And BackProp
+- Create LSTM BackProp
+- Create NEAT

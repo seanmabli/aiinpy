@@ -1,7 +1,10 @@
 import numpy as np
 from aiinpy import RNN
-from Data.PosNegCon.Simple.VictorZhouData import TrainingData, TestData
 from alive_progress import alive_bar
+
+import pandas as pd
+TrainingData = pd.read_csv('Testing\Data\PosNegCon\Complicated\ImdbData.csv', header=None, index_col=0, squeeze=True).to_dict()[0:40000]
+TestData = pd.read_csv('Testing\Data\PosNegCon\Complicated\ImdbData.csv', header=None, index_col=0, squeeze=True).to_dict()[40000:50000]
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
 Rnn = RNN(len(TrainingDataUniqueWords), 2, LearningRate=0.05)
