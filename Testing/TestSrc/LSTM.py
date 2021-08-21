@@ -1,5 +1,5 @@
 import numpy as np
-from .ActivationFunctions import ForwardProp, BackProp
+from .Activation import ApplyActivation, ActivationDerivative
 
 class LSTM:
   def __init__(self, InSize, OutSize, HidSize=64, LearningRate=0.05):
@@ -40,11 +40,11 @@ class LSTM:
       self.ForgetGate[i, :] = Sigmoid((self.WeightsInToForgetGate @ self.InputLayer) + (self.WeightsHidToForgetGate @ self.Hid[i, :]) + self.ForgetGateBiases)
       self.InGate[i, :] = Sigmoid((self.WeightsInToInGate @ self.InputLayer) + (self.WeightsHidToInputGate @ self.Hid[i, :]) + self.InGateBiases)
       self.OutGate[i, :] = Sigmoid((self.WeightsInToOutGate @ self.InputLayer) + (self.WeightsHidToOutputGate @ self.Hid[i, :]) + self.OutGateBiases)
-      self.CellMemGate[i, :] = Tanh((self.WeightsInToCellMemGate @ self.InputLayer) + (self.WeightsHidToCellMemGate @ self.Hid[i, :]) + self.CellMemGateBiases)
+      self.CellMemGate[i, :] = ApplyActivation((self.WeightsInToCellMemGate @ self.InputLayer) + (self.WeightsHidToCellMemGate @ self.Hid[i, :]) + self.CellMemGateBiases, 'Tanh')
 
       self.CellMem[i + 1, :] = (self.ForgetGate * self.CellMem[i, :]) + (self.InGate * self.CellMemGate)
       self.Hid[i + 1, :] = self.OutGate * Tanh(self.CellMem[i + 1, :])
-      self.Out[i, :] = StableSoftMax((self.WeightsHidToOut @ self.Hid[i + 1, :]) + self.OutBias)
+      self.Out[i, :] = ApplyActivation((self.WeightsHidToOut @ self.Hid[i + 1, :]) + self.OutBias, 'StableSoftmax')
       
     return self.Out
 
