@@ -15,6 +15,7 @@ Padding=True & Stride=(1, 1): Done
 Padding=False & Stride=(2, 2): Not Complete
 Padding=True & Stride=(2, 2): Not Complete
 '''
+
 InputImageToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
 Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=False, Activation='ReLU')
 InputToHid1 = NN(InSize=(4 * 24 * 24), OutSize=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
@@ -42,18 +43,19 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
 
     # Back Propagation
     OutputError = RealOutput - Output
-    wandb.log({"Sum Of OutputError": np.sum(abs(OutputError))})
-    InputError = InputToHid1.BackProp(OutputError) 
-    wandb.log({"Sum Of InputError": np.sum(abs(InputError))})
+    InputError = InputToHid1.BackProp(OutputError)
     Conv2Error = InputError.reshape(Conv2.shape)
-    wandb.log({"Sum Of Conv2Error": np.sum(abs(Conv2Error))})
 
     Conv1Error = Conv1ToConv2.BackProp(Conv2Error)
-    wandb.log({"Sum Of Conv1Error": np.sum(abs(Conv1Error))})
     InputImageError = InputImageToConv1.BackProp(Conv1Error)
-    wandb.log({"Sum Of InputImageError": np.sum(abs(InputImageError))})
-    
-    wandb.log({"Correct": 1 if np.argmax(Output) == TrainingLabels[Random] else 0})
+
+    wandb.log({"OutputError": np.sum(abs(OutputError)) / OutputError.size, 
+               "InputError": np.sum(abs(InputError)) / InputError.size, 
+               "Conv2Error": np.sum(abs(Conv2Error)) / Conv2Error.size,
+               "Conv1Error": np.sum(abs(Conv1Error)) / Conv1Error.size,
+               "InputImageError": np.sum(abs(InputImageError)) / InputImageError.size,
+               "Correct": 1 if np.argmax(Output) == TrainingLabels[Random] else 0})
+
     bar()
   
   InputToHid1.ChangeDropoutRate(0)
@@ -67,6 +69,9 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     Output = InputToHid1.ForwardProp(Input)
     
     NumberCorrect += 1 if np.argmax(Output) == TestLabels[Generation] else 0
+    
+    wandb.log({"Test Correct": 1 if np.argmax(Output) == TestLabels[Generation] else 0})
+
     bar()
 
   print(NumberCorrect / TestImageLoaded)

@@ -1,4 +1,4 @@
-- CNN In Error with Stride = (2, 2) and review CNN BackProp in general
+- CNN In Error with Stride = (2, 2) and review CNN BackProp filter deltas (transpose in nn but not cnn?) and size/shape of bias
 - Create GAN Forward And BackProp
 - Create LSTM BackProp
 - Create NEAT
