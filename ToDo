@@ -2,3 +2,4 @@
 - Create GAN Forward And BackProp
 - Create LSTM BackProp
 - Create NEAT
+- POOL stride != 2
