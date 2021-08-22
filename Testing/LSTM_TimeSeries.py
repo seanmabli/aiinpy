@@ -10,6 +10,9 @@ Data = np.array(([[''] * 13] * len(x)))
 for i in range(len(x)):
   Data[i, :] = list(x[i])
 
-# Data, Year 1 - 4, Month 6 - 7, Passengers 10 - 12
-Data = np.delete(Data, [0, 5, 8, 9], 1)
-# In 0 - 6, Out 7 - 9
+TraingingData = np.delete(Data, [0, 5, 8, 9], 1)[0:100, :].astype(float) / 10
+TestData = np.delete(Data, [0, 5, 8, 9], 1)[100:, :].astype(float) / 10
+
+Out = LSTM_Model.ForwardProp(TraingingData[0:5, :6].astype(float) / 10)
+OutError = TraingingData[0:5, 6:9] - Out
+LSTM_Model.BackProp(OutError)

@@ -23,9 +23,9 @@ class LSTM:
     self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (OutSize, HidSize))
     self.OutBias = np.zeros(OutSize)
   
-  def ForwardProp(self, Input):
-    self.InputLayer = InputLayer
-    self.CellSize = len(InputLayer)
+  def ForwardProp(self, In):
+    self.In = In
+    self.CellSize = len(In)
 
     self.Hid = np.zeros((self.CellSize + 1, self.HidSize))
     self.CellMem = np.zeros((self.CellSize + 1, self.HidSize))
@@ -37,18 +37,20 @@ class LSTM:
     self.CellMemGate = np.zeros((self.CellSize, self.HidSize))
 
     for i in range(self.CellSize):
-      self.ForgetGate[i, :] = Sigmoid((self.WeightsInToForgetGate @ self.InputLayer) + (self.WeightsHidToForgetGate @ self.Hid[i, :]) + self.ForgetGateBiases)
-      self.InGate[i, :] = Sigmoid((self.WeightsInToInGate @ self.InputLayer) + (self.WeightsHidToInputGate @ self.Hid[i, :]) + self.InGateBiases)
-      self.OutGate[i, :] = Sigmoid((self.WeightsInToOutGate @ self.InputLayer) + (self.WeightsHidToOutputGate @ self.Hid[i, :]) + self.OutGateBiases)
-      self.CellMemGate[i, :] = ApplyActivation((self.WeightsInToCellMemGate @ self.InputLayer) + (self.WeightsHidToCellMemGate @ self.Hid[i, :]) + self.CellMemGateBiases, 'Tanh')
+      self.ForgetGate[i, :] = ApplyActivation((self.WeightsInToForgetGate @ self.In[i, :]) + (self.WeightsHidToForgetGate @ self.Hid[i, :]) + self.ForgetGateBiases, 'Sigmoid')
+      self.InGate[i, :] = ApplyActivation((self.WeightsInToInGate @ self.In[i, :]) + (self.WeightsHidToInputGate @ self.Hid[i, :]) + self.InGateBiases, 'Sigmoid')
+      self.OutGate[i, :] = ApplyActivation((self.WeightsInToOutGate @ self.In[i, :]) + (self.WeightsHidToOutputGate @ self.Hid[i, :]) + self.OutGateBiases, 'Sigmoid')
+      self.CellMemGate[i, :] = ApplyActivation((self.WeightsInToCellMemGate @ self.In[i, :]) + (self.WeightsHidToCellMemGate @ self.Hid[i, :]) + self.CellMemGateBiases, 'Tanh')
 
-      self.CellMem[i + 1, :] = (self.ForgetGate * self.CellMem[i, :]) + (self.InGate * self.CellMemGate)
-      self.Hid[i + 1, :] = self.OutGate * Tanh(self.CellMem[i + 1, :])
+      self.CellMem[i + 1, :] = (self.ForgetGate[i, :] * self.CellMem[i, :]) + (self.InGate[i, :] * self.CellMemGate[i, :])
+      self.Hid[i + 1, :] = self.OutGate[i, :] * ApplyActivation(self.CellMem[i + 1, :], 'Tanh')
       self.Out[i, :] = ApplyActivation((self.WeightsHidToOut @ self.Hid[i + 1, :]) + self.OutBias, 'StableSoftmax')
-      
+    
     return self.Out
 
   def BackProp(self, OutError):
+    self.InError = np.zeros(self.In.shape)
+
     self.ForgetGateError = np.zeros(self.ForgetGate.shape)
     self.InGateError = np.zeros(self.InGate.shape)
     self.OutGateError = np.zeros(self.OutGate.shape)
@@ -57,13 +59,12 @@ class LSTM:
     self.HidError = np.zeros(self.Hid.shape)
     self.CellMemError = np.zeros(self.CellMem.shape)
 
-    for i in reversed(range(self.CellSize)):
-      OutGradient = np.multiply(StableSoftMax.Derivative(self.Output), OutputError)
+    OutGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutError)
+    HidError = self.WeightsHidToOut @ OutError
   
-      self.HidError[i] = self.WeightsHidToOut @ OutError
+    self.WeightsHidToOut += np.outer(OutGradient, np.transpose(self.Hidden)) * self.LearningRate
+    self.OutBias += OutGradient * self.LearningRate
   
-      self.WeightsHidToOut += np.outer(OutGradient, np.transpose(self.Hidden[self.CellSize - 1])) * self.LearningRate
-      self.OutBias += OutGradient * self.LearningRate
       
 
 
@@ -80,17 +81,6 @@ class LSTM:
   - In
 '''
 
-'''
-    self.HidOutError = np.transpose(self.WeightsHidToOut) @ OutputError
-    self.HidInError = 
-    self.CellMemOutError = self.HidOutError * self.Out * Tanh.Derivative(self.CellMem[len(self.InputLayer)])
-    self.CellMemInError = self.CellMemOutError * self.ForgetGate
-
-    self.ForgetGateError = self.CellMemOutError * self.CellMem[self.CellSize - 1]
-    self.InGateError = self.CellMemOutError * self.CellMemGate[self.CellSize - 1]
-    self.OutGateError = 
-    self.CellMemGateError =
-''' 
 
 '''
 # With Deltas

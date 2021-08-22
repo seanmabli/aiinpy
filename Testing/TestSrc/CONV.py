@@ -41,27 +41,26 @@ class CONV:
     return self.Output
   
   def BackProp(self, OutputError):
-    FilterGradients = np.zeros((self.NumOfFilters, 3, 3))
+    FilterDeltas = np.zeros((self.NumOfFilters, 3, 3))
     OutputError *= self.Dropout
     
-    Derivative = ActivationDerivative(self.Output, self.Activation)
-
-    x = OutputError * Derivative
+    OutGradient = ActivationDerivative(self.Output, self.Activation) * OutputError
 
     for i in range(0, self.OutputWidth, self.Stride[0]):
       for j in range(0, self.OutputHeight, self.Stride[1]):
-        FilterGradients += self.Input[:, i : (i + 3), j : (j + 3)] * x[:, i, j][:, np.newaxis, np.newaxis]
+        FilterDeltas += self.Input[:, i : (i + 3), j : (j + 3)] * OutGradient[:, i, j][:, np.newaxis, np.newaxis]
     
-    self.Bias += OutputError * self.LearningRate
-    self.Filter += FilterGradients * self.LearningRate
+    self.Bias += OutGradient * self.LearningRate
+    self.Filter += FilterDeltas * self.LearningRate
 
+    # Input Error
     self.RotFilter = np.rot90(np.rot90(self.Filter))
     z = self.FilterShape[1] - 1
 
     if self.Stride != (1, 1):
-      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[1], self.Stride[0] - 1), 0, axis=1)
-      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[2], self.Stride[1] - 1), 0, axis=2)
-      
+      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[1] + 1, self.Stride[0] - 1), 0, axis=1)
+      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[2] + 1, self.Stride[1] - 1), 0, axis=2)
+
     y = np.pad(OutputError, z, mode='constant')[z : self.NumOfFilters + z, :, :]
 
     self.PreviousError = np.zeros(self.InputShape)

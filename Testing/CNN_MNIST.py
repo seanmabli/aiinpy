@@ -4,6 +4,10 @@ from TestSrc.NN import NN
 from TestSrc.CONV import CONV
 from TestSrc.POOL import POOL
 from alive_progress import alive_bar
+import sys
+import wandb
+
+wandb.init(project="CNN_MNIST")
 
 '''
 Padding=False & Stride=(1, 1): Done
@@ -38,12 +42,18 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
 
     # Back Propagation
     OutputError = RealOutput - Output
+    wandb.log({"Sum Of OutputError": np.sum(abs(OutputError))})
     InputError = InputToHid1.BackProp(OutputError) 
+    wandb.log({"Sum Of InputError": np.sum(abs(InputError))})
     Conv2Error = InputError.reshape(Conv2.shape)
+    wandb.log({"Sum Of Conv2Error": np.sum(abs(Conv2Error))})
 
     Conv1Error = Conv1ToConv2.BackProp(Conv2Error)
+    wandb.log({"Sum Of Conv1Error": np.sum(abs(Conv1Error))})
     InputImageError = InputImageToConv1.BackProp(Conv1Error)
-    # sys.exit()
+    wandb.log({"Sum Of InputImageError": np.sum(abs(InputImageError))})
+    
+    wandb.log({"Correct": 1 if np.argmax(Output) == TrainingLabels[Random] else 0})
     bar()
   
   InputToHid1.ChangeDropoutRate(0)
