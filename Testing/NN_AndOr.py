@@ -27,6 +27,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     Hidden2Error = Hidden2ToOutput.BackProp(OutputError)
     Hidden1Error = Hidden1ToHidden2.BackProp(Hidden2Error)
     InputToHidden1.BackProp(Hidden1Error)
+
     bar()
 
   # Testing
