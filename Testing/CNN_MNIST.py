@@ -48,7 +48,7 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
 
     Conv1Error = Conv1ToPool1.BackProp(Pool1Error)
     InError = InToConv1.BackProp(Conv1Error)
-
+    
     wandb.log({"Out Error": np.sum(abs(OutError)) / OutError.size, 
                "DenseInError": np.sum(abs(DenseInError)) / DenseInError.size, 
                "Pool1Error": np.sum(abs(Pool1Error)) / Pool1Error.size,
@@ -58,7 +58,6 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
 
     bar()
   
-  DenseInToOut.ChangeDropoutRate(0)
   NumberCorrect = 0
   for Generation in range(TestImageLoaded):
     In = (TestImages[Generation] / 255) - 0.5

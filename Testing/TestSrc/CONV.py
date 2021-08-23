@@ -6,13 +6,10 @@ class CONV:
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
     self.Bias = 0
     self.NumOfFilters = FilterShape[0]
-    self.LearningRate, self.Activation, self.Padding, self.Stride, self.DropoutRate, self.FilterShape = LearningRate, Activation, Padding, Stride, DropoutRate, FilterShape
+    self.LearningRate, self.Activation, self.Padding, self.Stride, self.FilterShape = LearningRate, Activation, Padding, Stride, FilterShape
 
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
-    
-  def ChangeDropoutRate(self, NewRate):
-    self.DropoutRate = NewRate
 
   def ForwardProp(self, Input):
     self.Input = Input
@@ -53,16 +50,16 @@ class CONV:
     z = self.FilterShape[1] - 1
 
     y = np.pad(OutError, z, mode='constant')[z : self.NumOfFilters + z, :, :]
-
+    
     self.InputError = np.zeros(self.InputShape)
-    if np.ndim(self.InputShape) == 3:
-      for i in range(self.InputShape[1]):
-        for j in range(self.InputShape[2]):
-         self.InputError[:, i, j] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
+    if np.ndim(self.InputError) == 3:
+      for i in range(int(self.InputShape[1] / self.Stride[0])):
+        for j in range(int(self.InputShape[2] / self.Stride[1])):
+         self.InputError[:, i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
        
-    if np.ndim(self.InputShape) == 2:
-      for i in range(self.InputShape[0]):
-        for j in range(self.InputShape[1]):
-         self.InputError[i, j] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]))
+    if np.ndim(self.InputError) == 2:
+      for i in range(int(self.InputShape[0] / self.Stride[0])):
+        for j in range(int(self.InputShape[1] / self.Stride[1])):
+         self.InputError[i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]))
 
     return self.InputError
