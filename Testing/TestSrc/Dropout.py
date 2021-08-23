@@ -10,4 +10,7 @@ class Dropout:
     return self.Dropout * In
 
   def BackProp(self, OutError):
-    return self.Dropout * OutError
+    return self.Dropout * OutError  
+    
+  def ChangeDropoutRate(self, NewRate):
+    self.DropoutRate = NewRate

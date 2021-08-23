@@ -1,5 +1,4 @@
 import numpy as np
-# POOL doesn't work with stride != 2
 
 class POOL: 
   def __init__(self, Stride):

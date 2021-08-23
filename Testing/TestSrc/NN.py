@@ -5,11 +5,8 @@ class NN:
   def __init__(self, InSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0)):
     self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (InSize, OutSize))
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], (OutSize))
-    self.Activation, self.LearningRate, self.DropoutRate = Activation, LearningRate, DropoutRate
+    self.Activation, self.LearningRate = Activation, LearningRate
 
-  def ChangeDropoutRate(self, NewRate):
-    self.DropoutRate = NewRate
-    
   def ForwardProp(self, In):
     self.In = In
     self.Out = np.transpose(self.Weights) @ In + self.Biases

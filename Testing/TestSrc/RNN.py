@@ -25,26 +25,26 @@ class RNN:
   def BackProp(self, OutputError):
     OutputGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutputError)
     
-    self.WeightsHidToOutDeltas = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
-    self.OutputBiasesDeltas = OutputGradient
+    self.WeightsHidToOutΔ = np.outer(OutputGradient, np.transpose(self.Hidden[len(self.InputLayer)]))
+    self.OutputBiasesΔ = OutputGradient
 
-    self.WeightsHidToHidDeltas = np.zeros(self.WeightsHidToHid.shape)
-    self.WeightsInputToHidDeltas = np.zeros(self.WeightsInputToHid.shape)
-    self.HiddenBiasesDeltas = np.zeros(self.HiddenBiases.shape)
+    self.WeightsHidToHidΔ = np.zeros(self.WeightsHidToHid.shape)
+    self.WeightsInputToHidΔ = np.zeros(self.WeightsInputToHid.shape)
+    self.HiddenBiasesΔ = np.zeros(self.HiddenBiases.shape)
 
     self.HiddenError = np.transpose(self.WeightsHidToOut) @ OutputError
 
     for i in reversed(range(len(self.InputLayer))):
       self.HiddenGradient = np.multiply(ActivationDerivative(self.Hidden[i + 1], 'Tanh'), self.HiddenError)
 
-      self.HiddenBiasesDeltas += self.HiddenGradient
-      self.WeightsHidToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.Hidden[i]))
-      self.WeightsInputToHidDeltas += np.outer(self.HiddenGradient, np.transpose(self.InputLayer[i]))
+      self.HiddenBiasesΔ += self.HiddenGradient
+      self.WeightsHidToHidΔ += np.outer(self.HiddenGradient, np.transpose(self.Hidden[i]))
+      self.WeightsInputToHidΔ += np.outer(self.HiddenGradient, np.transpose(self.InputLayer[i]))
 
       self.HiddenError = np.transpose(self.WeightsHidToHid) @ self.HiddenGradient
 
-    self.WeightsHidToHid += self.LearningRate * np.clip(self.WeightsHidToHidDeltas, -1, 1)
-    self.WeightsInputToHid += self.LearningRate * np.clip(self.WeightsInputToHidDeltas, -1, 1)
-    self.WeightsHidToOut += self.LearningRate * np.clip(self.WeightsHidToOutDeltas, -1, 1)
-    self.HiddenBiases += self.LearningRate * np.clip(self.HiddenBiasesDeltas, -1, 1)
-    self.OutputBiases += self.LearningRate * np.clip(self.OutputBiasesDeltas, -1, 1)
+    self.WeightsHidToHid += self.LearningRate * np.clip(self.WeightsHidToHidΔ, -1, 1)
+    self.WeightsInputToHid += self.LearningRate * np.clip(self.WeightsInputToHidΔ, -1, 1)
+    self.WeightsHidToOut += self.LearningRate * np.clip(self.WeightsHidToOutΔ, -1, 1)
+    self.HiddenBiases += self.LearningRate * np.clip(self.HiddenBiasesΔ, -1, 1)
+    self.OutputBiases += self.LearningRate * np.clip(self.OutputBiasesΔ, -1, 1)
