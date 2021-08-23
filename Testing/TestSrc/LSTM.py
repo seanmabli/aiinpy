@@ -50,30 +50,37 @@ class LSTM:
 
   def BackProp(self, OutError):
     self.InError = np.zeros(self.In.shape)
+    self.HidError = np.zeros(self.Hid.shape)
+    self.CellMemError = np.zeros(self.CellMem.shape)
 
     self.ForgetGateError = np.zeros(self.HidSize)
     self.InGateError = np.zeros(self.HidSize)
     self.OutGateError = np.zeros(self.HidSize)
     self.CellMemGateError = np.zeros(self.HidSize)
 
-    self.HidError = np.zeros(self.HidSize)
-    self.CellMemError = np.zeros(self.HidSize)
-
-    OutGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutError)
-    HidError = self.WeightsHidToOut @ OutError
   
-    self.WeightsHidToOutΔ = np.outer(OutGradient, np.transpose(self.Hidden))
-    self.OutBiasΔ = OutGradient
+
     
     '''
     for i in reversed(range(self.CellSize)):
 
+      OutGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutError)
+      HidError = self.WeightsHidToOut @ OutError
       
+      self.WeightsHidToOutΔ = np.outer(OutGradient, np.transpose(self.Hid))
+      self.OutBiasΔ = OutGradient
 
-      ForgetGateGradient = np.multiply(ActivationDerivative(self.ForgetGate[i, :], 'Sigmoid'), self.ForgetGateError[i, :])
-      InGateGradient = np.multiply(ActivationDerivative(self.InGate[i, :], 'Sigmoid'), self.InGateError[i, :])
-      OutGateGradient = np.multiply(ActivationDerivative(self.OutGate[i, :], 'Sigmoid'), self.OutGateError[i, :])
-      CellMemGateGradient = np.multiply(ActivationDerivative(self.CellMemGate[i, :], 'Tanh'), self.CellMemGateError[i, :])
+      CellMemError = HidError * ActivationDerivative(self.CellMem[i + 1, :], 'Tanh') * OutputGate[i]
+
+      ForgetGateError = CellMemError * CellMem[i, :]
+      InGateError = CellMemError * self.CellMemGate[i, :]
+      OutGateError = HidError * ApplyActivation(self.CellMem[i + 1, :], 'Tanh')
+      CellMemGateError = CellMemError * self.InGate[i, :]
+
+      ForgetGateGradient = np.multiply(ActivationDerivative(self.ForgetGate[i, :], 'Sigmoid'), self.ForgetGateError)
+      InGateGradient = np.multiply(ActivationDerivative(self.InGate[i, :], 'Sigmoid'), self.InGateError)
+      OutGateGradient = np.multiply(ActivationDerivative(self.OutGate[i, :], 'Sigmoid'), self.OutGateError)
+      CellMemGateGradient = np.multiply(ActivationDerivative(self.CellMemGate[i, :], 'Tanh'), self.CellMemGateError)
 
       self.WeightsInToForgetGateΔ = np.outer(ForgetGateGradient, np.transpose(self.In[i, :]))
       self.WeightsHidToForgetGateΔ = np.outer(ForgetGateGradient, np.transpose(self.Hid[i, :]))

@@ -9,13 +9,6 @@ import wandb
 
 wandb.init(project="CNN_MNIST")
 
-'''
-Padding=False & Stride=(1, 1): Done
-Padding=True & Stride=(1, 1): Done
-Padding=False & Stride=(2, 2): Not Complete
-Padding=True & Stride=(2, 2): Not Complete
-'''
-
 InToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
 Conv1ToPool1 = POOL((2, 2))
 DenseInToOut = NN(InSize=(4 * 14 * 14), OutSize=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
