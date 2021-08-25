@@ -7,7 +7,7 @@ from alive_progress import alive_bar
 import sys
 import wandb
 
-wandb.init(project="CNN_MNIST")
+wandb.init(project='cnn')
 
 '''
 Padding=False & Stride=(1, 1): Done

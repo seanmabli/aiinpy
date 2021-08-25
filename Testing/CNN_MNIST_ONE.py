@@ -7,7 +7,7 @@ from alive_progress import alive_bar
 import sys
 import wandb
 
-wandb.init(project="CNN_MNIST")
+wandb.init(project='cnn')
 
 InToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
 Conv1ToPool1 = POOL((2, 2))
