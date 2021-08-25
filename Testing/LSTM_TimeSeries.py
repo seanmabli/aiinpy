@@ -1,18 +1,22 @@
 import numpy as np
 import pandas as pd
 from TestSrc.LSTM import LSTM
+# import wandb
+
+# wandb.init(project='lstm')
 
 LSTM_Model = LSTM(InSize=6, OutSize=3, LearningRate=0.01)
 
-x = np.genfromtxt('Testing\Data\TimeSeriesData\AirlinePassengers.csv', dtype=str)
+Data = np.genfromtxt('Testing\Data\TimeSeriesData\AirPassengers.csv', dtype=int)
 
-Data = np.array(([[''] * 13] * len(x)))
-for i in range(len(x)):
-  Data[i, :] = list(x[i])
+TrainingData = Data[0 : 100]
+TestData = Data[100 :]
 
-TraingingData = np.delete(Data, [0, 5, 8, 9], 1)[0:100, :].astype(float) / 10
-TestData = np.delete(Data, [0, 5, 8, 9], 1)[100:, :].astype(float) / 10
+print(TrainingData)
+print(TestData)
 
+'''
 Out = LSTM_Model.ForwardProp(TraingingData[0:5, :6].astype(float) / 10)
 OutError = TraingingData[0:5, 6:9] - Out
 LSTM_Model.BackProp(OutError)
+'''
