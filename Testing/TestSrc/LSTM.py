@@ -58,16 +58,14 @@ class LSTM:
     self.OutGateError = np.zeros(self.HidSize)
     self.CellMemGateError = np.zeros(self.HidSize)
 
-    '''
     for i in reversed(range(self.CellSize)):
-      OutGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutError[1, :])
+      OutGradient = np.multiply(ActivationDerivative(self.Out[i, :], 'StableSoftmax'), OutError[i, :])
       
       CellMemError += HidError * ActivationDerivative(self.CellMem[i + 1, :], 'Tanh') * OutputGate[i]
-      HidError += self.WeightsHidToOut @ OutError
+      HidError += self.WeightsHidToOut @ OutError[i, :]
       
       self.WeightsHidToOutΔ = np.outer(OutGradient, np.transpose(self.Hid))
       self.OutBiasΔ = OutGradient
-
 
       ForgetGateError = CellMemError * CellMem[i, :]
       InGateError = CellMemError * self.CellMemGate[i, :]
@@ -99,4 +97,3 @@ class LSTM:
       self.InError[i, :] = self.WeightsInToForgetGate @ ForgetGateError + self.WeightsInToInGate @ InGateError + self.WeightsInToOutGate @ OutGateError + self.WeightsInToCellMemGate @ CellMemGateError
 
     return self.InError
-    '''
