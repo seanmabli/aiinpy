@@ -9,7 +9,12 @@ def WordToBinary(Input):
     Output[i] = bin(Dec[i]).replace("b", ("0"*(9-len(bin(Dec[i])))))
   return Output
 
-def SelfAttention(Input, NumOfHeads):
+def SingleHeadSelfAttention(Input):
+  Key = Input
+  Query = Input
+  Value = Input
+
+def MultiHeadSelfAttention(Input, NumOfHeads):
   InToKey = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
   InToQuery = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
   InToValue = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
