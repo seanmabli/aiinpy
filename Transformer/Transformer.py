@@ -48,20 +48,6 @@ class Transformer:
     self.ToQuery = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
     self.ToValue = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
     self.UnifyHeads = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape * Heads, InputShape))
-
-# Input To Binary
-Input = "hello"
-BinaryInput = np.zeros((len(WordToBinary(Input)), 8))
-for i in range(len(WordToBinary(Input))):
-  BinaryInput[i, :] = np.array(list(WordToBinary(Input)[i]))
-
-Output = Bob.SelfAttention(BinaryInput)
-'''
-
-'''
-- Scaled self-attention
-- Multi-head self-attention
-- Add key, query, value
 '''
 
 Input = np.array([[1, 0, 0], [0, 0, 1]])
