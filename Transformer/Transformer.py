@@ -2,13 +2,6 @@ from Activation import *
 from NN import NN
 import numpy as np
 
-def WordToBinary(Input):
-  Dec = list(bytearray(Input, "utf8"))
-  Output = [''] * len(Input)
-  for i in range(len(Input)):
-    Output[i] = bin(Dec[i]).replace("b", ("0"*(9-len(bin(Dec[i])))))
-  return Output
-
 def SingleHeadSelfAttention(Input):
   Key = Input
   Query = Input
