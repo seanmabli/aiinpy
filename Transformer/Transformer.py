@@ -2,10 +2,29 @@ from Activation import *
 from NN import NN
 import numpy as np
 
-def SingleHeadSelfAttention(Input):
-  Key = Input
-  Query = Input
-  Value = Input
+def SingleHeadSelfAttention(In):
+  InToKey = NN(InSize=In.shape[1], OutSize=In.shape[1], Activation='Identity', LearningRate=0)
+  InToQuery = NN(InSize=In.shape[1], OutSize=In.shape[1], Activation='Identity', LearningRate=0)
+  InToValue = NN(InSize=In.shape[1], OutSize=In.shape[1], Activation='Identity', LearningRate=0)
+
+  Key = np.zeros(In.shape)
+  Query = np.zeros(In.shape)
+  Value = np.zeros(In.shape)
+
+  for i in range(In.shape[0]):
+    Key[i, :] = InToKey.ForwardProp(In[i, :])
+    Query[i, :] = InToQuery.ForwardProp(In[i, :])
+    Value[i, :] = InToValue.ForwardProp(In[i, :])
+
+  Out = np.dot(In, np.transpose(In))
+  Out /= In.shape[1] ** 0.5
+  # Didn't include Mask (opt.)
+
+  Out = ApplyActivation(Out, "StableSoftmax")
+  Out = np.sum(Out)
+  Out *= Value
+
+  return Out
 
 def MultiHeadSelfAttention(Input, NumOfHeads):
   InToKey = NN(InputSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
@@ -19,9 +38,7 @@ def MultiHeadSelfAttention(Input, NumOfHeads):
     Query[i, :] = InToQuery.ForwardProp(Input[i, :])
     Value[i, :] = InToValue.ForwardProp(Input[i, :])
 
-  Key /= Input.shape[1] ** 0.25
-  Query /= Input.shape[1] ** 0.25
-  Value /= Input.shape[1] ** 0.25
+  # Which dimension should I scale on?
 
   # Key = Key.reshape((NumOfHeads, 2, 3))
   # Query = Query.reshape((NumOfHeads, 2, 3))
@@ -34,17 +51,9 @@ def MultiHeadSelfAttention(Input, NumOfHeads):
   print(Weights)
   # return np.dot(Weights, Value)
 
-'''
-class Transformer:
-  def __init__(self, Heads, InputShape):
-    self.ToKey = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
-    self.ToQuery = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
-    self.ToValue = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape, InputShape))
-    self.UnifyHeads = np.random.uniform(-np.sqrt(1 / InputShape), np.sqrt(1 / InputShape), (InputShape * Heads, InputShape))
-'''
-
 Input = np.array([[1, 0, 0], [0, 0, 1]])
+print(SingleHeadSelfAttention(Input))
+
 # x = np.array([1, 0, 0, 0, 0, 1])
 # Heads = 2
 # print(x.reshape((Heads,int(len(x)/Heads))))
-print(SelfAttention(Input, 1))

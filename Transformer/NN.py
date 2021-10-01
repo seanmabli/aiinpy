@@ -1,5 +1,5 @@
 import numpy as np
-from .Activation import ApplyActivation, ActivationDerivative
+from Activation import *
 
 class NN:
   def __init__(self, InSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
