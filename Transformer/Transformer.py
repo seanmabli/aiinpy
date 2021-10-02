@@ -37,23 +37,11 @@ def MultiHeadSelfAttention(Input, NumOfHeads):
     Key[i, :] = InToKey.ForwardProp(Input[i, :])
     Query[i, :] = InToQuery.ForwardProp(Input[i, :])
     Value[i, :] = InToValue.ForwardProp(Input[i, :])
-
-  # Which dimension should I scale on?
-
-  # Key = Key.reshape((NumOfHeads, 2, 3))
-  # Query = Query.reshape((NumOfHeads, 2, 3))
-  # Value = Value.reshape((NumOfHeads, 2, 3))
-  # Weights = np.zeros((NumOfHeads, 2, 2))
   
   Weights = np.dot(Key, np.transpose(Query))
 
   Weights = ApplyActivation(Weights, "StableSoftmax")
   print(Weights)
-  # return np.dot(Weights, Value)
 
 Input = np.array([[1, 0, 0], [0, 0, 1]])
 print(SingleHeadSelfAttention(Input))
-
-# x = np.array([1, 0, 0, 0, 0, 1])
-# Heads = 2
-# print(x.reshape((Heads,int(len(x)/Heads))))
