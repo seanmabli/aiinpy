@@ -16,13 +16,13 @@ def SingleHeadSelfAttention(In):
     Query[i, :] = InToQuery.ForwardProp(In[i, :])
     Value[i, :] = InToValue.ForwardProp(In[i, :])
 
-  Out = np.dot(In, np.transpose(In))
-  Out = Out / In.shape[1] ** 0.5
+  Out = np.dot(In, np.transpose(In)) # MatMul
+  Out = Out / In.shape[1] ** 0.5 # Scale
   
-  Out[np.triu_indices(Out.shape[0], 1)] = float('-inf')
-  
-  Out = ApplyActivation(Out, "StableSoftmax")
-  Out = Out @ Value
+  Out[np.triu_indices(Out.shape[0], 1)] = float('-inf') # Mask (opt.)
+
+  Out = ApplyActivation(Out, "StableSoftmax") # SoftMax
+  Out = Out @ Value # MatMul
 
   return Out
 
