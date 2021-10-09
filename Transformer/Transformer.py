@@ -26,30 +26,27 @@ def SingleHeadSelfAttention(In):
 
   return Out
 
-def MultiHeadSelfAttention(Input, NumOfHeads):
-  InToKey = NN(InSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
-  InToQuery = NN(InSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
-  InToValue = NN(InSize=Input.shape[1], OutSize=(Input.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
-  KeyQueryValueToOut = NN(InSize=(Input.shape[1] * NumOfHeads), OutSize=Input.shape[1], Activation='Identity', LearningRate=0)
+def MultiHeadSelfAttention(In, NumOfHeads):
+  InToKey = NN(InShape=In.shape, OutShape=(In.shape[0], In.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
+  InToQuery = NN(InShape=In.shape, OutShape=(In.shape[0], In.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
+  InToValue = NN(InShape=In.shape, OutShape=(In.shape[0], In.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
+  KeyQueryValueToOut = NN(InShape=(In.shape[0], In.shape[1] * NumOfHeads), OutShape=In.shape, Activation='Identity', LearningRate=0)
 
-  Key = np.zeros((Input.shape[0], Input.shape[1] * NumOfHeads))
-  Query = np.zeros((Input.shape[0], Input.shape[1] * NumOfHeads))
-  Value = np.zeros((Input.shape[0], Input.shape[1] * NumOfHeads))
 
-  for i in range(Input.shape[0]):
-    Key[i, :] = InToKey.ForwardProp(Input[i, :])
-    Query[i, :] = InToQuery.ForwardProp(Input[i, :])
-    Value[i, :] = InToValue.ForwardProp(Input[i, :])
+  Key = InToKey.ForwardProp(In)
+  Query = InToQuery.ForwardProp(In)
+  Value = InToValue.ForwardProp(In)
+
+  Out = np.dot(Query, np.transpose(Key)) # MatMul
+  Out = Out / In.shape[1] ** 0.5 # Scale
   
-  Out = np.dot(Query, np.transpose(Key))
+  Out[np.triu_indices(Out.shape[0], 1)] = float('-inf') # Mask (opt.)
 
-  Out = ApplyActivation(Out, "StableSoftmax")
-  Out = np.sum(Out)
-  Out *= Value
+  Out = ApplyActivation(Out, "StableSoftmax") # SoftMax
+  Out = Out @ Value # MatMul
 
   Out = KeyQueryValueToOut.ForwardProp(Out)
   return Out
 
-
 Input = np.array([[1, 0, 0], [0, 0, 1]])
-print(SingleHeadSelfAttention(Input))
+print(MultiHeadSelfAttention(Input, 8))
