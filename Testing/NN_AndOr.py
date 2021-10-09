@@ -3,9 +3,9 @@ from TestSrc.NN import NN
 from alive_progress import alive_bar
 
 # Neural Network Model
-InputToHidden1 = NN(InSize=2, OutSize=16, Activation='ReLU', LearningRate=0.1)
-Hidden1ToHidden2 = NN(InSize=16, OutSize=16, Activation='ReLU', LearningRate=0.1)
-Hidden2ToOutput = NN(InSize=16, OutSize=2, Activation='Sigmoid', LearningRate=0.1)
+InputToHidden1 = NN(InShape=2, OutShape=16, Activation='ReLU', LearningRate=0.1)
+Hidden1ToHidden2 = NN(InShape=16, OutShape=16, Activation='ReLU', LearningRate=0.1)
+Hidden2ToOutput = NN(InShape=16, OutShape=2, Activation='Sigmoid', LearningRate=0.1)
 
 # Training
 NumOfTrainGen = 100
