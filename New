@@ -2,3 +2,5 @@ New For 0.0.16
 - Dropout Layer (Remove Integration With Other Layers)
 - Stride Works Some Of The Time (CNN)
 - LSTM Functionality
+- Input And Output n dimentional arrays to nn functionallity
+- Leaky ReLU fixed
