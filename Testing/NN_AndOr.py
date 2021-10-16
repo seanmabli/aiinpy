@@ -1,6 +1,9 @@
 import numpy as np
 from TestSrc.NN import NN
 from alive_progress import alive_bar
+import wandb
+
+wandb.init(project='nn_weight', entity='sean_m')
 
 # Neural Network Model
 InputToHidden1 = NN(InShape=2, OutShape=16, Activation='ReLU', LearningRate=0.1)
@@ -45,5 +48,10 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
 
     NumberCorrect += 1 if np.argmax(Output) == (0 if sum(Input) == 1 else 1) else 0
     bar()
-
-  print(NumberCorrect / NumOfTestGen)
+wandb.log({"InputToHidden1 Weights": InputToHidden1.Weights})
+wandb.log({"Hidden1ToHidden2 Weights": Hidden1ToHidden2.Weights})
+wandb.log({"Hidden2ToOutput Weights": Hidden2ToOutput.Weights})
+wandb.log({"InputToHidden1 Biases": InputToHidden1.Biases})
+wandb.log({"Hidden1ToHidden2 Biases": Hidden1ToHidden2.Biases})
+wandb.log({"Hidden2ToOutput Biases": Hidden2ToOutput.Biases})
+wandb.log({"Accuracy": (NumberCorrect / NumOfTestGen)})
