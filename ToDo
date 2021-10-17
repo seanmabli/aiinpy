@@ -3,3 +3,5 @@
 - Create LSTM BackProp
 - Create NEAT
 - POOL stride != 2
+- add diffrent types to POOL (min, sum, mean)
+- add diffrent POOL sizes

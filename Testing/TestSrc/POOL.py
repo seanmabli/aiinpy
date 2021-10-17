@@ -1,7 +1,7 @@
 import numpy as np
 
 class POOL: 
-  def __init__(self, Stride):
+  def __init__(self, Stride, Type):
     self.Stride = Stride
     
   def ForwardProp(self, In):
