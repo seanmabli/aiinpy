@@ -4,3 +4,4 @@ New For 0.0.16
 - LSTM Functionality
 - Input And Output n dimentional arrays to nn functionallity
 - Leaky ReLU fixed
+- Add Min, Mean, and Sum POOL
