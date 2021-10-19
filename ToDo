@@ -1,5 +1,16 @@
-- CNN In Error with Stride = (2, 2) and review CNN BackProp filter deltas (transpose in nn but not cnn?) and size/shape of bias
-- Create GAN Forward And BackProp
-- Create LSTM BackProp
-- Create NEAT
-- CNN Test with non-square images
+For 0.0.16 (11-1-2021):
+- Define Model
+- Test Long Term Short Term Memory (LSTM)
+- Test CNN with rectangular (non-square) images:
+- CNN In Error with Stride = (2, 2)
+- Review CNN BackProp filter deltas (transpose in nn but not cnn?)
+- Review size/shape of bias
+
+For 0.0.17 (12-1-2021):
+- Create Gated Recurrent Unit (GRU)
+- Create General Adversarial Networks (GAN)
+- Create Transformer
+
+For 0.0.18 (1-1-2022):
+- Train w/ Neural Evolution of Augmented Topologies (NEAT)
+- Train w/ Transfer Learning
