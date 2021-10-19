@@ -5,3 +5,5 @@ New For 0.0.16
 - Input And Output n dimentional arrays to nn functionallity
 - Leaky ReLU fixed
 - Add Min, Mean, and Sum POOL
+- POOL with stride != 2
+- POOL with diffrent sized filters

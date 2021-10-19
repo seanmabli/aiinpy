@@ -6,7 +6,12 @@ class POOL:
     
   def ForwardProp(self, In):
     self.In = In
-    self.Out = np.zeros((len(In), int(len(In[0]) / 2), int(len(In[0, 0]) / 2)))
+    self.Out = np.zeros((len(In), int(np.floor(len(In[0]) / self.Stride[0])), int(np.floor(len(In[0, 0]) / self.Stride[1]))))
+    while self.Out.shape[1] * self.Stride[0] + self.FilterShape[0] - self.Stride[0] < In.shape[1]:
+      self.Out = self.Out[:, : - 1, :]
+    while self.Out.shape[2] * self.Stride[1] + self.FilterShape[1] - self.Stride[1] < In.shape[2]:
+      self.Out = self.Out[:, :, : - 1]
+
     if self.Type == 'Max':
       for i in range(self.Out.shape[1]):
         for j in range(self.Out.shape[2]):

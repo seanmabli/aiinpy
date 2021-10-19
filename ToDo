@@ -2,5 +2,4 @@
 - Create GAN Forward And BackProp
 - Create LSTM BackProp
 - Create NEAT
-- POOL stride != 2
-- add diffrent POOL sizes
+- CNN Test with non-square images

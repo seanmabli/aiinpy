@@ -9,7 +9,7 @@ import wandb
 wandb.init(project='pool_test')
 
 InToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
-Conv1ToPool1 = POOL((2, 2), (2, 2), 'Sum')
+Conv1ToPool1 = POOL((2, 2), (2, 2), 'Max')
 DenseInToOut = NN(InShape=(4 * 14 * 14), OutShape=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
 
 # Load EMNIST Training And Testing Images
