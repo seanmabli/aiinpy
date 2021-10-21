@@ -1,6 +1,7 @@
 For 0.0.16 (11-1-2021):
 - Define Model
 - Test Long Term Short Term Memory (LSTM)
+- Many To Many RNN
 - Test CNN with rectangular (non-square) images:
 - CNN In Error with Stride = (2, 2)
 - Review CNN BackProp filter deltas (transpose in nn but not cnn?)

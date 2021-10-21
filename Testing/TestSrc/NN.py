@@ -13,7 +13,7 @@ class NN:
     
   def ForwardProp(self, In):
     self.In = In.flatten()
-    self.Out = np.transpose(self.Weights) @ self.In + self.Biases
+    self.Out = self.Weights.T @ self.In + self.Biases
   
     # Apply Activation Function
     self.Out = ApplyActivation(self.Out, self.Activation)
@@ -36,5 +36,5 @@ class NN:
       
     # Apply Deltas To The Weights And Biases
     self.Biases += OutGradient * self.LearningRate
-    self.Weights += np.outer(np.transpose(self.In), OutGradient) * self.LearningRate
+    self.Weights += np.outer(self.In.T, OutGradient) * self.LearningRate
     return InputError.reshape(self.InShape)

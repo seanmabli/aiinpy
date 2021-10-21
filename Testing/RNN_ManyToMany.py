@@ -1,16 +1,16 @@
 import numpy as np
-from .Activation import ApplyActivation, ActivationDerivative
+from .Activation import *
 
 class RNN:
-  def __init__(self, InputSize, OutputSize, HidSize=64, LearningRate=0.05):
+  def __init__(self, InSize, OutSize, HidSize=64, LearningRate=0.05):
     self.LearningRate, self.HidSize = LearningRate, HidSize
 
     self.WeightsHidToHid = np.random.uniform(-0.005, 0.005, (HidSize, HidSize))
-    self.WeightsInputToHid = np.random.uniform(-0.005, 0.005, (HidSize, InputSize))
-    self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (OutputSize, HidSize))
+    self.WeightsInputToHid = np.random.uniform(-0.005, 0.005, (HidSize, InSize))
+    self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (OutSize, HidSize))
 
-    self.HiddenBiases = np.zeros(HidSize)
-    self.OutputBiases = np.zeros(OutputSize)
+    self.HidBiases = np.zeros(HidSize)
+    self.OutBiases = np.zeros(OutSize)
 
   def ForwardProp(self, InputLayer):
     self.InputLayer = InputLayer

@@ -11,7 +11,7 @@ def SingleHeadSelfAttention(In):
   Query = InToQuery.ForwardProp(In)
   Value = InToValue.ForwardProp(In)
 
-  Out = np.dot(Query, np.transpose(Key)) # MatMul
+  Out = np.dot(Query, Key.T) # MatMul
   Out = Out / In.shape[1] ** 0.5 # Scale
   
   Out[np.triu_indices(Out.shape[0], 1)] = float('-inf') # Mask (opt.)
@@ -31,7 +31,7 @@ def MultiHeadSelfAttention(In, NumOfHeads):
   Query = InToQuery.ForwardProp(In)
   Value = InToValue.ForwardProp(In)
 
-  Out = np.dot(Query, np.transpose(Key)) # MatMul
+  Out = np.dot(Query, Key.T) # MatMul
   Out = Out / In.shape[1] ** 0.5 # Scale
   
   Out[np.triu_indices(Out.shape[0], 1)] = float('-inf') # Mask (opt.)
