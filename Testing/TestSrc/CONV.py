@@ -18,13 +18,13 @@ class CONV:
     if (self.Padding == True):
       self.Input = np.pad(self.Input, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.NumOfFilters + 1]
 
-    self.OutputWidth = int((len(self.Input[0, 0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
-    self.OutputHeight = int((len(self.Input[0]) - (len(self.Filter[0]) - 1)) / self.Stride[1])
+    self.OutWidth = int((len(self.Input[0, 0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
+    self.OutHeight = int((len(self.Input[0]) - (len(self.Filter[0]) - 1)) / self.Stride[1])
 
-    self.Output = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
+    self.Output = np.zeros((self.NumOfFilters, self.OutHeight, self.OutWidth))
 
-    for i in range(0, self.OutputWidth, self.Stride[0]):
-      for j in range(0, self.OutputHeight, self.Stride[1]):
+    for i in range(0, self.OutHeight, self.Stride[0]):
+      for j in range(0, self.OutWidth, self.Stride[1]):
         self.Output[:, i, j] = np.sum(np.multiply(self.Input[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
     self.Output += self.Bias[:, np.newaxis, np.newaxis]
@@ -33,22 +33,21 @@ class CONV:
     return self.Output
   
   def BackProp(self, OutError):
-    FilterDeltas = np.zeros((self.NumOfFilters, 3, 3))
+    FilterΔ = np.zeros((self.NumOfFilters, 3, 3))
     
     OutGradient = ActivationDerivative(self.Output, self.Activation) * OutError
 
-    for i in range(0, self.OutputWidth, self.Stride[0]):
-      for j in range(0, self.OutputHeight, self.Stride[1]):
-        FilterDeltas += self.Input[:, i : (i + 3), j : (j + 3)] * OutGradient[:, i, j][:, np.newaxis, np.newaxis]
+    for i in range(0, self.OutHeight, self.Stride[0]):
+      for j in range(0, self.OutWidth, self.Stride[1]):
+        FilterΔ += self.Input[:, i : (i + 3), j : (j + 3)] * OutGradient[:, i, j][:, np.newaxis, np.newaxis]
     
     self.Bias += np.sum(OutGradient, axis=(1, 2)) * self.LearningRate
-    self.Filter += FilterDeltas * self.LearningRate
+    self.Filter += FilterΔ * self.LearningRate
 
     # Input Error
     self.RotFilter = np.rot90(np.rot90(self.Filter))
-    z = self.FilterShape[1] - 1
-
-    y = np.pad(OutError, z, mode='constant')[z : self.NumOfFilters + z, :, :]
+    
+    y = np.pad(OutError, self.FilterShape[1] - 1, mode='constant')[self.FilterShape[1] - 1 : self.NumOfFilters + self.FilterShape[1] - 1, :, :]
     
     self.InputError = np.zeros(self.InputShape)
     if np.ndim(self.InputError) == 3:

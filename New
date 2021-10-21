@@ -7,3 +7,4 @@ New For 0.0.16
 - Add Min, Mean, and Sum POOL
 - POOL with stride != 2
 - POOL with diffrent sized filters
+- CNN with rectangular images
