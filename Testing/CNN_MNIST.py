@@ -6,7 +6,7 @@ from TestSrc.POOL import POOL
 from alive_progress import alive_bar
 import wandb
 
-wandb.init(project='pool_test')
+# wandb.init(project='pool_test')
 
 InToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
 Conv1ToPool1 = POOL((2, 2), (2, 2), 'Max')
@@ -41,7 +41,7 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     Conv1Error = Conv1ToPool1.BackProp(Pool1Error)
     InError = InToConv1.BackProp(Conv1Error)
     
-    wandb.log({"Train Correct": 1 if np.argmax(Out) == TrainingLabels[Random] else 0})
+    # wandb.log({"Train Correct": 1 if np.argmax(Out) == TrainingLabels[Random] else 0})
 
     bar()
   
@@ -58,5 +58,5 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     
     bar()
 
-  wandb.log({"Test Correct": NumberCorrect / TestImageLoaded})
+  # wandb.log({"Test Correct": NumberCorrect / TestImageLoaded})
   print(NumberCorrect / TestImageLoaded)
