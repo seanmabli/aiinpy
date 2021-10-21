@@ -27,16 +27,16 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
     RealOut[TrainingLabels[Random]] = 1
     
     # Forward Propagation
-    Conv1 = InToConv1.ForwardProp(In)
-    Conv2 = Conv1ToConv2.ForwardProp(Conv1)
-    Out = Conv2ToOut.ForwardProp(Conv2)
+    Conv1 = InToConv1.forwardprop(In)
+    Conv2 = Conv1ToConv2.forwardprop(Conv1)
+    Out = Conv2ToOut.forwardprop(Conv2)
 
     # Back Propagation
     OutError = RealOut - Out
-    Conv2Error = Conv2ToOut.BackProp(OutError).reshape(Conv2.shape)
+    Conv2Error = Conv2ToOut.backprop(OutError).reshape(Conv2.shape)
 
-    Conv1Error = Conv1ToConv2.BackProp(Conv2Error)
-    InError = InToConv1.BackProp(Conv1Error)
+    Conv1Error = Conv1ToConv2.backprop(Conv2Error)
+    InError = InToConv1.backprop(Conv1Error)
     
     wandb.log({"Train Correct": 1 if np.argmax(Out) == TrainingLabels[Random] else 0})
 
@@ -45,9 +45,9 @@ with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
   NumberCorrect = 0
   for Generation in range(TestImageLoaded):
     In = (TestImages[Generation] / 255) - 0.5
-    Conv1 = InToConv1.ForwardProp(In)
-    Conv2 = Conv1ToConv2.ForwardProp(Conv1)
-    Out = Conv2ToOut.ForwardProp(Conv2)
+    Conv1 = InToConv1.forwardprop(In)
+    Conv2 = Conv1ToConv2.forwardprop(Conv1)
+    Out = Conv2ToOut.forwardprop(Conv2)
     
     NumberCorrect += 1 if np.argmax(Out) == TestLabels[Generation] else 0
     

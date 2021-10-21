@@ -1,7 +1,7 @@
 import numpy as np
-from .Activation import ApplyActivation, ActivationDerivative
+from .activation import *
 
-class RNN:
+class rnn:
   def __init__(self, InputSize, OutputSize, HidSize=64, LearningRate=0.05):
     self.LearningRate, self.HidSize = LearningRate, HidSize
 
@@ -12,7 +12,7 @@ class RNN:
     self.HiddenBiases = np.zeros(HidSize)
     self.OutputBiases = np.zeros(OutputSize)
 
-  def ForwardProp(self, InputLayer):
+  def forwardprop(self, InputLayer):
     self.InputLayer = InputLayer
     self.Hidden = np.zeros((len(self.InputLayer) + 1, self.HidSize))
 
@@ -22,7 +22,7 @@ class RNN:
     self.Out = ApplyActivation(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases, 'StableSoftmax')
     return self.Out
 
-  def BackProp(self, OutputError):
+  def backprop(self, OutputError):
     OutputGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutputError)
     
     self.WeightsHidToOutΔ = np.outer(OutputGradient, self.Hidden[len(self.InputLayer)].T)

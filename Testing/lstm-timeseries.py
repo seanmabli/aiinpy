@@ -22,10 +22,10 @@ with alive_bar(NumOfTrainGen) as bar:
     Random = np.random.randint(0, len(TrainingData) - 5)
 
     In = TrainingData[Random : Random + 5]
-    Out = LSTM_Model.ForwardProp(In)
+    Out = LSTM_Model.forwardprop(In)
 
     OutError = Out - TrainingData[Random + 1 : Random + 6]
-    InError = LSTM_Model.BackProp(OutError)
+    InError = LSTM_Model.backprop(OutError)
 
     wandb.log({'Out Error': abs(np.sum(OutError))})
     bar()

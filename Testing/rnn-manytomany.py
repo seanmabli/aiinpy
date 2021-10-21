@@ -12,7 +12,7 @@ class RNN:
     self.HidBiases = np.zeros(HidSize)
     self.OutBiases = np.zeros(OutSize)
 
-  def ForwardProp(self, InputLayer):
+  def forwardprop(self, InputLayer):
     self.InputLayer = InputLayer
     self.Hidden = np.zeros((len(self.InputLayer) + 1, self.HidSize))
 
@@ -22,7 +22,7 @@ class RNN:
     self.Out = ApplyActivation(self.WeightsHidToOut @ self.Hidden[len(InputLayer), :] + self.OutputBiases, 'StableSoftmax')
     return self.Out
 
-  def BackProp(self, OutputError):
+  def backprop(self, OutputError):
     OutputGradient = np.multiply(ActivationDerivative(self.Out, 'StableSoftmax'), OutputError)
     
     self.WeightsHidToOutΔ = np.outer(OutputGradient, self.Hidden[len(self.InputLayer)].T)

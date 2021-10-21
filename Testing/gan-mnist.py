@@ -24,15 +24,15 @@ for Generation in range(1):
   RealOutput = 1 if Random < 100000 else 0
 
   InputImage = Data[Random]
-  Conv1 = DisInputToCONV1.ForwardProp(InputImage)
-  Conv2 = DisCONV1ToCONV2.ForwardProp(Conv1)
+  Conv1 = DisInputToCONV1.forwardprop(InputImage)
+  Conv2 = DisCONV1ToCONV2.forwardprop(Conv1)
   Input = Conv2.flatten()
-  Output = DisInputToOutput.ForwardProp(Input)
+  Output = DisInputToOutput.forwardprop(Input)
 
   OutputError = RealOutput - Output
-  InputError = DisInputToOutput.BackProp(OutputError)
+  InputError = DisInputToOutput.backprop(OutputError)
   Conv2Error = InputError.reshape(Conv2.shape)
 
-  Conv1Error = DisCONV1ToCONV2.BackProp(Conv2Error)
+  Conv1Error = DisCONV1ToCONV2.backprop(Conv2Error)
   print(Conv1Error.shape)
-  DisInputToCONV1.BackProp(Conv1Error)
+  DisInputToCONV1.backprop(Conv1Error)

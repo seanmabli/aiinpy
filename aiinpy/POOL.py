@@ -1,19 +1,37 @@
 import numpy as np
-# POOL doesn't work with stride != 1
 
-class POOL: 
-  def __init__(self, Stride, PoolShape):
-    self.Stride, self.PoolShape = Stride, PoolShape
+class pool: 
+  def __init__(self, Stride, FilterShape, Type):
+    self.Stride, self.FilterShape, self.Type = Stride, FilterShape, Type
     
-  def ForwardProp(self, Input):
-    self.Input, InputShape = Input, Input.shape
-    OutputWidth = int(len(Input[0, 0]) / 2)
-    OutputHeight = int(len(Input[0]) / 2)
-    self.OutputArray = np.zeros((len(Input), OutputHeight, OutputWidth))
-    for i in range(OutputHeight, InputShape[1]):
-      for j in range(OutputWidth, InputShape[2]):
-        self.OutputArray[:, i, j] = np.amax(Input[:, i * self.Stride : i * self.Stride + 2, j * self.Stride : j * self.Stride + 2], axis=(1, 2))
-    return self.OutputArray
+  def forwardprop(self, In):
+    self.In = In
+    self.Out = np.zeros((len(In), int(np.floor(len(In[0]) / self.Stride[0])), int(np.floor(len(In[0, 0]) / self.Stride[1]))))
+    while self.Out.shape[1] * self.Stride[0] + self.FilterShape[0] - self.Stride[0] < In.shape[1]:
+      self.Out = self.Out[:, : - 1, :]
+    while self.Out.shape[2] * self.Stride[1] + self.FilterShape[1] - self.Stride[1] < In.shape[2]:
+      self.Out = self.Out[:, :, : - 1]
 
-  def BackProp(self, CurrentMaxPoolingLayerError):
-    return np.repeat(np.repeat(CurrentMaxPoolingLayerError, 2, axis=1), 2, axis=2) * np.equal(np.repeat(np.repeat(self.OutputArray, 2, axis=1), 2, axis=2), self.Input).astype(int)
+    if self.Type == 'Max':
+      for i in range(self.Out.shape[1]):
+        for j in range(self.Out.shape[2]):
+          self.Out[:, i, j] = np.amax(In[:, i * self.Stride[0] : i * self.Stride[0] + 2, j * self.Stride[1] : j * self.Stride[1] + 2], axis=(1, 2))
+    elif self.Type == 'Min':
+      for i in range(self.Out.shape[1]):
+        for j in range(self.Out.shape[2]):
+          self.Out[:, i, j] = np.amin(In[:, i * self.Stride[0] : i * self.Stride[0] + 2, j * self.Stride[1] : j * self.Stride[1] + 2], axis=(1, 2))
+    elif self.Type == 'Mean':
+      for i in range(self.Out.shape[1]):
+        for j in range(self.Out.shape[2]):
+          self.Out[:, i, j] = np.mean(In[:, i * self.Stride[0] : i * self.Stride[0] + 2, j * self.Stride[1] : j * self.Stride[1] + 2], axis=(1, 2))
+    elif self.Type == 'Sum':
+      for i in range(self.Out.shape[1]):
+        for j in range(self.Out.shape[2]):
+          self.Out[:, i, j] = np.sum(In[:, i * self.Stride[0] : i * self.Stride[0] + 2, j * self.Stride[1] : j * self.Stride[1] + 2], axis=(1, 2))
+    return self.Out
+
+  def backprop(self, OutError):
+    if self.Type == 'Max' or self.Type == 'Min':
+      return np.repeat(np.repeat(OutError, 2, axis=1), 2, axis=2) * np.equal(np.repeat(np.repeat(self.Out, 2, axis=1), 2, axis=2), self.In).astype(int)
+    elif self.Type == 'Mean' or self.Type == 'Sum':
+      return np.repeat(np.repeat(OutError, 2, axis=1), 2, axis=2) * np.repeat(np.repeat(self.Out, 2, axis=1), 2, axis=2)

@@ -1,7 +1,7 @@
 import numpy as np
-from .Activation import ApplyActivation, ActivationDerivative
+from .activation import *
 
-class CONV:
+class conv:
   def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1)):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
     self.Bias = np.zeros(FilterShape[0])
@@ -10,7 +10,7 @@ class CONV:
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
 
-  def ForwardProp(self, Input):
+  def forwardprop(self, Input):
     self.Input = Input
     self.InputShape = self.Input.shape
     if(Input.ndim == 2):
@@ -32,7 +32,7 @@ class CONV:
 
     return self.Output
   
-  def BackProp(self, OutError):
+  def backprop(self, OutError):
     FilterΔ = np.zeros((self.NumOfFilters, 3, 3))
     
     OutGradient = ActivationDerivative(self.Output, self.Activation) * OutError

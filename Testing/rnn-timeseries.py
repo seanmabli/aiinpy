@@ -20,6 +20,6 @@ NumOfTestGen = len(TestData)
 with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
   for Generation in range(NumOfTrainGen):
 
-Out = RNN_Model.ForwardProp(TrainingData)
+Out = RNN_Model.forwardprop(TrainingData)
 OutError = 
 print(Out)

@@ -1,8 +1,9 @@
 import numpy as np
 
 '''
-Need to work on:
-- LeakyReLU
+- Add GeLU
+- Add ELU
+- Add PReLU
 '''
 
 def ApplyActivation(Input, Activation):
@@ -40,10 +41,9 @@ class LeakyReLU:
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input)
   def EquationForDerivative(self, Input):
-    if self.Slope is None:
-      return 0.01 if (Input < 0) else 1
-    else:
-      return self.Slope if (Input < 0) else 1
+    if "self.Slope" not in locals():
+      self.Slope = 0.01
+    return self.Slope if Input < 0 else 1
 
 class Identity:
   def Identity(self, Input):
@@ -60,18 +60,6 @@ class BinaryStep:
   def Derivative(self, Input):
     return 1
     
-'''
-class GELU:
-  def GELU(self, Input):
-    return (0.5 * Input) * (1 + )
-  def Derivative(self, Input):
-
-class ELU:
-  def ELU(self, Input):
-
-  def Derivative(self, Input):
-'''
-
 class SELU:
   def SELU(self, Input):
     Equation = np.vectorize(self.EquationForSELU, otypes=[float])

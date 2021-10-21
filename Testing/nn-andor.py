@@ -21,15 +21,15 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     RealOutput = [1, 0] if sum(Input) == 1 else [0, 1]
 
     # Forward Prop
-    Hidden1 = InputToHidden1.ForwardProp(Input)
-    Hidden2 = Hidden1ToHidden2.ForwardProp(Hidden1)
-    Output = Hidden2ToOutput.ForwardProp(Hidden2)
+    Hidden1 = InputToHidden1.forwardprop(Input)
+    Hidden2 = Hidden1ToHidden2.forwardprop(Hidden1)
+    Output = Hidden2ToOutput.forwardprop(Hidden2)
 
     # Back Prop
     OutputError = RealOutput - Output
-    Hidden2Error = Hidden2ToOutput.BackProp(OutputError)
-    Hidden1Error = Hidden1ToHidden2.BackProp(Hidden2Error)
-    InputToHidden1.BackProp(Hidden1Error)
+    Hidden2Error = Hidden2ToOutput.backprop(OutputError)
+    Hidden1Error = Hidden1ToHidden2.backprop(Hidden2Error)
+    InputToHidden1.backprop(Hidden1Error)
 
     bar()
 
@@ -42,9 +42,9 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     RealOutput = [1, 0] if sum(Input) == 1 else [0, 1]
 
     # Forward Prop
-    Hidden1 = InputToHidden1.ForwardProp(Input)
-    Hidden2 = Hidden1ToHidden2.ForwardProp(Hidden1)
-    Output = Hidden2ToOutput.ForwardProp(Hidden2)
+    Hidden1 = InputToHidden1.forwardprop(Input)
+    Hidden2 = Hidden1ToHidden2.forwardprop(Hidden1)
+    Output = Hidden2ToOutput.forwardprop(Hidden2)
 
     NumberCorrect += 1 if np.argmax(Output) == (0 if sum(Input) == 1 else 1) else 0
     bar()

@@ -1,32 +1,26 @@
 import numpy as np
-from .Activation import *
+from .activation import *
 
-class NN:
+class nn:
   def __init__(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0):
     self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (np.prod(InShape), np.prod(OutShape)))
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], np.prod(OutShape))
-    self.InShape, self.OutShape = InShape, OutShape
-    self.Activation, self.LearningRate, self.DropoutRate = Activation, LearningRate, DropoutRate
+    self.InShape, self.OutShape, self.Activation, self.LearningRate = InShape, OutShape, Activation, LearningRate
 
   def ChangeDropoutRate(self, NewRate):
     self.DropoutRate = NewRate
     
-  def ForwardProp(self, In):
+  def forwardprop(self, In):
     self.In = In.flatten()
     self.Out = self.Weights.T @ self.In + self.Biases
   
     # Apply Activation Function
     self.Out = ApplyActivation(self.Out, self.Activation)
 
-    self.Dropout = np.random.binomial(1, self.DropoutRate, size=len(self.Out))
-    self.Dropout = np.where(self.Dropout == 0, 1, 0)
-    self.Out *= self.Dropout
-
     return self.Out.reshape(self.OutShape)
 
-  def BackProp(self, OutError):
+  def backprop(self, OutError):
     OutError = OutError.flatten()
-    OutError *= self.Dropout
 
     # Apply Activation Function Derivative
     OutGradient = np.multiply(ActivationDerivative(self.Out, self.Activation), OutError)

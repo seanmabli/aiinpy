@@ -1,3 +1,14 @@
+New For 0.0.16 (11-1-2021):
+- Dropout Layer (Remove Integration With Other Layers)
+- Stride Works Some Of The Time (CNN)
+- LSTM Functionality
+- Input And Output n dimentional arrays to nn functionallity
+- Leaky ReLU fixed
+- Add Min, Mean, and Sum POOL
+- POOL with stride != 2
+- POOL with diffrent sized filters
+- CNN with rectangular images
+
 For 0.0.16 (11-1-2021):
 - Define Model
 - Test Long Term Short Term Memory (LSTM)

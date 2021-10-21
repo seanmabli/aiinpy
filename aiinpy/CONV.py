@@ -1,20 +1,16 @@
 import numpy as np
-from .Activation import ApplyActivation, ActivationDerivative
+from .activation import *
 
-class CONV:
-  def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1), DropoutRate=0):
+class conv:
+  def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1)):
     self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
-    self.Bias = 0
-    self.NumOfFilters = FilterShape[0]
-    self.LearningRate, self.Activation, self.Padding, self.Stride, self.DropoutRate, self.FilterShape = LearningRate, Activation, Padding, Stride, DropoutRate, FilterShape
+    self.Bias = np.zeros(FilterShape[0])
+    self.LearningRate, self.Activation, self.Padding, self.Stride, self.NumOfFilters, self.FilterShape = LearningRate, Activation, Padding, Stride, FilterShape[0], FilterShape
 
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
-    
-  def ChangeDropoutRate(self, NewRate):
-    self.DropoutRate = NewRate
 
-  def ForwardProp(self, Input):
+  def forwardprop(self, Input):
     self.Input = Input
     self.InputShape = self.Input.shape
     if(Input.ndim == 2):
@@ -22,57 +18,45 @@ class CONV:
     if (self.Padding == True):
       self.Input = np.pad(self.Input, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.NumOfFilters + 1]
 
-    self.OutputWidth = int((len(self.Input[0, 0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
-    self.OutputHeight = int((len(self.Input[0]) - (len(self.Filter[0]) - 1)) / self.Stride[1])
+    self.OutWidth = int((len(self.Input[0, 0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
+    self.OutHeight = int((len(self.Input[0]) - (len(self.Filter[0]) - 1)) / self.Stride[1])
 
-    self.Output = np.zeros((self.NumOfFilters, self.OutputHeight, self.OutputWidth))
+    self.Output = np.zeros((self.NumOfFilters, self.OutHeight, self.OutWidth))
 
-    for i in range(0, self.OutputWidth, self.Stride[0]):
-      for j in range(0, self.OutputHeight, self.Stride[1]):
+    for i in range(0, self.OutHeight, self.Stride[0]):
+      for j in range(0, self.OutWidth, self.Stride[1]):
         self.Output[:, i, j] = np.sum(np.multiply(self.Input[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
-    self.Output += self.Bias
+    self.Output += self.Bias[:, np.newaxis, np.newaxis]
     self.Output = ApplyActivation(self.Output, self.Activation)
-
-    self.Dropout = np.random.binomial(1, self.DropoutRate, size=self.Output.shape)
-    self.Dropout = np.where(self.Dropout == 0, 1, 0)
-    self.Output *= self.Dropout
 
     return self.Output
   
-  def BackProp(self, OutputError):
-    FilterGradients = np.zeros((self.NumOfFilters, 3, 3))
-    OutputError *= self.Dropout
+  def backprop(self, OutError):
+    FilterΔ = np.zeros((self.NumOfFilters, 3, 3))
     
-    Derivative = ActivationDerivative(self.Output, self.Activation)
+    OutGradient = ActivationDerivative(self.Output, self.Activation) * OutError
 
-    x = OutputError * Derivative
-
-    for i in range(0, self.OutputWidth, self.Stride[0]):
-      for j in range(0, self.OutputHeight, self.Stride[1]):
-        FilterGradients += self.Input[:, i : (i + 3), j : (j + 3)] * x[:, i, j][:, np.newaxis, np.newaxis]
+    for i in range(0, self.OutHeight, self.Stride[0]):
+      for j in range(0, self.OutWidth, self.Stride[1]):
+        FilterΔ += self.Input[:, i : (i + 3), j : (j + 3)] * OutGradient[:, i, j][:, np.newaxis, np.newaxis]
     
-    self.Bias += OutputError * self.LearningRate
-    self.Filter += FilterGradients * self.LearningRate
+    self.Bias += np.sum(OutGradient, axis=(1, 2)) * self.LearningRate
+    self.Filter += FilterΔ * self.LearningRate
 
-    self.RotFilter = np.rot90(np.rot90(self.Filter))
-    z = self.FilterShape[1] - 1
-
-    if self.Stride != (1, 1):
-      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[1], self.Stride[0] - 1), 0, axis=1)
-      OutputError = np.insert(OutputError, np.arange(self.Stride[0] - 1, OutputError.shape[2], self.Stride[1] - 1), 0, axis=2)
-      
-    y = np.pad(OutputError, z, mode='constant')[z : self.NumOfFilters + z, :, :]
-
-    self.PreviousError = np.zeros(self.InputShape)
-    if np.ndim(self.PreviousError) == 3:
-      for i in range(self.InputShape[1]):
-        for j in range(self.InputShape[2]):
-         self.PreviousError[:, i, j] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
+    # Input Error
+    RotFilter = np.rot90(np.rot90(self.Filter))
+    PaddedError = np.pad(OutError, self.FilterShape[1] - 1, mode='constant')[self.FilterShape[1] - 1 : self.NumOfFilters + self.FilterShape[1] - 1, :, :]
+    
+    self.InputError = np.zeros(self.InputShape)
+    if np.ndim(self.InputError) == 3:
+      for i in range(int(self.InputShape[1] / self.Stride[0])):
+        for j in range(int(self.InputShape[2] / self.Stride[1])):
+         self.InputError[:, i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + 3, j:j + 3]), axis=(1, 2))
        
-    if np.ndim(self.PreviousError) == 2:
-      for i in range(self.InputShape[0]):
-        for j in range(self.InputShape[1]):
-         self.PreviousError[i, j] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]))
+    if np.ndim(self.InputError) == 2:
+      for i in range(int(self.InputShape[0] / self.Stride[0])):
+        for j in range(int(self.InputShape[1] / self.Stride[1])):
+         self.InputError[i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + 3, j:j + 3]))
 
-    return self.PreviousError
+    return self.InputError
