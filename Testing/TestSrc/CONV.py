@@ -45,19 +45,18 @@ class CONV:
     self.Filter += FilterΔ * self.LearningRate
 
     # Input Error
-    self.RotFilter = np.rot90(np.rot90(self.Filter))
-    
-    y = np.pad(OutError, self.FilterShape[1] - 1, mode='constant')[self.FilterShape[1] - 1 : self.NumOfFilters + self.FilterShape[1] - 1, :, :]
+    RotFilter = np.rot90(np.rot90(self.Filter))
+    PaddedError = np.pad(OutError, self.FilterShape[1] - 1, mode='constant')[self.FilterShape[1] - 1 : self.NumOfFilters + self.FilterShape[1] - 1, :, :]
     
     self.InputError = np.zeros(self.InputShape)
     if np.ndim(self.InputError) == 3:
       for i in range(int(self.InputShape[1] / self.Stride[0])):
         for j in range(int(self.InputShape[2] / self.Stride[1])):
-         self.InputError[:, i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]), axis=(1, 2))
+         self.InputError[:, i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + 3, j:j + 3]), axis=(1, 2))
        
     if np.ndim(self.InputError) == 2:
       for i in range(int(self.InputShape[0] / self.Stride[0])):
         for j in range(int(self.InputShape[1] / self.Stride[1])):
-         self.InputError[i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(self.RotFilter, y[:, i:i + 3, j:j + 3]))
+         self.InputError[i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + 3, j:j + 3]))
 
     return self.InputError
