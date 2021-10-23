@@ -4,10 +4,12 @@ from testsrc.nn import nn
 from testsrc.conv import conv
 from testsrc.pool import pool
 from testsrc.model import model
+import sys
 
 # Create Dataset
 InTrainData, OutTrainData = extract_training_samples('digits')
-InTestData, OutTestData = extract_test_samples('digits')[0 : 1000]
+InTestData, OutTestData = extract_test_samples('digits')
+InTrainData, OutTrainData, InTestData, OutTestData = InTrainData[0 : 5000], OutTrainData[0 : 5000], InTestData[0 : 1000], OutTestData[0 : 1000]
 
 # CNN Model
 model = model((4, 3, 3), 10, [

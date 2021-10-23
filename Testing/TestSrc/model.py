@@ -9,13 +9,14 @@ class model:
     NumOfData = (set(self.InShape) ^ set(InTrainData.shape)).pop()
     with alive_bar(NumOfGenerations) as bar:
       for Generation in range (NumOfGenerations):
-        Random = np.random.randint(0, NumOfData)
-        In = np.take(InTrainData, indices=Random, axis=int(InTrainData.shape.index(NumOfData)))
+        In = np.take(InTrainData, indices=Generation, axis=int(InTrainData.shape.index(NumOfData)))
         for i in range(len(self.Model)):
           In = self.Model[i].forwardprop(In)
-        OutError = np.take(OutTrainData, indices=Random, axis=int(OutTrainData.shape.index(NumOfData))) - In
+
+        OutError = np.take(OutTrainData, indices=Generation, axis=int(OutTrainData.shape.index(NumOfData))) - In
         for i in reversed(range(len(self.Model))):
           OutError = self.Model[i].backprop(OutError)
+
         bar()
 
   def test(self, InTestData, OutTestData):
@@ -23,10 +24,10 @@ class model:
     testcorrect = 0
     with alive_bar(NumOfData) as bar:
       for Generation in range (NumOfData):
-        Random = np.random.randint(0, NumOfData)
-        In = np.take(InTestData, indices=Random, axis=int(InTestData.shape.index(NumOfData)))
+        In = np.take(InTestData, indices=Generation, axis=int(InTestData.shape.index(NumOfData)))
         for i in range(len(self.Model)):
           In = self.Model[i].forwardprop(In)
-        testcorrect += 1 if np.argmax(In) == np.argmax(np.take(OutTestData, indices=Random, axis=int(OutTestData.shape.index(NumOfData)))) else 0
+
+        testcorrect += 1 if np.argmax(In) == np.argmax(np.take(OutTestData, indices=Generation, axis=int(OutTestData.shape.index(NumOfData)))) else 0
         bar()
     return testcorrect / NumOfData
