@@ -1,57 +1,21 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from TestSrc.NN import NN
-from TestSrc.CONV import CONV
-from TestSrc.POOL import POOL
-from alive_progress import alive_bar
-import wandb
+from testsrc.nn import nn
+from testsrc.conv import conv
+from testsrc.pool import pool
+from testsrc.model import model
 
-wandb.init(project='cnn-stride-test')
+# Create Dataset
+InTrainData, OutTrainData = extract_training_samples('digits')
+InTestData, OutTestData = extract_test_samples('digits')[0 : 1000]
 
-InToConv1 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Activation='ReLU')
-Conv1ToConv2 = CONV((4, 3, 3), LearningRate=0.01, Padding=True, Stride=(2, 2), Activation='ReLU')
-Conv2ToOut = NN(InShape=(4, 14, 14), OutShape=10, Activation='StableSoftmax', LearningRate=0.1, WeightsInit=(0, 0))
+# CNN Model
+model = model((4, 3, 3), 10, [
+  conv((4, 3, 3), 0.01, 'ReLU', True),
+  pool((2, 2), (2, 2), 'Max'),
+  nn((4, 14, 14), 10, 'StableSoftmax', 0.1, (0, 0))
+])
 
-# Load EMNIST Training And Testing Images
-TestImageLoaded = 1000
-TrainingImages, TrainingLabels = extract_training_samples('digits')
-TestImages, TestLabels = extract_test_samples('digits')[0 : TestImageLoaded]
-
-NumOfTrainGen = 5000
-with alive_bar(NumOfTrainGen + TestImageLoaded) as bar:
-  for Generation in range(NumOfTrainGen):
-    # Set Input
-    Random = np.random.randint(0, len(TrainingLabels))
-    In = (TrainingImages[Random] / 255) - 0.5
-    RealOut = np.zeros(10)
-    RealOut[TrainingLabels[Random]] = 1
-    
-    # Forward Propagation
-    Conv1 = InToConv1.forwardprop(In)
-    Conv2 = Conv1ToConv2.forwardprop(Conv1)
-    Out = Conv2ToOut.forwardprop(Conv2)
-
-    # Back Propagation
-    OutError = RealOut - Out
-    Conv2Error = Conv2ToOut.backprop(OutError).reshape(Conv2.shape)
-
-    Conv1Error = Conv1ToConv2.backprop(Conv2Error)
-    InError = InToConv1.backprop(Conv1Error)
-    
-    wandb.log({"Train Correct": 1 if np.argmax(Out) == TrainingLabels[Random] else 0})
-
-    bar()
-  
-  NumberCorrect = 0
-  for Generation in range(TestImageLoaded):
-    In = (TestImages[Generation] / 255) - 0.5
-    Conv1 = InToConv1.forwardprop(In)
-    Conv2 = Conv1ToConv2.forwardprop(Conv1)
-    Out = Conv2ToOut.forwardprop(Conv2)
-    
-    NumberCorrect += 1 if np.argmax(Out) == TestLabels[Generation] else 0
-    
-    bar()
-
-  wandb.log({"Test Correct": NumberCorrect / TestImageLoaded})
-  print(NumberCorrect / TestImageLoaded)
+model.train(InTrainData, OutTrainData, 5000)
+testcorrect = model.test(InTestData, OutTestData)
+print(testcorrect)
