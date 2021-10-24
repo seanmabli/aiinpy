@@ -15,6 +15,5 @@ model = model(2, 2, [
   nn(16, 2, 'Sigmoid', 0.1)
 ])
 
-model.train(InTrainData, OutTrainData, 100)
-testcorrect = model.test(InTrainData, OutTrainData)
-print(testcorrect)
+model.train(InTrainData, OutTrainData)
+print(model.test(InTrainData, OutTrainData))

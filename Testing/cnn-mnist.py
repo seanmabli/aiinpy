@@ -4,7 +4,6 @@ from testsrc.nn import nn
 from testsrc.conv import conv
 from testsrc.pool import pool
 from testsrc.model import model
-import sys
 
 # Create Dataset
 InTrainData, OutTrainData = extract_training_samples('digits')
@@ -25,6 +24,5 @@ model = model((28, 28), 10, [
   nn((4, 14, 14), 10, 'StableSoftmax', 0.1, (0, 0))
 ])
 
-model.train(InTrainData, OutTrainDataReal, 5000)
-testcorrect = model.test(InTestData, OutTestDataReal)
-print(testcorrect)
+model.train(InTrainData, OutTrainDataReal)
+print(model.test(InTestData, OutTestDataReal))
