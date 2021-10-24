@@ -1,6 +1,5 @@
 import numpy as np
 from alive_progress import alive_bar
-import sys
 
 class model:
   def __init__(self, InShape, OutShape, Model):

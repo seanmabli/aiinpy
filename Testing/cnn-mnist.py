@@ -19,7 +19,7 @@ for i in range(1000):
 
 # CNN Model
 model = model((28, 28), 10, [
-  conv((4, 3, 3), 0.01, 'ReLU', True),
+  conv((28, 28), (4, 3, 3), 0.01, 'ReLU', True),
   pool((2, 2), (2, 2), 'Max'),
   nn((4, 14, 14), 10, 'StableSoftmax', 0.1, (0, 0))
 ])

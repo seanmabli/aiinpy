@@ -2,43 +2,45 @@ import numpy as np
 from .activation import *
 
 class conv:
-  def __init__(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1)):
-    self.Filter = np.random.uniform(-0.25, 0.25, (FilterShape))
-    self.Bias = np.zeros(FilterShape[0])
-    self.LearningRate, self.Activation, self.Padding, self.Stride, self.NumOfFilters, self.FilterShape = LearningRate, Activation, Padding, Stride, FilterShape[0], FilterShape
+  def __init__(self, InShape, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1)):
+    self.InShape, self.FilterShape = InShape, FilterShape
+    if len(InShape) == 2:
+      InShape = tuple([self.FilterShape[0]]) + InShape
+    if Padding == True:
+      InShape = (InShape[0], InShape[1] + self.FilterShape[1] - 1, InShape[2] + self.FilterShape[2] - 1)
+    self.OutShape = np.array([FilterShape[0], int((InShape[1] - FilterShape[1] + 1) / Stride[0]), int((InShape[2] - FilterShape[2] + 1) / Stride[1])])
+    self.Out = np.zeros(self.OutShape)
+
+    self.Filter = np.random.uniform(-0.25, 0.25, (self.FilterShape))
+    self.Bias = np.zeros(self.FilterShape[0])
+    self.LearningRate, self.Activation, self.Padding, self.Stride = LearningRate, Activation, Padding, Stride
 
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
 
   def forwardprop(self, In):
     self.In = In
-    self.InShape = self.In.shape
     if(In.ndim == 2):
-      self.In = np.stack(([self.In] * self.NumOfFilters))
+      self.In = np.stack(([self.In] * self.FilterShape[0]))
     if (self.Padding == True):
-      self.In = np.pad(self.In, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.NumOfFilters + 1]
+      self.In = np.pad(self.In, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.FilterShape[0] + 1]
 
-    self.OutWidth = int((len(self.In[0, 0]) - (len(self.Filter[0, 0]) - 1)) / self.Stride[0])
-    self.OutHeight = int((len(self.In[0]) - (len(self.Filter[0]) - 1)) / self.Stride[1])
+    for i in range(0, self.OutShape[1], self.Stride[0]):
+      for j in range(0, self.OutShape[2], self.Stride[1]):
+        self.Out[:, i, j] = np.sum(np.multiply(self.In[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
 
-    self.Output = np.zeros((self.NumOfFilters, self.OutHeight, self.OutWidth))
+    self.Out += self.Bias[:, np.newaxis, np.newaxis]
+    self.Out = ApplyActivation(self.Out, self.Activation)
 
-    for i in range(0, self.OutHeight, self.Stride[0]):
-      for j in range(0, self.OutWidth, self.Stride[1]):
-        self.Output[:, i, j] = np.sum(np.multiply(self.In[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
-
-    self.Output += self.Bias[:, np.newaxis, np.newaxis]
-    self.Output = ApplyActivation(self.Output, self.Activation)
-
-    return self.Output
+    return self.Out
   
   def backprop(self, OutError):
-    FilterΔ = np.zeros((self.NumOfFilters, 3, 3))
+    FilterΔ = np.zeros(self.FilterShape)
     
-    OutGradient = ActivationDerivative(self.Output, self.Activation) * OutError
+    OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError
 
-    for i in range(0, self.OutHeight, self.Stride[0]):
-      for j in range(0, self.OutWidth, self.Stride[1]):
+    for i in range(0, self.OutShape[1], self.Stride[0]):
+      for j in range(0, self.OutShape[2], self.Stride[1]):
         FilterΔ += self.In[:, i : (i + 3), j : (j + 3)] * OutGradient[:, i, j][:, np.newaxis, np.newaxis]
     
     self.Bias += np.sum(OutGradient, axis=(1, 2)) * self.LearningRate
@@ -46,7 +48,7 @@ class conv:
 
     # In Error
     RotFilter = np.rot90(np.rot90(self.Filter))
-    PaddedError = np.pad(OutError, self.FilterShape[1] - 1, mode='constant')[self.FilterShape[1] - 1 : self.NumOfFilters + self.FilterShape[1] - 1, :, :]
+    PaddedError = np.pad(OutError, self.FilterShape[1] - 1, mode='constant')[self.FilterShape[1] - 1 : self.FilterShape[0] + self.FilterShape[1] - 1, :, :]
     
     self.InError = np.zeros(self.InShape)
     if np.ndim(self.InError) == 3:

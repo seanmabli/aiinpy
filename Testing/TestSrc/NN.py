@@ -7,6 +7,9 @@ class nn:
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], np.prod(OutShape))
     self.InShape, self.OutShape, self.Activation, self.LearningRate = InShape, OutShape, Activation, LearningRate
 
+  def SetInShape(self, InShape):
+    return self.OutShape
+  
   def ChangeDropoutRate(self, NewRate):
     self.DropoutRate = NewRate
     
