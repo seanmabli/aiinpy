@@ -9,15 +9,22 @@ import sys
 # Create Dataset
 InTrainData, OutTrainData = extract_training_samples('digits')
 InTestData, OutTestData = extract_test_samples('digits')
-InTrainData, OutTrainData, InTestData, OutTestData = InTrainData[0 : 5000], OutTrainData[0 : 5000], InTestData[0 : 1000], OutTestData[0 : 1000]
+InTrainData, InTestData = (InTrainData[0 : 5000] / 255) - 0.5, (InTestData[0 : 1000] / 255) - 0.5
+
+OutTrainDataReal = np.zeros((5000, 10))
+for i in range(5000):
+  OutTrainDataReal[i, OutTrainData[i]] = 1
+OutTestDataReal = np.zeros((1000, 10))
+for i in range(1000):
+  OutTestDataReal[i, OutTestData[i]] = 1
 
 # CNN Model
-model = model((4, 3, 3), 10, [
+model = model((28, 28), 10, [
   conv((4, 3, 3), 0.01, 'ReLU', True),
   pool((2, 2), (2, 2), 'Max'),
   nn((4, 14, 14), 10, 'StableSoftmax', 0.1, (0, 0))
 ])
 
-model.train(InTrainData, OutTrainData, 5000)
-testcorrect = model.test(InTestData, OutTestData)
+model.train(InTrainData, OutTrainDataReal, 5000)
+testcorrect = model.test(InTestData, OutTestDataReal)
 print(testcorrect)

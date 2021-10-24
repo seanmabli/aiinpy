@@ -1,5 +1,6 @@
 import numpy as np
 from alive_progress import alive_bar
+import sys
 
 class model:
   def __init__(self, InShape, OutShape, Model):
@@ -16,7 +17,6 @@ class model:
         OutError = np.take(OutTrainData, indices=Generation, axis=int(OutTrainData.shape.index(NumOfData))) - In
         for i in reversed(range(len(self.Model))):
           OutError = self.Model[i].backprop(OutError)
-
         bar()
 
   def test(self, InTestData, OutTestData):
@@ -25,6 +25,7 @@ class model:
     with alive_bar(NumOfData) as bar:
       for Generation in range (NumOfData):
         In = np.take(InTestData, indices=Generation, axis=int(InTestData.shape.index(NumOfData)))
+        
         for i in range(len(self.Model)):
           In = self.Model[i].forwardprop(In)
 
