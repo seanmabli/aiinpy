@@ -1,13 +1,11 @@
 import numpy as np
-from aiinpy import RNN
+from testsrc.rnn import rnn
+from testsrc.model import model
+from data.posnegcon.VictorZhou import TrainingData, TestData
 from alive_progress import alive_bar
 
-import pandas as pd
-TrainingData = pd.read_csv('Testing\Data\PosNegCon\Complicated\ImdbData.csv', header=None, index_col=0, squeeze=True).to_dict()[0:40000]
-TestData = pd.read_csv('Testing\Data\PosNegCon\Complicated\ImdbData.csv', header=None, index_col=0, squeeze=True).to_dict()[40000:50000]
-
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
-Rnn = RNN(len(TrainingDataUniqueWords), 2, LearningRate=0.05)
+Rnn = rnn(len(TrainingDataUniqueWords), 2, LearningRate=0.05)
 
 NumOfTrainGen = 15000
 NumOfTestGen = len(list(TestData.items()))
@@ -46,4 +44,4 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     NumberCorrect += int(np.argmax(Output) == (1 if items[Generation][1] == True else 0))
     bar()
 
-  print(NumberCorrect / NumOfTestGen)
+print(NumberCorrect / NumOfTestGen)
