@@ -1,25 +1,44 @@
-from RNN_ManyToMany import RNN
+from rnnmanytomany import rnn
 from alive_progress import alive_bar
 import numpy as np
-import pandas as pd
 import wandb
+import sys
 
 wandb.init(project='rnn-timeseries')
 
-RNN_Model = RNN(InSize=1, OutSize=1, LearningRate=0.01)
+rnn_model = rnn(InSize=1, OutSize=1, LearningRate=0.01)
 
-Data = np.genfromtxt('Testing\Data\TimeSeriesData\AirPassengers.csv', dtype=int)
+Data = np.genfromtxt('testing\data\Timeseries\Airpassenger.csv', dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
 
 TrainingData = Data[0 : 100, np.newaxis]
 TestData = Data[100 :, np.newaxis]
 
 NumOfTrainGen = 15000
-NumOfTestGen = len(TestData)
+NumOfTestGen = len(TestData) - 5
 
 with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
   for Generation in range(NumOfTrainGen):
+    Random = np.random.randint(0, len(TrainingData) - 5)
 
-Out = RNN_Model.forwardprop(TrainingData)
-OutError = 
-print(Out)
+    In = TrainingData[Random : Random + 5]
+    Out = rnn_model.forwardprop(In)
+
+    OutError = TrainingData[Random + 1 : Random + 6] - Out
+    InError = rnn_model.backprop(OutError)
+
+    wandb.log({'Out Error': np.sum(abs(OutError))})
+    bar()
+
+  Error = 0
+  for Generation in range(NumOfTestGen):
+    In = TestData[Generation : Generation + 5]
+    Out = rnn_model.forwardprop(In)
+
+    OutError = TestData[Generation + 1 : Generation + 6] - Out
+    InError = rnn_model.backprop(OutError)
+
+    bar()
+
+    wandb.log({'Real Data': TestData[Generation + 1]})
+    wandb.log({'Prediction': Out[0]})
