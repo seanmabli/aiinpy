@@ -5,7 +5,7 @@ from data.posnegcon.VictorZhou import TrainingData, TestData
 from alive_progress import alive_bar
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
-Rnn = rnn(len(TrainingDataUniqueWords), 2, LearningRate=0.05)
+Rnn = rnn(len(TrainingDataUniqueWords), 2, Type='ManyToOne', OutActivation='StableSoftmax', LearningRate=0.05)
 
 NumOfTrainGen = 15000
 NumOfTestGen = len(list(TestData.items()))

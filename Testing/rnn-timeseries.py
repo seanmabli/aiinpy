@@ -1,4 +1,4 @@
-from rnnmanytomany import rnn
+from testsrc.rnn import rnn
 from alive_progress import alive_bar
 import numpy as np
 import wandb
@@ -6,7 +6,7 @@ import sys
 
 wandb.init(project='rnn-timeseries')
 
-rnn_model = rnn(InSize=1, OutSize=1, LearningRate=0.01)
+rnn_model = rnn(InSize=1, OutSize=1, Type='ManyToMany', OutActivation='Identity', LearningRate=0.01)
 
 Data = np.genfromtxt('testing\data\Timeseries\Airpassenger.csv', dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)

@@ -9,10 +9,10 @@ New For 0.0.16 (11-1-2021):
 - POOL with diffrent sized filters
 - CNN with rectangular images
 - Define Model
+- Many To Many RNN
 
 For 0.0.16 (11-1-2021):
 - Test Long Term Short Term Memory (LSTM)
-- Many To Many RNN
 
 For 0.0.17 (12-1-2021):
 - Create Gated Recurrent Unit (GRU)
