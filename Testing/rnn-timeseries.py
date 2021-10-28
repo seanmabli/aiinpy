@@ -30,7 +30,6 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     wandb.log({'Out Error': np.sum(abs(OutError))})
     bar()
 
-  Error = 0
   for Generation in range(NumOfTestGen):
     In = TestData[Generation : Generation + 5]
     Out = rnn_model.forwardprop(In)
