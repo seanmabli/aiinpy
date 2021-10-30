@@ -15,7 +15,7 @@ TrainingData = Data[0 : 100, np.newaxis]
 TestData = Data[100 :, np.newaxis]
 
 NumOfTrainGen = 15000
-NumOfTestGen = len(TestData) - 5
+NumOfTestGen = len(TestData) - 6
 
 with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
   for Generation in range(NumOfTrainGen):
@@ -39,4 +39,4 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
 
     bar()
 
-    wandb.log({'Real Data': TestData[Generation + 1], 'Prediction': Out[0], 'Prediction Accuracy': abs(TestData[Generation + 1] - Out[0])})
+    wandb.log({'Real Data': TestData[Generation + 6], 'Prediction': Out[4], 'Prediction Accuracy': abs(TestData[Generation + 6] - Out[4])})
