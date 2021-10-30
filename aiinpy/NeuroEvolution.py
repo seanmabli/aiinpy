@@ -1,5 +1,5 @@
 import numpy as np
-from .Activation import ApplyActivation
+from .activation import *
 
 class NeuroEvolution:
   def __init__(self, InSize, OutSize, MutationRate, PopulationSize, Activation):

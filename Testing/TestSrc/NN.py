@@ -17,7 +17,6 @@ class nn:
     self.In = In.flatten()
     self.Out = self.Weights.T @ self.In + self.Biases
   
-    # Apply Activation Function
     self.Out = ApplyActivation(self.Out, self.Activation)
 
     return self.Out.reshape(self.OutShape)
@@ -25,13 +24,10 @@ class nn:
   def backprop(self, OutError):
     OutError = OutError.flatten()
     
-    # Apply Activation Function Derivative
     OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError
       
-    # Calculate Current Layer Error
     InputError = self.Weights @ OutError
       
-    # Apply Deltas To The Weights And Biases
     self.Biases += OutGradient * self.LearningRate
     self.Weights += np.outer(self.In.T, OutGradient) * self.LearningRate
     return InputError.reshape(self.InShape)

@@ -7,6 +7,9 @@ class nn:
     self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], np.prod(OutShape))
     self.InShape, self.OutShape, self.Activation, self.LearningRate = InShape, OutShape, Activation, LearningRate
 
+  def SetInShape(self, InShape):
+    return self.OutShape
+  
   def ChangeDropoutRate(self, NewRate):
     self.DropoutRate = NewRate
     
@@ -14,7 +17,6 @@ class nn:
     self.In = In.flatten()
     self.Out = self.Weights.T @ self.In + self.Biases
   
-    # Apply Activation Function
     self.Out = ApplyActivation(self.Out, self.Activation)
 
     return self.Out.reshape(self.OutShape)
@@ -22,13 +24,10 @@ class nn:
   def backprop(self, OutError):
     OutError = OutError.flatten()
 
-    # Apply Activation Function Derivative
-    OutGradient = np.multiply(ActivationDerivative(self.Out, self.Activation), OutError)
+    OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError
       
-    # Calculate Current Layer Error
     InputError = self.Weights @ OutError
       
-    # Apply Deltas To The Weights And Biases
     self.Biases += OutGradient * self.LearningRate
     self.Weights += np.outer(self.In.T, OutGradient) * self.LearningRate
     return InputError.reshape(self.InShape)
