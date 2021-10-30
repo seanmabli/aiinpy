@@ -19,6 +19,7 @@ For 0.0.17 (12-1-2021):
 - Create General Adversarial Networks (GAN)
 - Create Transformer
 - aiinpy wiki/documentation and detailed blog posts about the diffrent functionallities
+- Biases in nn input calc?
 
 For 0.0.18 (1-1-2022):
 - Train w/ Neural Evolution of Augmented Topologies (NEAT)

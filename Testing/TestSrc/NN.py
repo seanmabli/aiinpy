@@ -26,7 +26,7 @@ class nn:
     OutError = OutError.flatten()
     
     # Apply Activation Function Derivative
-    OutGradient = np.multiply(ActivationDerivative(self.Out, self.Activation), OutError)
+    OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError
       
     # Calculate Current Layer Error
     InputError = self.Weights @ OutError
