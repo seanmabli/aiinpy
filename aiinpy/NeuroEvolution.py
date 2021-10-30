@@ -1,7 +1,7 @@
 import numpy as np
 from .activation import *
 
-class NeuroEvolution:
+class neuroevolution:
   def __init__(self, InSize, OutSize, MutationRate, PopulationSize, Activation):
     self.Weights = np.random.uniform(-1, 1, (PopulationSize, InSize, OutSize))
     self.Biases = np.random.uniform(0, 0, (PopulationSize, OutSize))

@@ -6,5 +6,5 @@ setup(name='aiinpy',
       license='MIT',
       packages=['aiinpy'],
       url='https://github.com/SeanMabli/aiinpy',
-      install_requires=['numpy, alive_progress']
+      install_requires=['numpy', 'alive_progress']
       )

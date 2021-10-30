@@ -1,6 +1,6 @@
 import numpy as np
 
-class Dropout:
+class dropout:
   def __init__(self, DropoutRate):
     self.DropoutRate = DropoutRate
   
