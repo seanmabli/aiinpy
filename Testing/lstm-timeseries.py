@@ -23,7 +23,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
 
     In = TrainingData[Random : Random + 5]  
     Out = lstm_model.forwardprop(In)
-
+    
     OutError = TrainingData[Random + 1 : Random + 6] - Out
     InError = lstm_model.backprop(OutError)
 
