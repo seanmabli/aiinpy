@@ -3,6 +3,9 @@ from .activation import *
 
 class gru:
   def __init__(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05):
+    self.InSize, self.OutSize, self.HidSize = InSize, OutSize, HidSize
+    self.OutActivation, self.LearningRate = OutActivation, LearningRate
+
     self.WeightsInToResetGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
     self.WeightsInToUpdateGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
     self.WeightsInToHidGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
@@ -15,8 +18,8 @@ class gru:
     self.ResetGateBias = np.zeros(HidSize)
     self.UpdateGateBias = np.zeros(HidSize)
 
-    self.WeightsOutToHid = np.random.uniform(-0.005, 0.005, (HidSize, OutSize))
-    self.OutGateBias = np.zeros(OutSize)
+    self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (HidSize, OutSize))
+    self.OutBias = np.zeros(OutSize)
 
   def forwardprop(self, In):
     self.In = In
@@ -40,3 +43,68 @@ class gru:
     return self.Out
 
   def backprop(self, OutError):
+    InError = np.zeros(self.In.shape)
+    HidError = np.zeros(self.HidSize)
+
+    WeightsInToResetGateΔ = np.zeros(self.WeightsInToResetGate.shape)
+    WeightsInToUpdateGateΔ = np.zeros(self.WeightsInToUpdateGate.shape)
+    WeightsInToHidGateΔ = np.zeros(self.WeightsInToHidGate.shape)
+
+    WeightsHidToResetGateΔ = np.zeros(self.WeightsHidToResetGate.shape)
+    WeightsHidToUpdateGateΔ = np.zeros(self.WeightsHidToUpdateGate.shape)
+    WeightsHidToHidGateΔ = np.zeros(self.WeightsHidToHidGate.shape)
+
+    HidGateBiasΔ = np.zeros(self.HidGateBias.shape)
+    ResetGateBiasΔ = np.zeros(self.ResetGateBias.shape)
+    UpdateGateBiasΔ = np.zeros(self.UpdateGateBias.shape)
+
+    WeightsHidToOutΔ = np.zeros(self.WeightsHidToOut.shape)
+    OutBiasΔ = np.zeros(self.OutBias.shape)
+
+    for i in reversed(range(self.CellSize)):
+      OutGradient = ActivationDerivative(self.Out[i, :], self.OutActivation) * OutError[i, :]
+
+      HidError += self.WeightsHidToOut @ OutError[i, :]
+
+      HidGateError = HidError * self.UpdateGate[i, :]
+      UpdateGateError = HidError * (-1 * self.Hid[i, :]) + HidError * self.HidGate[i, :]
+      ResetGateError = (self.WeightsHidToHidGate.T @ HidGateError) * self.Hid[i, :]
+
+      HidError += (self.WeightsHidToHidGate.T @ HidGateError) * self.ResetGate[i, :] + self.WeightsHidToResetGate.T @ ResetGateError + self.WeightsHidToUpdateGate.T @ UpdateGateError
+      InError[i, :] = self.WeightsInToResetGate @ ResetGateError + self.WeightsInToUpdateGate @ UpdateGateError + self.WeightsInToHidGate @ HidGateError
+
+      ResetGateGradient = ActivationDerivative(self.ResetGate[i, :], 'Sigmoid') * ResetGateError
+      UpdateGateGradient = ActivationDerivative(self.UpdateGate[i, :], 'Sigmoid') * UpdateGateError
+      HidGateGradient = ActivationDerivative(self.HidGate[i, :], 'Tanh') * HidGateError
+
+      WeightsInToResetGateΔ += np.outer(self.In[i, :].T, ResetGateGradient)
+      WeightsInToUpdateGateΔ += np.outer(self.In[i, :].T, UpdateGateGradient)
+      WeightsInToHidGateΔ += np.outer(self.In[i, :].T, HidGateGradient)
+  
+      WeightsHidToResetGateΔ += np.outer(self.Hid[i, :].T, ResetGateGradient)
+      WeightsHidToUpdateGateΔ += np.outer(self.Hid[i, :].T, UpdateGateGradient)
+      WeightsHidToHidGateΔ += np.outer(self.Hid[i, :].T, HidGateGradient)
+  
+      HidGateBiasΔ += ResetGateGradient
+      ResetGateBiasΔ += UpdateGateGradient
+      UpdateGateBiasΔ += HidGateGradient
+
+      WeightsHidToOutΔ += np.outer(self.Hid[i].T, OutGradient)
+      OutBiasΔ += OutGradient
+
+    self.WeightsInToResetGate += np.clip(WeightsInToResetGateΔ, -1, 1) * self.LearningRate
+    self.WeightsInToUpdateGate += np.clip(WeightsInToUpdateGateΔ, -1, 1) * self.LearningRate
+    self.WeightsInToHidGate += np.clip(WeightsInToHidGateΔ, -1, 1) * self.LearningRate
+
+    self.WeightsHidToResetGate += np.clip(WeightsHidToResetGateΔ, -1, 1) * self.LearningRate
+    self.WeightsHidToUpdateGate += np.clip(WeightsHidToUpdateGateΔ, -1, 1) * self.LearningRate
+    self.WeightsHidToHidGate += np.clip(WeightsHidToHidGateΔ, -1, 1) * self.LearningRate
+
+    self.HidGateBias += np.clip(HidGateBiasΔ, -1, 1) * self.LearningRate
+    self.ResetGateBias += np.clip(ResetGateBiasΔ, -1, 1) * self.LearningRate
+    self.UpdateGateBias += np.clip(UpdateGateBiasΔ, -1, 1) * self.LearningRate
+
+    self.WeightsHidToOut += np.clip(WeightsHidToOutΔ, -1, 1) * self.LearningRate
+    self.OutBias += np.clip(OutBiasΔ, -1, 1) * self.LearningRate
+
+    return InError

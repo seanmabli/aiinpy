@@ -1,16 +1,17 @@
-For 0.0.17 (12-1-2021):
+New In 0.0.17 (12-1-2021):
 - Create Gated Recurrent Unit (GRU)
+
+For 0.0.17 (12-1-2021):
+- Test GRU
 - Create General Adversarial Networks (GAN)
 - Create Transformer
 - aiinpy wiki/documentation and detailed blog posts about the diffrent functionallities
 - Biases in nn input calc?
-
-For 0.0.18 (1-1-2022):
 - Train w/ Neural Evolution of Augmented Topologies (NEAT)
 - Train w/ Transfer Learning
 - Add Deep Recurrent Neural Networks (DRNN)
 - Add Bidirectional Recurrent Neural Networks (BRNN)
-- Transformers Leaning Based On Internet
-
-For 0.0.19 (2-1-2022):
 - Transfer from numpy to python
+
+For 0.0.18 (1-1-2022):
+- Transformers Leaning Based On Internet
