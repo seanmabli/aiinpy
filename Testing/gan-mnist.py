@@ -1,38 +1,30 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-from NN import NN
-from CONV import CONV
-from alive_progress import alive_bar
-import time
+from testsrc.model import model
+from testsrc.conv import conv
+from testsrc.convtranspose import convtranspose
+from testsrc.nn import nn
 
 # Dis -> Discrimanator
-DisInputToCONV1 = CONV((64, 3, 3), LearningRate=0.0002, Activation='LeakyReLU', Padding='Same', Stride=(2, 2), DropoutRate=0)
-DisCONV1ToCONV2 = CONV((64, 3, 3), LearningRate=0.0002, Activation='LeakyReLU', Padding='Same', Stride=(2, 2), DropoutRate=0)
-DisInputToOutput = NN(InputSize=(64 * 7 * 7), OutputSize=1, LearningRate=0.0002, Activation='Sigmoid')
-DisInputToCONV1.SetSlopeForLeakyReLU(0.2)
-DisCONV1ToCONV2.SetSlopeForLeakyReLU(0.2)
+dis_model = model((28, 28), 1, [
+  conv((28, 28), (64, 3, 3), 0.0002, 'LeakyReLU', True, (2, 2)),
+  conv((64, 14, 14), (64, 3, 3), 0.0002, 'LeakyReLU', True, (2, 2)),
+  nn((64, 7, 7), 1,'Sigmoid', 0.0002)
+])
+
+dis_model.Model[0].SetSlopeForLeakyReLU(0.2)
+dis_model.Model[1].SetSlopeForLeakyReLU(0.2)
+
+gen_model = model(10, (28, 28), [
+  nn(10, (128, 7, 7), 0.0002, 'LeakyReLU'),
+
 
 # Train Discrimanator
 DisRealData, _ = extract_training_samples('digits')
-DisRealData = DisRealData[:100000]
+DisRealData = (DisRealData[0 : 100000] / 255) - 0.5
 DisFakeData = np.random.uniform(-0.5, 0.5, (len(DisRealData), 28, 28))
-Data = np.vstack((DisRealData, DisFakeData))
-TotalError = 0
+TrainDataIn = np.vstack((DisRealData, DisFakeData))
+TrainDataOut = np.hstack((np.ones(len(DisRealData)), np.zeros(len(DisFakeData))))
 
-for Generation in range(1):
-  Random = np.random.randint(0, len(Data))
-  RealOutput = 1 if Random < 100000 else 0
-
-  InputImage = Data[Random]
-  Conv1 = DisInputToCONV1.forwardprop(InputImage)
-  Conv2 = DisCONV1ToCONV2.forwardprop(Conv1)
-  Input = Conv2.flatten()
-  Output = DisInputToOutput.forwardprop(Input)
-
-  OutputError = RealOutput - Output
-  InputError = DisInputToOutput.backprop(OutputError)
-  Conv2Error = InputError.reshape(Conv2.shape)
-
-  Conv1Error = DisCONV1ToCONV2.backprop(Conv2Error)
-  print(Conv1Error.shape)
-  DisInputToCONV1.backprop(Conv1Error)
+dis_model.train(TrainDataIn, TrainDataOut, 2000)
+print(dis_model.test(TrainDataIn[:50000], TrainDataOut[:50000]))
