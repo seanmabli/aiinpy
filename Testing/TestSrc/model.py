@@ -5,7 +5,7 @@ class model:
   def __init__(self, InShape, OutShape, Model):
     self.InShape, self.OutShape, self.Model = InShape if isinstance(InShape, tuple) else tuple([InShape]),  OutShape if isinstance(OutShape, tuple) else tuple([OutShape]), Model
 
-  def train(self, InTrainData, OutTrainData):
+  def train(self, InTrainData, OutTrainData, NumOfGeneration):
     # Data Preprocessing
     NumOfData = (set(self.InShape) ^ set(InTrainData.shape)).pop()
     if InTrainData.shape.index(NumOfData) != 0:
@@ -18,9 +18,10 @@ class model:
       OutTrainData = np.transpose(OutTrainData, tuple([OutTrainData.shape.index(NumOfData)]) + tuple(x))
 
     # Training
-    with alive_bar(NumOfData) as bar:
-      for Generation in range (NumOfData):
-        In = InTrainData[Generation]
+    with alive_bar(NumOfGeneration) as bar:
+      for Generation in range (NumOfGeneration):
+        Random = np.random.randint(0, NumOfData)
+        In = InTrainData[Random]
         for i in range(len(self.Model)):
           In = self.Model[i].forwardprop(In)
 
