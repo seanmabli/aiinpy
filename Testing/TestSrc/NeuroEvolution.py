@@ -1,25 +1,26 @@
 import numpy as np
-from .Activation import ApplyActivation
+from alive_progress import alive_bar
 
-class NeuroEvolution:
-  def __init__(self, InSize, OutSize, MutationRate, PopulationSize, Activation):
+class neuroevolution:
+  def __init__(self, InSize, OutSize, PopulationSize, Model):
+    self.InSize, self.OutSize, self.PopulationSize = InSize, OutSize, PopulationSize
     self.Weights = np.random.uniform(-1, 1, (PopulationSize, InSize, OutSize))
     self.Biases = np.random.uniform(0, 0, (PopulationSize, OutSize))
-    self.MutationRate, self.PopulationSize, self.Activation = MutationRate, PopulationSize, Activation
+    self.Model = np.array([Model] * PopulationSize)
 
   def forwardprop(self, In):
-    self.Out = np.multiply(In, np.transpose(self.Weights, axes=(2, 0, 1)))
-    self.Out = np.transpose(np.sum(self.Out, axis=2), axes=(1, 0)) + self.Biases
-    return ApplyActivation(self.Out, self.Activation)
+    Out = np.zeros((self.PopulationSize, self.OutSize))
+    for i in range(self.PopulationSize):
+      Hid = In
+      for j in range(self.Model.shape[1]):
+        Hid = self.Model[i, j].forwardprop(Hid)
+      Out[i] = Hid
+    return Out
 
-  def Mutate(self, FavorablePlayer):
-    # Copy Weights and Biases
-    self.Weights = np.array([self.Weights[FavorablePlayer]] * self.PopulationSize)
-    self.Biases = np.array([self.Biases[FavorablePlayer]] * self.PopulationSize)
+  def mutate(self, FavorablePlayer):
+    FavorableModel = self.Model[FavorablePlayer]
 
-    # Mutate Weights & Biases
-    self.Weights *= np.random.choice([0, 1], self.Weights.shape, p=[self.MutationRate, 1 - self.MutationRate])
-    self.Weights = np.where(self.Weights == 0, np.random.uniform(-1, 1, self.Weights.shape), self.Weights)
-
-    self.Biases *= np.random.choice([0, 1], self.Biases.shape, p=[self.MutationRate, 1 - self.MutationRate])
-    self.Biases = np.where(self.Biases == 0, np.random.uniform(-1, 1, self.Biases.shape), self.Biases)
+    for i in range(self.PopulationSize):
+      self.Model[i] = FavorableModel
+      for j in range(self.Model.shape[1]):
+        self.Model[i, j].mutate(FavorableModel[j])

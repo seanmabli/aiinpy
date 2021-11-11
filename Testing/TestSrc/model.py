@@ -3,7 +3,9 @@ from alive_progress import alive_bar
 
 class model:
   def __init__(self, InShape, OutShape, Model):
-    self.InShape, self.OutShape, self.Model = InShape if isinstance(InShape, tuple) else tuple([InShape]),  OutShape if isinstance(OutShape, tuple) else tuple([OutShape]), Model
+    self.InShape,  = InShape if isinstance(InShape, tuple) else tuple([InShape])
+    self.OutShape = OutShape if isinstance(OutShape, tuple) else tuple([OutShape])
+    self.Model = Model
 
   def train(self, InTrainData, OutTrainData, NumOfGeneration):
     # Data Preprocessing
@@ -18,18 +20,18 @@ class model:
       OutTrainData = np.transpose(OutTrainData, tuple([OutTrainData.shape.index(NumOfData)]) + tuple(x))
 
     # Training
-    with alive_bar(NumOfGeneration) as bar:
-      for Generation in range (NumOfGeneration):
-        Random = np.random.randint(0, NumOfData)
-        In = InTrainData[Random]
-        for i in range(len(self.Model)):
-          In = self.Model[i].forwardprop(In)
+      with alive_bar(NumOfGeneration) as bar:
+        for Generation in range (NumOfGeneration):
+          Random = np.random.randint(0, NumOfData)
+          In = InTrainData[Random]
+          for i in range(len(self.Model)):
+            In = self.Model[i].forwardprop(In)
 
-        OutError = OutTrainData[Generation] - In
-        for i in reversed(range(len(self.Model))):
-          OutError = self.Model[i].backprop(OutError)
+          OutError = OutTrainData[Generation] - In
+          for i in reversed(range(len(self.Model))):
+            OutError = self.Model[i].backprop(OutError)
 
-        bar()
+          bar()
 
   def test(self, InTestData, OutTestData):
     # Data Preprocessing
