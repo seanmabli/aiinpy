@@ -3,8 +3,7 @@ from .activation import *
 
 class gru:
   def __init__(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05):
-    self.InSize, self.OutSize, self.HidSize = InSize, OutSize, HidSize
-    self.OutActivation, self.LearningRate = OutActivation, LearningRate
+    self.InSize, self.OutSize, self.OutActivation, self.HidSize, self.LearningRate = InSize, OutSize, OutActivation, HidSize, LearningRate
 
     self.WeightsInToResetGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
     self.WeightsInToUpdateGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
@@ -20,6 +19,9 @@ class gru:
 
     self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (HidSize, OutSize))
     self.OutBias = np.zeros(OutSize)
+
+  def __copy__(self):
+    return type(self)(self.InSize, self.OutSize, self.OutActivation, self.HidSize, self.LearningRate)
 
   def forwardprop(self, In):
     self.In = In

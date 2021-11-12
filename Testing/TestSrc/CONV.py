@@ -3,7 +3,7 @@ from .activation import *
 
 class conv:
   def __init__(self, InShape, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1)):
-    self.InShape, self.FilterShape = InShape, FilterShape
+    self.InShape, self.FilterShape, self.LearningRate, self.Activation, self.Padding, self.Stride = InShape, FilterShape, LearningRate, Activation, Padding, Stride
     if len(InShape) == 2:
       InShape = tuple([self.FilterShape[0]]) + InShape
     if Padding == True:
@@ -13,7 +13,9 @@ class conv:
 
     self.Filter = np.random.uniform(-0.25, 0.25, (self.FilterShape))
     self.Bias = np.zeros(self.FilterShape[0])
-    self.LearningRate, self.Activation, self.Padding, self.Stride = LearningRate, Activation, Padding, Stride
+
+  def __copy__(self):
+    return type(self)(self.InShape, self.FilterShape, self.LearningRate, self.Activation, self.Padding, self.Stride)
 
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope

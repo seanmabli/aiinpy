@@ -3,7 +3,7 @@ from .activation import *
 
 class lstm:
   def __init__(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05):
-    self.LearningRate, self.HidSize, self.OutSize, self.OutActivation = LearningRate, HidSize, OutSize, OutActivation
+    self.InSize, self.OutSize, self.OutActivation, self.HidSize, self.LearningRate = InSize, OutSize, OutActivation, HidSize, LearningRate
 
     self.WeightsInToForgetGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
     self.WeightsInToInGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
@@ -22,7 +22,10 @@ class lstm:
 
     self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (HidSize, OutSize))
     self.OutBias = np.zeros(OutSize)
-  
+
+  def __copy__(self):
+    return type(self)(self.InSize, self.OutSize, self.OutActivation, self.HidSize, self.LearningRate)
+
   def forwardprop(self, In):
     self.In = In
     self.CellSize = len(In)

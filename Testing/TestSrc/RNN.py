@@ -12,6 +12,9 @@ class rnn:
     self.HidBiases = np.zeros(HidSize)
     self.OutBiases = np.zeros(OutSize)
 
+  def __copy__(self):
+    return type(self)(self.InSize, self.OutSize, self.Type, self.OutActivation, self.HidSize, self.LearningRate)
+
   def forwardprop(self, In):
     self.In = In
     self.Hid = np.zeros((len(self.In) + 1, self.HidSize))

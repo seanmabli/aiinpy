@@ -19,8 +19,6 @@ HighScore = 0
 Gravity = 0.5
 Speed = 8 # Pixels per loop
 
-Road = np.stack((np.random.randint(0, DisplayShape[0], 100), np.random.randint(DisplayShape[1] - 20, DisplayShape[0], 100)))
-
 ObjectShape = (73, 47)
 Object = np.array([[400, 800, 1200], [DisplayShape[1] - ObjectShape[1] - np.random.randint(0, 20), DisplayShape[1] - ObjectShape[1] - np.random.randint(0, 20), DisplayShape[1] - ObjectShape[1] - np.random.randint(0, 20)]])
 ObjectType = np.array(['Cactus', 'Cactus', 'Cactus'])
@@ -38,9 +36,9 @@ for Generation in range(100):
       for i in range (PopulationSize):
         if Alive[i]:
           Score[i] += 1
-        if Score[i] > HighScore:
-          print("New High Score:", Score[i])
-          HighScore = Score[i]
+          if Score[i] > HighScore:
+            HighScore = Score[i]
+            print('New Highscore:', HighScore, "Generation:", Generation)
         
       Object[:, 0], ObjectType[0] = Object[:, 1], ObjectType[1]
       Object[:, 1], ObjectType[1] = Object[:, 2], ObjectType[2]
@@ -95,5 +93,3 @@ for Generation in range(100):
 
   DinoShape = np.array([DinoWalkShape] * PopulationSize)
   Dino = np.array([np.array([20, DisplayShape[1] - DinoWalkShape[1]])] * PopulationSize)
-
-pygame.quit()
