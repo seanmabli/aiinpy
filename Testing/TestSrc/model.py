@@ -3,7 +3,7 @@ from alive_progress import alive_bar
 
 class model:
   def __init__(self, InShape, OutShape, Model):
-    self.InShape,  = InShape if isinstance(InShape, tuple) else tuple([InShape])
+    self.InShape = InShape if isinstance(InShape, tuple) else tuple([InShape])
     self.OutShape = OutShape if isinstance(OutShape, tuple) else tuple([OutShape])
     self.Model = Model
 
