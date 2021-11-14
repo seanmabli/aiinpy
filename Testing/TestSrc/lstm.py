@@ -26,7 +26,7 @@ class lstm:
   def __copy__(self):
     return type(self)(self.InSize, self.OutSize, self.OutActivation, self.HidSize, self.LearningRate)
 
-  def forward(self, In):
+  def forwardprop(self, In):
     self.In = In
     self.CellSize = len(In)
 
@@ -51,7 +51,7 @@ class lstm:
 
     return self.Out
 
-  def backward(self, OutError):
+  def backprop(self, OutError):
     InError = np.zeros(self.In.shape)
     HidError = np.zeros(self.HidSize)
     CellMemError = np.zeros(self.HidSize)

@@ -17,7 +17,10 @@ class conv:
   def __copy__(self):
     return type(self)(self.InShape, self.FilterShape, self.LearningRate, self.Activation, self.Padding, self.Stride)
 
-  def forward(self, In):
+  def SetSlopeForLeakyReLU(self, Slope):
+    LeakyReLU.Slope = Slope
+
+  def forwardprop(self, In):
     self.In = In
     if(In.ndim == 2):
       self.In = np.stack(([self.In] * self.FilterShape[0]))
@@ -33,7 +36,7 @@ class conv:
 
     return self.Out
   
-  def backward(self, OutError):
+  def backprop(self, OutError):
     FilterΔ = np.zeros(self.FilterShape)
     
     OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError

@@ -7,7 +7,7 @@ class neuroevolution:
     self.Biases = np.random.uniform(0, 0, (PopulationSize, OutSize))
     self.MutationRate, self.PopulationSize, self.Activation = MutationRate, PopulationSize, Activation
 
-  def forward(self, In):
+  def forwardprop(self, In):
     self.Out = np.multiply(In, np.transpose(self.Weights, axes=(2, 0, 1)))
     self.Out = np.transpose(np.sum(self.Out, axis=2), axes=(1, 0)) + self.Biases
     return ApplyActivation(self.Out, self.Activation)

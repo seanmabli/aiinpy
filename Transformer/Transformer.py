@@ -7,9 +7,9 @@ def SingleHeadSelfAttention(In):
   InToQuery = NN(InSize=In.shape, OutSize=In.shape, Activation='Identity', LearningRate=0)
   InToValue = NN(InSize=In.shape, OutSize=In.shape, Activation='Identity', LearningRate=0)
 
-  Key = InToKey.forward(In)
-  Query = InToQuery.forward(In)
-  Value = InToValue.forward(In)
+  Key = InToKey.forwardprop(In)
+  Query = InToQuery.forwardprop(In)
+  Value = InToValue.forwardprop(In)
 
   Out = np.dot(Query, Key.T) # MatMul
   Out = Out / In.shape[1] ** 0.5 # Scale
@@ -27,9 +27,9 @@ def MultiHeadSelfAttention(In, NumOfHeads):
   InToValue = NN(InShape=In.shape, OutShape=(In.shape[0], In.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
   KeyQueryValueToOut = NN(InShape=(In.shape[0], In.shape[1] * NumOfHeads), OutShape=In.shape, Activation='Identity', LearningRate=0)
 
-  Key = InToKey.forward(In)
-  Query = InToQuery.forward(In)
-  Value = InToValue.forward(In)
+  Key = InToKey.forwardprop(In)
+  Query = InToQuery.forwardprop(In)
+  Value = InToValue.forwardprop(In)
 
   Out = np.dot(Query, Key.T) # MatMul
   Out = Out / In.shape[1] ** 0.5 # Scale
@@ -39,7 +39,7 @@ def MultiHeadSelfAttention(In, NumOfHeads):
   Out = ApplyActivation(Out, "StableSoftmax") # SoftMax
   Out = Out @ Value # MatMul
 
-  Out = KeyQueryValueToOut.forward(Out)
+  Out = KeyQueryValueToOut.forwardprop(Out)
   return Out
 
 Input = np.array([[1, 0, 0], [0, 0, 1]])

@@ -18,20 +18,20 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     Random = np.random.randint(0, len(TrainingData) - 5)
 
     In = TrainingData[Random : Random + 5]  
-    Out = lstm_model.forward(In)
+    Out = lstm_model.forwardprop(In)
     
     OutError = TrainingData[Random + 1 : Random + 6] - Out
-    InError = lstm_model.backward(OutError)
+    InError = lstm_model.backprop(OutError)
     
     bar()
 
   Error = 0
   for Generation in range(NumOfTestGen):
     In = TestData[Generation : Generation + 5]
-    Out = lstm_model.forward(In)
+    Out = lstm_model.forwardprop(In)
 
     OutError = TestData[Generation + 1 : Generation + 6] - Out
-    InError = lstm_model.backward(OutError)
+    InError = lstm_model.backprop(OutError)
 
     Error += abs(TestData[Generation + 6] - Out[4])
     bar()

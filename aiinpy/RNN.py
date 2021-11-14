@@ -12,7 +12,7 @@ class rnn:
     self.HidBiases = np.zeros(HidSize)
     self.OutBiases = np.zeros(OutSize)
 
-  def forward(self, In):
+  def forwardprop(self, In):
     self.In = In
     self.Hid = np.zeros((len(self.In) + 1, self.HidSize))
     
@@ -31,7 +31,7 @@ class rnn:
 
     return self.Out
 
-  def backward(self, OutError):
+  def backprop(self, OutError):
     WeightsInToHidΔ = np.zeros(self.WeightsInToHid.shape)
     WeightsHidToHidΔ = np.zeros(self.WeightsHidToHid.shape)
     HidBiasesΔ = np.zeros(self.HidBiases.shape)

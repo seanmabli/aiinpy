@@ -55,7 +55,7 @@ for Generation in range(100):
 
     # Dino
     In = np.array([(Object[0, 0] - (20 + DinoDuckShape[0])) / 1400, 0 if ObjectType[0] == 'Cactus' else 1, (Object[0, 1] - (20 + DinoWalkShape[0])) / 1400, 0 if ObjectType[1] == 'Cactus' else 1])
-    Out = model.forward(In)
+    Out = model.forwardprop(In)
 
     for i in range(PopulationSize):
       if Out[i, 1] > Out[i, 0] and Out[i, 1] > Out[i, 2] and Dino[i, 1] == DisplayShape[1] - DinoShape[i, 1]: # Jump

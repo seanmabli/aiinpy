@@ -22,20 +22,20 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     Random = np.random.randint(0, len(TrainingData) - 5)
 
     In = TrainingData[Random : Random + 5]
-    Out = rnn_model.forward(In)
+    Out = rnn_model.forwardprop(In)
 
     OutError = TrainingData[Random + 1 : Random + 6] - Out
-    InError = rnn_model.backward(OutError)
+    InError = rnn_model.backprop(OutError)
 
     wandb.log({'Out Error': np.sum(abs(OutError))})
     bar()
 
   for Generation in range(NumOfTestGen):
     In = TestData[Generation : Generation + 5]
-    Out = rnn_model.forward(In)
+    Out = rnn_model.forwardprop(In)
 
     OutError = TestData[Generation + 1 : Generation + 6] - Out
-    InError = rnn_model.backward(OutError)
+    InError = rnn_model.backprop(OutError)
 
     bar()
 

@@ -4,12 +4,12 @@ class dropout:
   def __init__(self, DropoutRate):
     self.DropoutRate = DropoutRate
   
-  def forward(self, In):
+  def forwardprop(self, In):
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=In.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
     return self.Dropout * In
 
-  def backward(self, OutError):
+  def backprop(self, OutError):
     return self.Dropout * OutError  
     
   def ChangeDropoutRate(self, NewRate):

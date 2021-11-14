@@ -23,7 +23,7 @@ class lstm:
     self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (HidSize, OutSize))
     self.OutBias = np.zeros(OutSize)
   
-  def forward(self, In):
+  def forwardprop(self, In):
     self.In = In
     self.CellSize = len(In)
 
@@ -48,7 +48,7 @@ class lstm:
 
     return self.Out
 
-  def backward(self, OutError):
+  def backprop(self, OutError):
     InError = np.zeros(self.In.shape)
     HidError = np.zeros(self.HidSize)
     CellMemError = np.zeros(self.HidSize)

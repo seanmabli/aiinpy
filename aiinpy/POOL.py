@@ -4,7 +4,7 @@ class pool:
   def __init__(self, Stride, FilterShape, Type):
     self.Stride, self.FilterShape, self.Type = Stride, FilterShape, Type
     
-  def forward(self, In):
+  def forwardprop(self, In):
     self.In = In
     self.Out = np.zeros((len(In), int(np.floor(len(In[0]) / self.Stride[0])), int(np.floor(len(In[0, 0]) / self.Stride[1]))))
     while self.Out.shape[1] * self.Stride[0] + self.FilterShape[0] - self.Stride[0] < In.shape[1]:
@@ -30,7 +30,7 @@ class pool:
           self.Out[:, i, j] = np.sum(In[:, i * self.Stride[0] : i * self.Stride[0] + 2, j * self.Stride[1] : j * self.Stride[1] + 2], axis=(1, 2))
     return self.Out
 
-  def backward(self, OutError):
+  def backprop(self, OutError):
     if self.Type == 'Max' or self.Type == 'Min':
       return np.repeat(np.repeat(OutError, 2, axis=1), 2, axis=2) * np.equal(np.repeat(np.repeat(self.Out, 2, axis=1), 2, axis=2), self.In).astype(int)
     elif self.Type == 'Mean' or self.Type == 'Sum':
