@@ -22,7 +22,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     Random = np.random.randint(0, len(TrainingData) - 5)
 
     In = TrainingData[Random : Random + 5]  
-    Out = gru_model.forwardprop(In)
+    Out = gru_model.forward(In)
     
     OutError = TrainingData[Random + 1 : Random + 6] - Out
     InError = gru_model.backprop(OutError)
@@ -32,7 +32,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
 
   for Generation in range(NumOfTestGen):
     In = TestData[Generation : Generation + 5]
-    Out = gru_model.forwardprop(In)
+    Out = gru_model.forward(In)
 
     OutError = TestData[Generation + 1 : Generation + 6] - Out
     InError = gru_model.backprop(OutError)

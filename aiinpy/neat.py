@@ -5,7 +5,7 @@ class NEAT:
     NodeGenes = np.zeros((InSize + OutSize)) # Global (Inovation Number)
     ConnectGenes = np.zeros(5) # Global, (In Node, Out Node, Weight, Enabled / Disabled, Innovation Number) * Num Of Nodes
 
-  def forwardprop(self, In):
+  def forward(self, In):
     print("Forward Prop")
 
   def Mutate(self):

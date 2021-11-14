@@ -15,7 +15,7 @@ class rnn:
   def __copy__(self):
     return type(self)(self.InSize, self.OutSize, self.Type, self.OutActivation, self.HidSize, self.LearningRate)
 
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In
     self.Hid = np.zeros((len(self.In) + 1, self.HidSize))
     

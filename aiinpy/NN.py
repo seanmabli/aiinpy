@@ -13,7 +13,7 @@ class nn:
   def ChangeDropoutRate(self, NewRate):
     self.DropoutRate = NewRate
     
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In.flatten()
     self.Out = self.Weights.T @ self.In + self.Biases
   

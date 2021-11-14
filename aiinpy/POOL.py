@@ -4,7 +4,7 @@ class pool:
   def __init__(self, Stride, FilterShape, Type):
     self.Stride, self.FilterShape, self.Type = Stride, FilterShape, Type
     
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In
     self.Out = np.zeros((len(In), int(np.floor(len(In[0]) / self.Stride[0])), int(np.floor(len(In[0, 0]) / self.Stride[1]))))
     while self.Out.shape[1] * self.Stride[0] + self.FilterShape[0] - self.Stride[0] < In.shape[1]:

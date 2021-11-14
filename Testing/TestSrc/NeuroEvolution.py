@@ -13,12 +13,12 @@ class neuroevolution:
       for j in range(len(Model)):
         self.Model[i, j] = copy(Model[j])
 
-  def forwardprop(self, In):
+  def forward(self, In):
     Out = np.zeros((self.PopulationSize, self.OutSize))
     for i in range(self.PopulationSize):
       Hid = In
       for j in range(self.Model.shape[1]):
-        Hid = self.Model[i, j].forwardprop(Hid)
+        Hid = self.Model[i, j].forward(Hid)
       Out[i] = Hid
     return Out
 

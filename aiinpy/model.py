@@ -22,7 +22,7 @@ class model:
       for Generation in range (NumOfData):
         In = InTrainData[Generation]
         for i in range(len(self.Model)):
-          In = self.Model[i].forwardprop(In)
+          In = self.Model[i].forward(In)
 
         OutError = OutTrainData[Generation] - In
         for i in reversed(range(len(self.Model))):
@@ -48,7 +48,7 @@ class model:
       for Generation in range (NumOfData):
         In = InTestData[Generation]
         for i in range(len(self.Model)):
-          In = self.Model[i].forwardprop(In)
+          In = self.Model[i].forward(In)
 
         testcorrect += 1 if np.argmax(In) == np.argmax(OutTestData[Generation]) else 0
         bar()

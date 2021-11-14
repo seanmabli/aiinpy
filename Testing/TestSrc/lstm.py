@@ -26,7 +26,7 @@ class lstm:
   def __copy__(self):
     return type(self)(self.InSize, self.OutSize, self.OutActivation, self.HidSize, self.LearningRate)
 
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In
     self.CellSize = len(In)
 

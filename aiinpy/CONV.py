@@ -18,7 +18,7 @@ class conv:
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
 
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In
     if(In.ndim == 2):
       self.In = np.stack(([self.In] * self.FilterShape[0]))

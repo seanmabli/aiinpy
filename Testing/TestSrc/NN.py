@@ -13,7 +13,7 @@ class nn:
   def __copy__(self):
     return type(self)(self.InShape, self.OutShape, self.Activation, self.LearningRate, self.WeightsInit, self.BiasesInit)
 
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In.flatten()
     self.Out = self.Weights.T @ self.In + self.Biases
   

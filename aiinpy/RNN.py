@@ -12,7 +12,7 @@ class rnn:
     self.HidBiases = np.zeros(HidSize)
     self.OutBiases = np.zeros(OutSize)
 
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In
     self.Hid = np.zeros((len(self.In) + 1, self.HidSize))
     

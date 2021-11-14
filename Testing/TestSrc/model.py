@@ -6,8 +6,8 @@ class model:
     self.InShape = InShape if isinstance(InShape, tuple) else tuple([InShape])
     self.OutShape = OutShape if isinstance(OutShape, tuple) else tuple([OutShape])
     self.Model = Model
-
-  def train(self, InTrainData, OutTrainData, NumOfGeneration):
+    
+  def train(self, InTrainData, OutTrainData):
     # Data Preprocessing
     NumOfData = (set(self.InShape) ^ set(InTrainData.shape)).pop()
     if InTrainData.shape.index(NumOfData) != 0:
@@ -20,18 +20,17 @@ class model:
       OutTrainData = np.transpose(OutTrainData, tuple([OutTrainData.shape.index(NumOfData)]) + tuple(x))
 
     # Training
-      with alive_bar(NumOfGeneration) as bar:
-        for Generation in range (NumOfGeneration):
-          Random = np.random.randint(0, NumOfData)
-          In = InTrainData[Random]
-          for i in range(len(self.Model)):
-            In = self.Model[i].forwardprop(In)
+    with alive_bar(NumOfData) as bar:
+      for Generation in range (NumOfData):
+        In = InTrainData[Generation]
+        for i in range(len(self.Model)):
+          In = self.Model[i].forward(In)
 
-          OutError = OutTrainData[Generation] - In
-          for i in reversed(range(len(self.Model))):
-            OutError = self.Model[i].backprop(OutError)
+        OutError = OutTrainData[Generation] - In
+        for i in reversed(range(len(self.Model))):
+          OutError = self.Model[i].backprop(OutError)
 
-          bar()
+        bar()
 
   def test(self, InTestData, OutTestData):
     # Data Preprocessing
@@ -51,7 +50,7 @@ class model:
       for Generation in range (NumOfData):
         In = InTestData[Generation]
         for i in range(len(self.Model)):
-          In = self.Model[i].forwardprop(In)
+          In = self.Model[i].forward(In)
 
         testcorrect += 1 if np.argmax(In) == np.argmax(OutTestData[Generation]) else 0
         bar()

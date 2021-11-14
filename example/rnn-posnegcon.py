@@ -19,7 +19,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     for i in range(len(InputSentenceSplit)):
       Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
 
-    Output = rnn_model.forwardprop(Input)
+    Output = rnn_model.forward(Input)
 
     RealOutput = np.zeros(Output.shape)
     RealOutput[(1 if items[Random][1] == True else 0)] = 1
@@ -39,7 +39,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     for i in range(len(InputSentenceSplit)):
       Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
 
-    Output = rnn_model.forwardprop(Input)
+    Output = rnn_model.forward(Input)
     NumberCorrect += int(np.argmax(Output) == (1 if items[Generation][1] == True else 0))
     bar()
 
