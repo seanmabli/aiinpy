@@ -15,9 +15,6 @@ class conv:
     self.Bias = np.zeros(self.FilterShape[0])
     self.LearningRate, self.Activation, self.Padding, self.Stride = LearningRate, Activation, Padding, Stride
 
-  def SetSlopeForLeakyReLU(self, Slope):
-    LeakyReLU.Slope = Slope
-
   def forward(self, In):
     self.In = In
     if(In.ndim == 2):

@@ -4,8 +4,8 @@ import testsrc as ai
 PopulationSize = 1000
 
 model = ai.neuroevolution(4, 3, PopulationSize, [
-  ai.nn(4, 6, 'Identity', 0.1),
-  ai.nn(6, 3, 'Identity', 0.1)
+  ai.nn(4, 6, ai.identity(), 0.1),
+  ai.nn(6, 3, ai.identity(), 0.1)
 ])
 
 DisplayShape = (960, 540)

@@ -1,6 +1,7 @@
 from .activation import *
 from .conv import conv
 from .dropout import dropout
+from .gru import gru
 from .lstm import lstm
 from .model import model
 from .neuroevolution import neuroevolution

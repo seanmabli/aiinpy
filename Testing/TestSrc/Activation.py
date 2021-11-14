@@ -7,108 +7,108 @@ import numpy as np
 '''
 
 def ApplyActivation(Input, Activation):
-  return eval(str(Activation) + "()." + str(Activation) + "(Input)")
+  return Activation.forward(Input)
 
 def ActivationDerivative(Input, Activation):
-  return eval(str(Activation) + "().Derivative(Input)")
+  return Activation.backward(Input)
 
-class Sigmoid:
-  def Sigmoid(self, Input):
+class sigmoid:
+  def forward(self, Input):
     return 1 / (1 + np.exp(-Input))
-  def Derivative(self, Input):
+  def backward(self, Input):
     return Input * (1 - Input)
 
-class Tanh:
-  def Tanh(self, Input):
+class tanh:
+  def forward(self, Input):
     return np.tanh(Input)
-  def Derivative(self, Input):
+  def backward(self, Input):
     return 1 - np.square(Input)
 
-class ReLU:
-  def ReLU(self, Input):
+class relu:
+  def forward(self, Input):
     Output = np.maximum(0, Input)
     return Output
-  def Derivative(self, Input):
+  def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input)
   def EquationForDerivative(self, Input):
     return 0 if (Input <= 0) else 1
 
-class LeakyReLU:
-  def LeakyReLU(self, Input):
+class leakyrelu:
+  def __init__(self, alpha=0.01):
+    self.alpha = alpha
+  def forward(self, Input):
     return np.maximum(0.01 * Input, Input)
-  def Derivative(self, Input):
+  def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input)
   def EquationForDerivative(self, Input):
-    if "self.Slope" not in locals():
-      self.Slope = 0.01
-    return self.Slope if Input < 0 else 1
+    return self.alpha if Input < 0 else 1
 
-class Identity:
-  def Identity(self, Input):
+class identity:
+  def forward(self, Input):
     return Input
-  def Derivative(self, Input):
+  def backward(self, Input):
     return 1
   
-class BinaryStep:
-  def BinaryStep(self, Input):
+class binarystep:
+  def forward(self, Input):
     Equation = np.vectorize(self.EquationForBinaryStep, otypes=[float])
     return Equation(Input)
   def EquationForBinaryStep(self, Input):
     return 0 if (Input < 0) else 1
-  def Derivative(self, Input):
+  def backward(self, Input):
     return 1
     
-class SELU:
-  def SELU(self, Input):
+class selu:
+  def forward(self, Input):
     Equation = np.vectorize(self.EquationForSELU, otypes=[float])
     return 1.0507 * Equation(Input)
   def EquationForSELU(self, Input):
     return 1.67326 * (np.exp(Input) - 1) if (Input < 0) else Input
-  def Derivative(self, Input):
+  def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return 1.0507 * Equation(Input)
   def EquationForDerivative(self, Input):
     return 1.67326 * np.exp(Input) if (Input < 0) else 1
 
-class SiLU:
-  def SiLU(self, Input):
+class silu:
+  def forward(self, Input):
     return Input / (1 + np.exp(-Input))
-  def Derivative(self, Input):
+  def backward(self, Input):
     return (1 + np.exp(-Input) + (Input * np.exp(-Input))) / np.square(1 + np.exp(-Input))
   
-class Mish:
-  def Mish(self, Input):
+class mish:
+  def forward(self, Input):
     return Input * Tanh().Tanh(np.log(1 + np.exp(Input)))
-  def Derivative(self, Input):
+  def backward(self, Input):
     return (np.exp(Input) * ((4 * np.exp(2 * Input)) + np.exp(3 * Input) + (4 * (1 + Input)) + (np.exp(Input) * (6 + (4 * Input))))) / np.square(2 + (2 * np.exp(Input)) + np.exp(2 * Input))
 
-class Gaussian:
-  def Gaussian(self, Input):
+class gaussian:
+  def forward(self, Input):
     return np.exp(-np.square(Input))
-  def Derivative(self, Input):
+  def backward(self, Input):
     return -2 * Input * np.exp(-np.square(Input))
 
-class Softplus:
-  def Softplus(self, Input):
+class softplus:
+  def forward(self, Input):
     return np.log(1 + np.exp(Input))
-  def Derivative(self, Input):
+  def backward(self, Input):
     return 1 / (1 + np.exp(-Input))
 
-class Softmax:
-  def Softmax(self, Input):
+class softmax:
+  def forward(self, Input):
     return (Input - np.max(Input)) / np.sum(Input - np.max(Input)) # Check
-  def Derivative(self, Input):
+  def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input, np.sum(np.exp(Input)))
   def EquationForDerivative(self, Input, SumExpOfInput):
     return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
 
-class StableSoftmax:
-  def StableSoftmax(self, Input):
+class stablesoftmax:
+  def forward(self, Input):
     return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
-  def Derivative(self, Input):
+  def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input, np.sum(np.exp(Input)))
   def EquationForDerivative(self, Input, SumExpOfInput):

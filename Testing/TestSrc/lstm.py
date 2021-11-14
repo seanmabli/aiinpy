@@ -40,13 +40,13 @@ class lstm:
     self.CellMemGate = np.zeros((self.CellSize, self.HidSize))
 
     for i in range(self.CellSize):
-      self.ForgetGate[i, :] = ApplyActivation((self.WeightsInToForgetGate.T @ self.In[i, :]) + (self.WeightsHidToForgetGate.T @ self.Hid[i, :]) + self.ForgetGateBiases, 'Sigmoid')
-      self.InGate[i, :] = ApplyActivation((self.WeightsInToInGate.T @ self.In[i, :]) + (self.WeightsHidToInputGate.T @ self.Hid[i, :]) + self.InGateBiases, 'Sigmoid')
-      self.OutGate[i, :] = ApplyActivation((self.WeightsInToOutGate.T @ self.In[i, :]) + (self.WeightsHidToOutputGate.T @ self.Hid[i, :]) + self.OutGateBiases, 'Sigmoid')
-      self.CellMemGate[i, :] = ApplyActivation((self.WeightsInToCellMemGate.T @ self.In[i, :]) + (self.WeightsHidToCellMemGate.T @ self.Hid[i, :]) + self.CellMemGateBiases, 'Tanh')
+      self.ForgetGate[i, :] = ApplyActivation((self.WeightsInToForgetGate.T @ self.In[i, :]) + (self.WeightsHidToForgetGate.T @ self.Hid[i, :]) + self.ForgetGateBiases, sigmoid())
+      self.InGate[i, :] = ApplyActivation((self.WeightsInToInGate.T @ self.In[i, :]) + (self.WeightsHidToInputGate.T @ self.Hid[i, :]) + self.InGateBiases, sigmoid())
+      self.OutGate[i, :] = ApplyActivation((self.WeightsInToOutGate.T @ self.In[i, :]) + (self.WeightsHidToOutputGate.T @ self.Hid[i, :]) + self.OutGateBiases, sigmoid())
+      self.CellMemGate[i, :] = ApplyActivation((self.WeightsInToCellMemGate.T @ self.In[i, :]) + (self.WeightsHidToCellMemGate.T @ self.Hid[i, :]) + self.CellMemGateBiases, tanh())
 
       self.CellMem[i + 1, :] = (self.ForgetGate[i, :] * self.CellMem[i, :]) + (self.InGate[i, :] * self.CellMemGate[i, :])
-      self.Hid[i + 1, :] = self.OutGate[i, :] * ApplyActivation(self.CellMem[i + 1, :], 'Tanh')
+      self.Hid[i + 1, :] = self.OutGate[i, :] * ApplyActivation(self.CellMem[i + 1, :], tanh())
       self.Out[i, :] = ApplyActivation(self.WeightsHidToOut.T @ self.Hid[i + 1, :] + self.OutBias, self.OutActivation)
 
     return self.Out
@@ -79,8 +79,8 @@ class lstm:
       
       HidError += self.WeightsHidToOut @ OutError[i, :]
 
-      CellMemError += HidError * self.OutGate[i] * ActivationDerivative(ApplyActivation(self.CellMem[i + 1, :], 'Tanh'), 'Tanh')
-      OutGateError = HidError * ApplyActivation(self.CellMem[i + 1, :], 'Tanh')
+      CellMemError += HidError * self.OutGate[i] * ActivationDerivative(ApplyActivation(self.CellMem[i + 1, :], tanh()), tanh())
+      OutGateError = HidError * ApplyActivation(self.CellMem[i + 1, :], tanh())
 
       ForgetGateError = CellMemError * self.CellMem[i, :]
       InGateError = CellMemError * self.CellMemGate[i, :]
@@ -88,10 +88,10 @@ class lstm:
 
       CellMemError *= self.ForgetGate[i, :]
 
-      ForgetGateGradient = ActivationDerivative(self.ForgetGate[i, :], 'Sigmoid') * ForgetGateError
-      InGateGradient = ActivationDerivative(self.InGate[i, :], 'Sigmoid') * InGateError
-      OutGateGradient = ActivationDerivative(self.OutGate[i, :], 'Sigmoid') * OutGateError
-      CellMemGateGradient = ActivationDerivative(self.CellMemGate[i, :], 'Tanh') * CellMemGateError
+      ForgetGateGradient = ActivationDerivative(self.ForgetGate[i, :], sigmoid()) * ForgetGateError
+      InGateGradient = ActivationDerivative(self.InGate[i, :], sigmoid()) * InGateError
+      OutGateGradient = ActivationDerivative(self.OutGate[i, :], sigmoid()) * OutGateError
+      CellMemGateGradient = ActivationDerivative(self.CellMemGate[i, :], tanh()) * CellMemGateError
 
       HidError = self.WeightsHidToForgetGate @ ForgetGateError + self.WeightsHidToInputGate @ InGateError + self.WeightsHidToOutputGate @ OutGateError + self.WeightsHidToCellMemGate @ CellMemGateError
       InError[i, :] = self.WeightsInToForgetGate @ ForgetGateError + self.WeightsInToInGate @ InGateError + self.WeightsInToOutGate @ OutGateError + self.WeightsInToCellMemGate @ CellMemGateError

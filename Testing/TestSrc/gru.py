@@ -35,9 +35,9 @@ class gru:
     self.HidGate = np.zeros((self.CellSize, self.HidSize))
 
     for i in range(self.CellSize):
-      self.ResetGate[i, :] = ApplyActivation(self.WeightsInToResetGate.T @ self.In[i, :] + self.WeightsHidToResetGate.T @ self.Hid[i, :] + self.ResetGateBias, 'Sigmoid')
-      self.UpdateGate[i, :] = ApplyActivation(self.WeightsInToUpdateGate.T @ self.In[i, :] + self.WeightsHidToUpdateGate.T @ self.Hid[i, :] + self.UpdateGateBias, 'Sigmoid')
-      self.HidGate[i, :] = ApplyActivation(self.WeightsInToHidGate.T @ self.In[i, :] + self.WeightsHidToHidGate.T @ (self.Hid[i, :] * self.ResetGate[i, :]) + self.HidGateBias, 'Tanh')
+      self.ResetGate[i, :] = ApplyActivation(self.WeightsInToResetGate.T @ self.In[i, :] + self.WeightsHidToResetGate.T @ self.Hid[i, :] + self.ResetGateBias, sigmoid())
+      self.UpdateGate[i, :] = ApplyActivation(self.WeightsInToUpdateGate.T @ self.In[i, :] + self.WeightsHidToUpdateGate.T @ self.Hid[i, :] + self.UpdateGateBias, sigmoid())
+      self.HidGate[i, :] = ApplyActivation(self.WeightsInToHidGate.T @ self.In[i, :] + self.WeightsHidToHidGate.T @ (self.Hid[i, :] * self.ResetGate[i, :]) + self.HidGateBias, tanh())
   
       self.Hid[i + 1, :] = (1 - self.UpdateGate[i, :]) * self.Hid[i, :] + self.UpdateGate[i, :] * self.HidGate[i, :]
       self.Out[i, :] = ApplyActivation(self.WeightsHidToOut.T @ self.Hid[i + 1, :] + self.OutBias, self.OutActivation)
@@ -75,9 +75,9 @@ class gru:
       HidError += (self.WeightsHidToHidGate.T @ HidGateError) * self.ResetGate[i, :] + self.WeightsHidToResetGate.T @ ResetGateError + self.WeightsHidToUpdateGate.T @ UpdateGateError
       InError[i, :] = self.WeightsInToResetGate @ ResetGateError + self.WeightsInToUpdateGate @ UpdateGateError + self.WeightsInToHidGate @ HidGateError
 
-      ResetGateGradient = ActivationDerivative(self.ResetGate[i, :], 'Sigmoid') * ResetGateError
-      UpdateGateGradient = ActivationDerivative(self.UpdateGate[i, :], 'Sigmoid') * UpdateGateError
-      HidGateGradient = ActivationDerivative(self.HidGate[i, :], 'Tanh') * HidGateError
+      ResetGateGradient = ActivationDerivative(self.ResetGate[i, :], sigmoid()) * ResetGateError
+      UpdateGateGradient = ActivationDerivative(self.UpdateGate[i, :], sigmoid()) * UpdateGateError
+      HidGateGradient = ActivationDerivative(self.HidGate[i, :], tanh()) * HidGateError
 
       WeightsInToResetGateΔ += np.outer(self.In[i, :].T, ResetGateGradient)
       WeightsInToUpdateGateΔ += np.outer(self.In[i, :].T, UpdateGateGradient)

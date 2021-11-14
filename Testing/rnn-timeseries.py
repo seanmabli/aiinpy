@@ -1,12 +1,8 @@
-from testsrc.rnn import rnn
+import testsrc as ai
 from alive_progress import alive_bar
 import numpy as np
-import wandb
-import sys
 
-wandb.init(project='rnn-timeseries')
-
-rnn_model = rnn(InSize=1, OutSize=1, Type='ManyToMany', OutActivation='Identity', LearningRate=0.01)
+rnn_model = ai.rnn(InSize=1, OutSize=1, Type='ManyToMany', OutActivation=ai.identity(), LearningRate=0.01)
 
 Data = np.genfromtxt('testing\data\Timeseries\Airpassenger.csv', dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
@@ -27,7 +23,6 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     OutError = TrainingData[Random + 1 : Random + 6] - Out
     InError = rnn_model.backprop(OutError)
 
-    wandb.log({'Out Error': np.sum(abs(OutError))})
     bar()
 
   for Generation in range(NumOfTestGen):
@@ -38,6 +33,3 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     InError = rnn_model.backprop(OutError)
 
     bar()
-
-    wandb.log({'Real Data': TestData[Generation + 1]})
-    wandb.log({'Prediction': Out[0]})

@@ -1,11 +1,10 @@
 import numpy as np
-from testsrc.rnn import rnn
-from testsrc.model import model
+import testsrc as ai
 from data.posnegcon.VictorZhou import TrainingData, TestData
 from alive_progress import alive_bar
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
-Rnn = rnn(len(TrainingDataUniqueWords), 2, Type='ManyToOne', OutActivation='StableSoftmax', LearningRate=0.05)
+Rnn = ai.rnn(len(TrainingDataUniqueWords), 2, Type='ManyToOne', OutActivation=ai.stablesoftmax(), LearningRate=0.05)
 
 NumOfTrainGen = 15000
 NumOfTestGen = len(list(TestData.items()))

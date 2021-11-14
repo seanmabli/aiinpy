@@ -1,12 +1,9 @@
-from testsrc.gru import gru
+import testsrc as ai
 from alive_progress import alive_bar
 import numpy as np
 import wandb
-import sys
 
-wandb.init(project='gru')
-
-gru_model = gru(InSize=1, OutSize=1, OutActivation='Identity', LearningRate=0.01)
+gru_model = ai.gru(InSize=1, OutSize=1, OutActivation=ai.identity(), LearningRate=0.01)
 
 Data = np.genfromtxt('testing\data\Timeseries\Airpassenger.csv', dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
@@ -27,7 +24,6 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     OutError = TrainingData[Random + 1 : Random + 6] - Out
     InError = gru_model.backprop(OutError)
 
-    wandb.log({'Out Error': np.sum(abs(OutError))})
     bar()
 
   for Generation in range(NumOfTestGen):
@@ -38,5 +34,3 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     InError = gru_model.backprop(OutError)
 
     bar()
-
-    wandb.log({'Real Data': TestData[Generation + 6], 'Prediction': Out[4], 'Prediction Accuracy': abs(TestData[Generation + 6] - Out[4])})
