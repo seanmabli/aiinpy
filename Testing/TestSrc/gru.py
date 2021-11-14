@@ -23,7 +23,7 @@ class gru:
   def __copy__(self):
     return type(self)(self.InSize, self.OutSize, self.OutActivation, self.HidSize, self.LearningRate)
 
-  def forwardprop(self, In):
+  def forward(self, In):
     self.In = In
     self.CellSize = len(In)
 
@@ -44,7 +44,7 @@ class gru:
 
     return self.Out
 
-  def backprop(self, OutError):
+  def backward(self, OutError):
     InError = np.zeros(self.In.shape)
     HidError = np.zeros(self.HidSize)
 
