@@ -25,7 +25,11 @@ class neuroevolution:
   def mutate(self, FavorablePlayer):
     FavorableModel = self.Model[FavorablePlayer]
 
-    for i in range(self.PopulationSize):
+    for i in range(self.Model.shape[1]):
+      self.Model[0, i].Weights = FavorableModel[i].Weights
+      self.Model[0, i].Biases = FavorableModel[i].Biases
+
+    for i in range(1, self.PopulationSize):
       for j in range(self.Model.shape[1]):
         self.Model[i, j].Weights = FavorableModel[j].Weights
         self.Model[i, j].Biases = FavorableModel[j].Biases

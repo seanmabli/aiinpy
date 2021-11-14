@@ -1,12 +1,11 @@
 import numpy as np
-from testsrc.nn import nn
-from testsrc.neuroevolution import neuroevolution
+import testsrc as ai
 
 PopulationSize = 1000
 
-model = neuroevolution(4, 3, PopulationSize, [
-  nn(4, 6, 'Identity', 0.1),
-  nn(6, 3, 'Identity', 0.1)
+model = ai.neuroevolution(4, 3, PopulationSize, [
+  ai.nn(4, 6, 'Identity', 0.1),
+  ai.nn(6, 3, 'Identity', 0.1)
 ])
 
 DisplayShape = (960, 540)
@@ -30,6 +29,7 @@ Dino = np.array([np.array([20, DisplayShape[1] - DinoWalkShape[1]])] * Populatio
 
 for Generation in range(100):
   while np.sum(Alive) != 0:
+    # Object
     Object[0, :] -= Speed
 
     if Object[0, 0] <= -ObjectShape[0]:
@@ -38,7 +38,7 @@ for Generation in range(100):
           Score[i] += 1
           if Score[i] > HighScore:
             HighScore = Score[i]
-            print('New Highscore:', HighScore, "Generation:", Generation)
+            print("New High Score:", HighScore)
         
       Object[:, 0], ObjectType[0] = Object[:, 1], ObjectType[1]
       Object[:, 1], ObjectType[1] = Object[:, 2], ObjectType[2]
@@ -89,7 +89,9 @@ for Generation in range(100):
   Alive = np.array([True] * PopulationSize, dtype=bool)
   Velocity = np.array([0] * PopulationSize, dtype=float)
 
-  Object[0, :] += 400
+  Object[0, 0] += 400
+  Object[0, 1] += 400
+  Object[0, 2] += 400
 
   DinoShape = np.array([DinoWalkShape] * PopulationSize)
   Dino = np.array([np.array([20, DisplayShape[1] - DinoWalkShape[1]])] * PopulationSize)
