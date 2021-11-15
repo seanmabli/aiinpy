@@ -29,7 +29,7 @@ class conv:
 
     for i in range(0, self.OutShape[1], self.Stride[0]):
       for j in range(0, self.OutShape[2], self.Stride[1]):
-        self.Out[:, i, j] = np.sum(np.multiply(self.In[:, i : i + 3, j : j + 3], self.Filter), axis=(1, 2))
+        self.Out[:, i, j] = np.sum(np.multiply(self.In[:, i : i + self.FilterShape[1], j : j + self.FilterShape[2]], self.Filter), axis=(1, 2))
 
     self.Out += self.Bias[:, np.newaxis, np.newaxis]
     self.Out = ApplyActivation(self.Out, self.Activation)
@@ -43,7 +43,7 @@ class conv:
 
     for i in range(0, self.OutShape[1], self.Stride[0]):
       for j in range(0, self.OutShape[2], self.Stride[1]):
-        FilterΔ += self.In[:, i : (i + 3), j : (j + 3)] * OutGradient[:, i, j][:, np.newaxis, np.newaxis]
+        FilterΔ += self.In[:, i : i + self.FilterShape[1], j : j + self.FilterShape[2]] * OutGradient[:, i, j][:, np.newaxis, np.newaxis]
     
     self.Bias += np.sum(OutGradient, axis=(1, 2)) * self.LearningRate
     self.Filter += FilterΔ * self.LearningRate

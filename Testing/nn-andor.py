@@ -14,5 +14,5 @@ model = ai.model(2, 2, [
   ai.nn(16, 2, ai.sigmoid(), 0.1)
 ])
 
-model.train(InTrainData, OutTrainData)
+model.train(InTrainData, OutTrainData, 100)
 print(model.test(InTrainData, OutTrainData))

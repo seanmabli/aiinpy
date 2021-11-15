@@ -6,8 +6,18 @@ class model:
     self.InShape = InShape if isinstance(InShape, tuple) else tuple([InShape])
     self.OutShape = OutShape if isinstance(OutShape, tuple) else tuple([OutShape])
     self.Model = Model
-    
-  def train(self, InTrainData, OutTrainData):
+  
+  def forward(self, In):
+    for i in range(len(self.Model)):
+      In = self.Model[i].forward(In)
+    return In
+
+  def backward(self, OutError):
+    for i in reversed(range(len(self.Model))):
+      OutError = self.Model[i].backprop(OutError)
+    return OutError
+
+  def train(self, InTrainData, OutTrainData, NumOfGen):
     # Data Preprocessing
     NumOfData = (set(self.InShape) ^ set(InTrainData.shape)).pop()
     if InTrainData.shape.index(NumOfData) != 0:
@@ -20,13 +30,14 @@ class model:
       OutTrainData = np.transpose(OutTrainData, tuple([OutTrainData.shape.index(NumOfData)]) + tuple(x))
 
     # Training
-    with alive_bar(NumOfData) as bar:
-      for Generation in range (NumOfData):
-        In = InTrainData[Generation]
+    with alive_bar(NumOfGen) as bar:
+      for _ in range (NumOfGen):
+        Random = np.random.randint(0, NumOfData)
+        In = InTrainData[Random]
         for i in range(len(self.Model)):
           In = self.Model[i].forward(In)
 
-        OutError = OutTrainData[Generation] - In
+        OutError = OutTrainData[Random] - In
         for i in reversed(range(len(self.Model))):
           OutError = self.Model[i].backprop(OutError)
 
