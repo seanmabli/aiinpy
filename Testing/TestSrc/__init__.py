@@ -1,5 +1,6 @@
 from .activation import *
 from .conv import conv
+from .convtranspose import convtranspose
 from .dropout import dropout
 from .gru import gru
 from .lstm import lstm
