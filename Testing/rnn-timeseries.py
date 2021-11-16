@@ -21,7 +21,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     Out = rnn_model.forward(In)
 
     OutError = TrainingData[Random + 1 : Random + 6] - Out
-    InError = rnn_model.backprop(OutError)
+    InError = rnn_model.backward(OutError)
 
     bar()
 
@@ -30,6 +30,6 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     Out = rnn_model.forward(In)
 
     OutError = TestData[Generation + 1 : Generation + 6] - Out
-    InError = rnn_model.backprop(OutError)
+    InError = rnn_model.backward(OutError)
 
     bar()

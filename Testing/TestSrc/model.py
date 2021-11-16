@@ -14,7 +14,7 @@ class model:
 
   def backward(self, OutError):
     for i in reversed(range(len(self.Model))):
-      OutError = self.Model[i].backprop(OutError)
+      OutError = self.Model[i].backward(OutError)
     return OutError
 
   def train(self, InTrainData, OutTrainData, NumOfGen):
@@ -39,7 +39,7 @@ class model:
 
         OutError = OutTrainData[Random] - In
         for i in reversed(range(len(self.Model))):
-          OutError = self.Model[i].backprop(OutError)
+          OutError = self.Model[i].backward(OutError)
 
         bar()
 

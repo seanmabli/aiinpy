@@ -38,7 +38,7 @@ class leakyrelu:
   def __init__(self, alpha=0.01):
     self.alpha = alpha
   def forward(self, Input):
-    return np.maximum(0.01 * Input, Input)
+    return np.maximum(self.alpha * Input, Input)
   def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input)

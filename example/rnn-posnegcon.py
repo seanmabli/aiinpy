@@ -27,7 +27,7 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     NumberCorrect = int(np.argmax(Output) == (1 if items[Random][1] == True else 0))
 
     OutputError = RealOutput - Output
-    rnn_model.backprop(OutputError)
+    rnn_model.backward(OutputError)
     bar()
 
   NumberCorrect = 0

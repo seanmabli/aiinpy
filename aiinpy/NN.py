@@ -21,7 +21,7 @@ class nn:
 
     return self.Out.reshape(self.OutShape)
 
-  def backprop(self, OutError):
+  def backward(self, OutError):
     OutError = OutError.flatten()
 
     OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError

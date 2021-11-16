@@ -10,6 +10,7 @@ For 0.0.17 (12-1-2021):
 - Train w/ Transfer Learning
 - Add Deep Recurrent Neural Networks (DRNN)
 - Add Bidirectional Recurrent Neural Networks (BRNN)
+- Image segmentation with conv
 
 For 0.0.18 (1-1-2022):
 - Transfer from numpy/python to assembly

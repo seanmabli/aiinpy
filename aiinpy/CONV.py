@@ -31,7 +31,7 @@ class conv:
 
     return self.Out
   
-  def backprop(self, OutError):
+  def backward(self, OutError):
     FilterΔ = np.zeros(self.FilterShape)
     
     OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError

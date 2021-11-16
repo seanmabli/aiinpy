@@ -26,7 +26,7 @@ class model:
 
         OutError = OutTrainData[Generation] - In
         for i in reversed(range(len(self.Model))):
-          OutError = self.Model[i].backprop(OutError)
+          OutError = self.Model[i].backward(OutError)
 
         bar()
 

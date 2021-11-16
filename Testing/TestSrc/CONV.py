@@ -2,7 +2,7 @@ import numpy as np
 from .activation import *
 
 class conv:
-  def __init__(self, InShape, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1)):
+  def __init__(self, InShape, FilterShape, LearningRate, Activation=identity, Padding=False, Stride=(1, 1)):
     self.InShape, self.FilterShape, self.LearningRate, self.Activation, self.Padding, self.Stride = InShape, FilterShape, LearningRate, Activation, Padding, Stride
     if len(InShape) == 2:
       InShape = tuple([self.FilterShape[0]]) + InShape
@@ -36,7 +36,7 @@ class conv:
 
     return self.Out
   
-  def backprop(self, OutError):
+  def backward(self, OutError):
     FilterΔ = np.zeros(self.FilterShape)
     
     OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError
@@ -56,11 +56,11 @@ class conv:
     if np.ndim(self.InError) == 3:
       for i in range(int(self.InShape[1] / self.Stride[0])):
         for j in range(int(self.InShape[2] / self.Stride[1])):
-         self.InError[:, i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + 3, j:j + 3]), axis=(1, 2))
+         self.InError[:, i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.FilterShape[1], j:j + self.FilterShape[2]]), axis=(1, 2))
        
     if np.ndim(self.InError) == 2:
       for i in range(int(self.InShape[0] / self.Stride[0])):
         for j in range(int(self.InShape[1] / self.Stride[1])):
-         self.InError[i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + 3, j:j + 3]))
+         self.InError[i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.FilterShape[1], j:j + self.FilterShape[2]]))
 
     return self.InError

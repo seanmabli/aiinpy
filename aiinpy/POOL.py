@@ -30,7 +30,7 @@ class pool:
           self.Out[:, i, j] = np.sum(In[:, i * self.Stride[0] : i * self.Stride[0] + 2, j * self.Stride[1] : j * self.Stride[1] + 2], axis=(1, 2))
     return self.Out
 
-  def backprop(self, OutError):
+  def backward(self, OutError):
     if self.Type == 'Max' or self.Type == 'Min':
       return np.repeat(np.repeat(OutError, 2, axis=1), 2, axis=2) * np.equal(np.repeat(np.repeat(self.Out, 2, axis=1), 2, axis=2), self.In).astype(int)
     elif self.Type == 'Mean' or self.Type == 'Sum':

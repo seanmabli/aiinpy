@@ -48,7 +48,7 @@ class lstm:
 
     return self.Out
 
-  def backprop(self, OutError):
+  def backward(self, OutError):
     InError = np.zeros(self.In.shape)
     HidError = np.zeros(self.HidSize)
     CellMemError = np.zeros(self.HidSize)
