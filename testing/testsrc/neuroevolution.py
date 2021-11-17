@@ -5,15 +5,13 @@ from copy import copy
 class neuroevolution:
   def __init__(self, InSize, OutSize, PopulationSize, Model):
     self.InSize, self.OutSize, self.PopulationSize = InSize, OutSize, PopulationSize
-    self.Weights = np.random.uniform(-1, 1, (PopulationSize, InSize, OutSize))
-    self.Biases = np.random.uniform(0, 0, (PopulationSize, OutSize))
     
     self.Model = np.zeros((PopulationSize, len(Model)), dtype=object)
     for i in range(PopulationSize):
       for j in range(len(Model)):
         self.Model[i, j] = copy(Model[j])
 
-  def forward(self, In):
+  def forwardmulti(self, In):
     Out = np.zeros((self.PopulationSize, self.OutSize))
     for i in range(self.PopulationSize):
       Hid = In
@@ -21,6 +19,12 @@ class neuroevolution:
         Hid = self.Model[i, j].forward(Hid)
       Out[i] = Hid
     return Out
+
+  def forwardsingle(self, In, Player):
+    Out = np.zeros(self.OutSize)
+    for j in range(self.Model.shape[1]):
+      In = self.Model[Player, j].forward(In)
+    return In
 
   def mutate(self, FavorablePlayer):
     FavorableModel = self.Model[FavorablePlayer]

@@ -6,32 +6,26 @@ import numpy as np
 - Add PReLU
 '''
 
-def ApplyActivation(Input, Activation):
-  return Activation.forward(Input)
-
-def ActivationDerivative(Input, Activation):
-  return Activation.backward(Input)
-
 class sigmoid:
-  def forward(self, Input):
+  def forward(Input):
     return 1 / (1 + np.exp(-Input))
-  def backward(self, Input):
+  def backward(Input):
     return Input * (1 - Input)
 
 class tanh:
-  def forward(self, Input):
+  def forward(Input):
     return np.tanh(Input)
-  def backward(self, Input):
+  def backward(Input):
     return 1 - np.square(Input)
 
 class relu:
-  def forward(self, Input):
+  def forward(Input):
     Output = np.maximum(0, Input)
     return Output
-  def backward(self, Input):
+  def backward(Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input)
-  def EquationForDerivative(self, Input):
+  def EquationForDerivative(Input):
     return 0 if (Input <= 0) else 1
 
 class leakyrelu:
@@ -106,10 +100,10 @@ class softmax:
     return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
 
 class stablesoftmax:
-  def forward(self, Input):
+  def forward(Input):
     return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
-  def backward(self, Input):
+  def backward(Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input, np.sum(np.exp(Input)))
-  def EquationForDerivative(self, Input, SumExpOfInput):
+  def EquationForDerivative(Input, SumExpOfInput):
     return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2

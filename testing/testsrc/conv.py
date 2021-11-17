@@ -32,7 +32,7 @@ class conv:
         self.Out[:, i, j] = np.sum(np.multiply(self.In[:, i : i + self.FilterShape[1], j : j + self.FilterShape[2]], self.Filter), axis=(1, 2))
 
     self.Out += self.Bias[:, np.newaxis, np.newaxis]
-    self.Out = ApplyActivation(self.Out, self.Activation)
+    self.Out = self.Activation.forward(self.Out)
 
     return self.Out
   

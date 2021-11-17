@@ -17,14 +17,14 @@ class nn:
     self.In = In.flatten()
     self.Out = self.Weights.T @ self.In + self.Biases
   
-    self.Out = ApplyActivation(self.Out, self.Activation)
+    self.Out = self.Activation.forward(self.Out)
 
     return self.Out.reshape(self.OutShape)
 
   def backward(self, OutError):
     OutError = OutError.flatten()
     
-    OutGradient = ActivationDerivative(self.Out, self.Activation) * OutError
+    OutGradient = self.Activation.backward(self.Out) * OutError
       
     InputError = self.Weights @ OutError
       
