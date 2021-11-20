@@ -3,14 +3,13 @@ New In 0.0.17 (12-1-2021):
 - Neuroevolution for any model
 
 For 0.0.17 (12-1-2021):
-- Create Transformer
 - aiinpy wiki/documentation and detailed blog posts about the diffrent functionallities
+- Image segmentation with conv
 - Create General Adversarial Networks (GAN)
+- Create Transformer
 - Train w/ Neural Evolution of Augmented Topologies (NEAT)
-- Train w/ Transfer Learning
 - Add Deep Recurrent Neural Networks (DRNN)
 - Add Bidirectional Recurrent Neural Networks (BRNN)
-- Image segmentation with conv
 
 For 0.0.18 (1-1-2022):
 - Transfer from numpy/python to assembly
