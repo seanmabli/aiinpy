@@ -18,6 +18,17 @@
   padding-right: 10px;
 }
 
+.about {
+  float: left;
+  width: 25%;
+  padding-right: 10px;
+}
+
+.blog {
+  float: left;
+  width: 75%;
+}
+
 .box {
   padding-top: 5px;
   padding-bottom: 5px;
@@ -55,4 +66,14 @@ h2 {
 
 .lighter {
   font-weight: lighter;
+}
+
+@media screen and (max-width: 600px) {
+  .about {
+    display: none;
+  }
+
+  .blog {
+    width: 100%;
+  }
 }
