@@ -1,4 +1,4 @@
-wandb/
+/wandb
 
 __pycache__/
 *.py[cod]
@@ -40,3 +40,20 @@ coverage.xml
 *.pot
 
 docs/_build/
+
+website/node_modules
+website/.pnp
+.pnp.js
+
+website/coverage
+website/build
+
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
