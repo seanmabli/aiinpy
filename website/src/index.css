@@ -34,16 +34,13 @@
   padding-bottom: 5px;
 }
 
-p {
+.p {
   font-size: 26px;
   color: #838383;
   font-weight: bold;
 }
 
 .link {
-  font-size: 26px;
-  color: #838383;
-  font-weight: bold;
   text-decoration: none;
 }
 
@@ -51,13 +48,13 @@ p {
   text-decoration: underline;
 }
 
-h1 {
+.h1 {
   display: inline-block;
   font-size: 18px;
   color: #838383;
 }
 
-h2 {
+.h2 {
   font-size: 18px;
   color: #838383;
   font-weight: lighter;
@@ -66,6 +63,10 @@ h2 {
 
 .lighter {
   font-weight: lighter;
+}
+
+.notext-decoration {
+  text-decoration: none;
 }
 
 @media screen and (max-width: 600px) {
