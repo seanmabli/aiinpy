@@ -1,12 +1,16 @@
-def texttobinary(In):
-  Dec = list(bytearray(In, "utf8"))
-  Out = [''] * len(In)
-  for i in range(len(In)):
-    Out[i] = bin(Dec[i]).replace("b", ("0"*(9-len(bin(Dec[i])))))
-  return Out
+class texttobinary:
+  def forward(In):
+    Dec = list(bytearray(In, "utf8"))
+    Out = [''] * len(In)
+    for i in range(len(In)):
+      Out[i] = bin(Dec[i]).replace("b", ("0"*(9-len(bin(Dec[i])))))
+    return Out
+  def backward(In):
+    return In
 
-def binarytotext(In):
-  Out = ""
-  for i in range(len(In)):
-    Out += chr(int(In[i], 2))
-  return Out
+class binarytotext:
+  def forward(In):
+    Out = ''
+    for i in range(len(In)):
+      Out += chr(int(In[i], 2))
+    return Out

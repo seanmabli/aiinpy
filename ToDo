@@ -4,7 +4,6 @@ New In 0.0.17 (12-1-2021):
 
 For 0.0.17 (12-1-2021):
 - aiinpy wiki/documentation and detailed blog posts about the diffrent functionallities
-- make text to binary class with inegration
 - Image segmentation with conv
 - Create General Adversarial Networks (GAN)
 - Create Transformer
