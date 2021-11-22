@@ -1,33 +1,28 @@
 import testsrc as ai
 import numpy as np
-import sys
 import inspect
+import json
 
-files = np.array([], dtype=str)
-classes = np.array([], dtype=str)
-inits = np.array([], dtype=str)
-source = inspect.getsource(ai)
+classes = np.array([], dtype=object)
+title = np.array([])
+source = np.array([])
+url = np.array([])
 
-while source.find('from') != -1:
-  files = np.append(files, source[source.find('from') + 6 : source.find('import') - 1])
-  source = source[source.find('import') + 6:]
+for name, obj in inspect.getmembers(ai):
+  if inspect.isclass(obj):
+    classes = np.append(classes, obj)
 
-for i in range(len(files)):
-  source = inspect.getsource(getattr(ai, files[i]))
-  while source.find('from') != -1:
-    files = np.append(files, source[source.find('from') + 6 : source.find('import') - 1])
-    source = source[source.find('import') + 6:]
-    i = 0
-  while source.find('class') != -1:
-    if source[source.find('class') + 6 : source.find(':')] != '':
-      classes = np.append(classes, source[source.find('class') + 6 : source.find(':')])
-    source = source[source.find(':') + 1:]
-    i = 0
-  while source.find('init') != -1:
-    inits = np.append(inits, source[source.find('__(') + 2 : source.find(':')])
-    source = source[source.find(')') + 1:]
-    i = 0
+for i in range(len(classes)):
+  title = np.append(title, 'aiinpy.' + classes[i].__name__)
+  url = np.append(url, classes[i].__name__)
+  source = np.append(source, inspect.getsource(classes[i]))
+  if source[i].find('__init__') != -1:
+    source[i] = 'aiinpy' + classes[i].__name__ + source[i][source[i].find('__init__') + 8 : source[i].find('):') + 1]
+  else:
+    source[i] = 'aiinpy' + classes[i].__name__ + '()'
 
-print(files)
-print(classes)
-print(inits)
+data = np.array([title, source, url], dtype=str)
+data = np.rot90(data)
+
+with open("website\src\content.json", "w") as write_file:
+  json.dump({"pages": data.tolist()}, write_file, sort_keys=True, indent=2)

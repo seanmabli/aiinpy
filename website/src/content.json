@@ -1,0 +1,124 @@
+{
+  "pages": [
+    [
+      "aiinpy.texttobinary",
+      "aiinpytexttobinary()",
+      "texttobinary"
+    ],
+    [
+      "aiinpy.tanh",
+      "aiinpytanh()",
+      "tanh"
+    ],
+    [
+      "aiinpy.stablesoftmax",
+      "aiinpystablesoftmax()",
+      "stablesoftmax"
+    ],
+    [
+      "aiinpy.softplus",
+      "aiinpysoftplus()",
+      "softplus"
+    ],
+    [
+      "aiinpy.softmax",
+      "aiinpysoftmax()",
+      "softmax"
+    ],
+    [
+      "aiinpy.silu",
+      "aiinpysilu()",
+      "silu"
+    ],
+    [
+      "aiinpy.sigmoid",
+      "aiinpysigmoid()",
+      "sigmoid"
+    ],
+    [
+      "aiinpy.selu",
+      "aiinpyselu()",
+      "selu"
+    ],
+    [
+      "aiinpy.rnn",
+      "aiinpyrnn(self, InSize, OutSize, Type, OutActivation=stablesoftmax(), HidSize=64, LearningRate=0.05)",
+      "rnn"
+    ],
+    [
+      "aiinpy.relu",
+      "aiinpyrelu()",
+      "relu"
+    ],
+    [
+      "aiinpy.pool",
+      "aiinpypool(self, Stride, FilterShape, Type)",
+      "pool"
+    ],
+    [
+      "aiinpy.nn",
+      "aiinpynn(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
+      "nn"
+    ],
+    [
+      "aiinpy.neuroevolution",
+      "aiinpyneuroevolution(self, InSize, OutSize, PopulationSize, Model)",
+      "neuroevolution"
+    ],
+    [
+      "aiinpy.model",
+      "aiinpymodel(self, InShape, OutShape, Model)",
+      "model"
+    ],
+    [
+      "aiinpy.mish",
+      "aiinpymish()",
+      "mish"
+    ],
+    [
+      "aiinpy.lstm",
+      "aiinpylstm(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
+      "lstm"
+    ],
+    [
+      "aiinpy.leakyrelu",
+      "aiinpyleakyrelu(self, alpha=0.01)",
+      "leakyrelu"
+    ],
+    [
+      "aiinpy.identity",
+      "aiinpyidentity()",
+      "identity"
+    ],
+    [
+      "aiinpy.gru",
+      "aiinpygru(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
+      "gru"
+    ],
+    [
+      "aiinpy.gaussian",
+      "aiinpygaussian()",
+      "gaussian"
+    ],
+    [
+      "aiinpy.dropout",
+      "aiinpydropout(self, DropoutRate)",
+      "dropout"
+    ],
+    [
+      "aiinpy.convtranspose",
+      "aiinpyconvtranspose(self, InShape, FilterShape, LearningRate, Activation, Padding=False, Stride=(1, 1))",
+      "convtranspose"
+    ],
+    [
+      "aiinpy.conv",
+      "aiinpyconv(self, InShape, FilterShape, LearningRate, Activation=identity, Padding=False, Stride=(1, 1))",
+      "conv"
+    ],
+    [
+      "aiinpy.binarystep",
+      "aiinpybinarystep()",
+      "binarystep"
+    ]
+  ]
+}
