@@ -1,124 +1,146 @@
-{
-  "pages": [
-    [
-      "aiinpy.texttobinary",
-      "aiinpytexttobinary()",
-      "texttobinary"
-    ],
-    [
-      "aiinpy.tanh",
-      "aiinpytanh()",
-      "tanh"
-    ],
-    [
-      "aiinpy.stablesoftmax",
-      "aiinpystablesoftmax()",
-      "stablesoftmax"
-    ],
-    [
-      "aiinpy.softplus",
-      "aiinpysoftplus()",
-      "softplus"
-    ],
-    [
-      "aiinpy.softmax",
-      "aiinpysoftmax()",
-      "softmax"
-    ],
-    [
-      "aiinpy.silu",
-      "aiinpysilu()",
-      "silu"
-    ],
-    [
-      "aiinpy.sigmoid",
-      "aiinpysigmoid()",
-      "sigmoid"
-    ],
-    [
-      "aiinpy.selu",
-      "aiinpyselu()",
-      "selu"
-    ],
-    [
-      "aiinpy.rnn",
-      "aiinpyrnn(self, InSize, OutSize, Type, OutActivation=stablesoftmax(), HidSize=64, LearningRate=0.05)",
-      "rnn"
-    ],
-    [
-      "aiinpy.relu",
-      "aiinpyrelu()",
-      "relu"
-    ],
-    [
-      "aiinpy.pool",
-      "aiinpypool(self, Stride, FilterShape, Type)",
-      "pool"
-    ],
-    [
-      "aiinpy.nn",
-      "aiinpynn(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-      "nn"
-    ],
-    [
-      "aiinpy.neuroevolution",
-      "aiinpyneuroevolution(self, InSize, OutSize, PopulationSize, Model)",
-      "neuroevolution"
-    ],
-    [
-      "aiinpy.model",
-      "aiinpymodel(self, InShape, OutShape, Model)",
-      "model"
-    ],
-    [
-      "aiinpy.mish",
-      "aiinpymish()",
-      "mish"
-    ],
-    [
-      "aiinpy.lstm",
-      "aiinpylstm(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
-      "lstm"
-    ],
-    [
-      "aiinpy.leakyrelu",
-      "aiinpyleakyrelu(self, alpha=0.01)",
-      "leakyrelu"
-    ],
-    [
-      "aiinpy.identity",
-      "aiinpyidentity()",
-      "identity"
-    ],
-    [
-      "aiinpy.gru",
-      "aiinpygru(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
-      "gru"
-    ],
-    [
-      "aiinpy.gaussian",
-      "aiinpygaussian()",
-      "gaussian"
-    ],
-    [
-      "aiinpy.dropout",
-      "aiinpydropout(self, DropoutRate)",
-      "dropout"
-    ],
-    [
-      "aiinpy.convtranspose",
-      "aiinpyconvtranspose(self, InShape, FilterShape, LearningRate, Activation, Padding=False, Stride=(1, 1))",
-      "convtranspose"
-    ],
-    [
-      "aiinpy.conv",
-      "aiinpyconv(self, InShape, FilterShape, LearningRate, Activation=identity, Padding=False, Stride=(1, 1))",
-      "conv"
-    ],
-    [
-      "aiinpy.binarystep",
-      "aiinpybinarystep()",
-      "binarystep"
-    ]
-  ]
-}
+[
+  {
+    "title": "aiinpy.texttobinary",
+    "function": "aiinpytexttobinary()",
+    "url": "/texttobinary",
+    "id": "texttobinary"
+  },
+  {
+    "title": "aiinpy.tanh",
+    "function": "aiinpytanh()",
+    "url": "/tanh",
+    "id": "tanh"
+  },
+  {
+    "title": "aiinpy.stablesoftmax",
+    "function": "aiinpystablesoftmax()",
+    "url": "/stablesoftmax",
+    "id": "stablesoftmax"
+  },
+  {
+    "title": "aiinpy.softplus",
+    "function": "aiinpysoftplus()",
+    "url": "/softplus",
+    "id": "softplus"
+  },
+  {
+    "title": "aiinpy.softmax",
+    "function": "aiinpysoftmax()",
+    "url": "/softmax",
+    "id": "softmax"
+  },
+  {
+    "title": "aiinpy.silu",
+    "function": "aiinpysilu()",
+    "url": "/silu",
+    "id": "silu"
+  },
+  {
+    "title": "aiinpy.sigmoid",
+    "function": "aiinpysigmoid()",
+    "url": "/sigmoid",
+    "id": "sigmoid"
+  },
+  {
+    "title": "aiinpy.selu",
+    "function": "aiinpyselu()",
+    "url": "/selu",
+    "id": "selu"
+  },
+  {
+    "title": "aiinpy.rnn",
+    "function": "aiinpyrnn(self, InSize, OutSize, Type, OutActivation=stablesoftmax(), HidSize=64, LearningRate=0.05)",
+    "url": "/rnn",
+    "id": "rnn"
+  },
+  {
+    "title": "aiinpy.relu",
+    "function": "aiinpyrelu()",
+    "url": "/relu",
+    "id": "relu"
+  },
+  {
+    "title": "aiinpy.pool",
+    "function": "aiinpypool(self, Stride, FilterShape, Type)",
+    "url": "/pool",
+    "id": "pool"
+  },
+  {
+    "title": "aiinpy.nn",
+    "function": "aiinpynn(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
+    "url": "/nn",
+    "id": "nn"
+  },
+  {
+    "title": "aiinpy.neuroevolution",
+    "function": "aiinpyneuroevolution(self, InSize, OutSize, PopulationSize, Model)",
+    "url": "/neuroevolution",
+    "id": "neuroevolution"
+  },
+  {
+    "title": "aiinpy.model",
+    "function": "aiinpymodel(self, InShape, OutShape, Model)",
+    "url": "/model",
+    "id": "model"
+  },
+  {
+    "title": "aiinpy.mish",
+    "function": "aiinpymish()",
+    "url": "/mish",
+    "id": "mish"
+  },
+  {
+    "title": "aiinpy.lstm",
+    "function": "aiinpylstm(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
+    "url": "/lstm",
+    "id": "lstm"
+  },
+  {
+    "title": "aiinpy.leakyrelu",
+    "function": "aiinpyleakyrelu(self, alpha=0.01)",
+    "url": "/leakyrelu",
+    "id": "leakyrelu"
+  },
+  {
+    "title": "aiinpy.identity",
+    "function": "aiinpyidentity()",
+    "url": "/identity",
+    "id": "identity"
+  },
+  {
+    "title": "aiinpy.gru",
+    "function": "aiinpygru(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
+    "url": "/gru",
+    "id": "gru"
+  },
+  {
+    "title": "aiinpy.gaussian",
+    "function": "aiinpygaussian()",
+    "url": "/gaussian",
+    "id": "gaussian"
+  },
+  {
+    "title": "aiinpy.dropout",
+    "function": "aiinpydropout(self, DropoutRate)",
+    "url": "/dropout",
+    "id": "dropout"
+  },
+  {
+    "title": "aiinpy.convtranspose",
+    "function": "aiinpyconvtranspose(self, InShape, FilterShape, LearningRate, Activation, Padding=False, Stride=(1, 1))",
+    "url": "/convtranspose",
+    "id": "convtranspose"
+  },
+  {
+    "title": "aiinpy.conv",
+    "function": "aiinpyconv(self, InShape, FilterShape, LearningRate, Activation=identity, Padding=False, Stride=(1, 1))",
+    "url": "/conv",
+    "id": "conv"
+  },
+  {
+    "title": "aiinpy.binarystep",
+    "function": "aiinpybinarystep()",
+    "url": "/binarystep",
+    "id": "binarystep"
+  }
+]
