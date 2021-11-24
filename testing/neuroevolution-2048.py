@@ -5,14 +5,16 @@ from alive_progress import alive_bar
 
 wandb.init(project="2048")
 
-PopulationSize = 1000
+PopulationSize = 10
+NumOfRunPerPlayer = 100
+NumOfGenerations = 100
 
 model = ai.neuroevolution((4, 4), 4, PopulationSize, [
   ai.nn((4, 4), 16, ai.sigmoid(), 0.1),
   ai.nn(16, 4, ai.stablesoftmax(), 0.1)
 ])
 
-Alive = np.array([True] * PopulationSize, dtype=bool)
+Alive = True
 Score = np.zeros(PopulationSize, dtype=int)
 
 Board = np.ones((4, 4), dtype=int)
@@ -29,87 +31,84 @@ def NewRandom(Num):
 
 NewRandom(2)
 
-NumOfGenerations = 1000
-
 with alive_bar(NumOfGenerations) as bar:
   for Generation in range(NumOfGenerations):
     for Player in range(PopulationSize):
-      while Alive[Player]:
-        Out = model.forwardsingle(np.log2(Board) / 11, Player)
+      for _ in range(NumOfRunPerPlayer):
+        while Alive:
+          Out = model.forwardsingle(np.log2(Board) / 11, Player)
 
-        if np.max(Out) == Out[0]:
-          PreviousBoard[:, :] = Board[:, :].copy()
-          for _ in range(3):
-            for i in reversed(range(3)):
-              for j in range(4):
-                if Board[i, j] == Board[i + 1, j]:
-                  Board[i, j] *= 2
-                  Board[i + 1, j] = 1
-                if Board[i, j] == 1:
-                  Board[i, j] = Board[i + 1, j]
-                  Board[i + 1, j] = 1
-                  
-          NewRandom(1)
+          if np.max(Out) == Out[0]:
+            PreviousBoard[:, :] = Board[:, :].copy()
+            for _ in range(3):
+              for i in reversed(range(3)):
+                for j in range(4):
+                  if Board[i, j] == Board[i + 1, j]:
+                    Board[i, j] *= 2
+                    Board[i + 1, j] = 1
+                  if Board[i, j] == 1:
+                    Board[i, j] = Board[i + 1, j]
+                    Board[i + 1, j] = 1
 
-        if np.max(Out) == Out[1]:
-          PreviousBoard[:, :] = Board[:, :].copy()
-          for _ in range(3):
-            for i in range(4):
-              for j in range(1, 4):
-                if Board[i, j] == Board[i, j - 1]:
-                  Board[i, j] *= 2
-                  Board[i, j - 1] = 1
-                if Board[i, j] == 1:
-                  Board[i, j] = Board[i, j - 1]
-                  Board[i, j - 1] = 1
+            NewRandom(1)
 
-          NewRandom(1)
+          if np.max(Out) == Out[1]:
+            PreviousBoard[:, :] = Board[:, :].copy()
+            for _ in range(3):
+              for i in range(4):
+                for j in range(1, 4):
+                  if Board[i, j] == Board[i, j - 1]:
+                    Board[i, j] *= 2
+                    Board[i, j - 1] = 1
+                  if Board[i, j] == 1:
+                    Board[i, j] = Board[i, j - 1]
+                    Board[i, j - 1] = 1
 
-        if np.max(Out) == Out[2]:
-          PreviousBoard[:, :] = Board[:, :].copy()
-          for _ in range(3):
-            for i in range(1, 4):
-              for j in range(4):
-                if Board[i, j] == Board[i - 1, j]:
-                  Board[i, j] *= 2
-                  Board[i - 1, j] = 1
-                if Board[i, j] == 1:
-                  Board[i, j] = Board[i - 1, j]
-                  Board[i - 1, j] = 1
+            NewRandom(1)
 
-          NewRandom(1)
+          if np.max(Out) == Out[2]:
+            PreviousBoard[:, :] = Board[:, :].copy()
+            for _ in range(3):
+              for i in range(1, 4):
+                for j in range(4):
+                  if Board[i, j] == Board[i - 1, j]:
+                    Board[i, j] *= 2
+                    Board[i - 1, j] = 1
+                  if Board[i, j] == 1:
+                    Board[i, j] = Board[i - 1, j]
+                    Board[i - 1, j] = 1
 
-        if np.max(Out) == Out[3]:
-          PreviousBoard[:, :] = Board[:, :].copy()
-          for _ in range(3):
-            for i in range(4):
-              for j in reversed(range(3)):
-                if Board[i, j] == Board[i, j + 1]:
-                  Board[i, j] *= 2
-                  Board[i, j + 1] = 1
-                if Board[i, j] == 1:
-                  Board[i, j] = Board[i, j + 1]
-                  Board[i, j + 1] = 1
+            NewRandom(1)
 
-          NewRandom(1)
+          if np.max(Out) == Out[3]:
+            PreviousBoard[:, :] = Board[:, :].copy()
+            for _ in range(3):
+              for i in range(4):
+                for j in reversed(range(3)):
+                  if Board[i, j] == Board[i, j + 1]:
+                    Board[i, j] *= 2
+                    Board[i, j + 1] = 1
+                  if Board[i, j] == 1:
+                    Board[i, j] = Board[i, j + 1]
+                    Board[i, j + 1] = 1
 
-        Score[Player] = np.sum(Board[:, :])
+            NewRandom(1)
 
-        if np.array_equal(PreviousBoard[:, :], Board[:, :]):
-          Alive[Player] = False
+          Score[Player] = np.sum(Board[:, :])
 
-      Board = np.ones((4, 4), dtype=int)
-      PreviousBoard = np.ones((4, 4), dtype=int)
+          if np.array_equal(PreviousBoard[:, :], Board[:, :]):
+            Alive = False
 
-    if Generation % 10 == 0:
-      for Player in range(PopulationSize):
-        if Score[Player] == np.max(Score):
-          model.mutate(Player)
-          break
+        Board = np.ones((4, 4), dtype=int)
+        PreviousBoard = np.ones((4, 4), dtype=int)
+        Alive = True
 
-      wandb.log({"Score": np.max(Score)})
+    for Player in range(PopulationSize):
+      if Score[Player] == np.max(Score):
+        model.mutate(Player)
+        break
 
-      Score = np.zeros(PopulationSize, dtype=int)
+    wandb.log({"Score": np.max(Score)})
 
+    Score = np.zeros(PopulationSize, dtype=int)
     bar()
-    Alive = np.array([True] * PopulationSize, dtype=bool)

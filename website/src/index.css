@@ -41,6 +41,9 @@
 }
 
 .link {
+  font-size: 26px;
+  color: #838383;
+  font-weight: bold;
   text-decoration: none;
 }
 

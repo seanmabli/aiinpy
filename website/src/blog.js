@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import content from './content';
 import './index.css';
 
-function about() {
+function blog() {
   return(
     <div className="site">
       <div className="about">
@@ -12,11 +12,11 @@ function about() {
             <div>
               <Link to={item.url} className="h2 link"> {item.title} </Link> <br />
             </div>
-          ) 
+          )
         })}
       </div>
     </div>
   )
 }
 
-export default about;
+export default blog;
