@@ -16,7 +16,7 @@ class nn:
   def forward(self, In):
     self.In = In.flatten()
     self.Out = self.Weights.T @ self.In + self.Biases
-  
+    
     self.Out = self.Activation.forward(self.Out)
 
     return self.Out.reshape(self.OutShape)

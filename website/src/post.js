@@ -1,12 +1,11 @@
 import { useParams } from "react-router";
 import { Link } from 'react-router-dom';
-import content from './content.json';
+import content from './content';
 import './index.css';
 
 function Post() {
 
   const { id } = useParams();
-  console.log(id);
   const postcontent = content.filter(content => content.id === id);
 
   return (

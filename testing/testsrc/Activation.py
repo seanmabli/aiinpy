@@ -7,25 +7,25 @@ import numpy as np
 '''
 
 class sigmoid:
-  def forward(Input):
+  def forward(self, Input):
     return 1 / (1 + np.exp(-Input))
-  def backward(Input):
+  def backward(self, Input):
     return Input * (1 - Input)
 
 class tanh:
-  def forward(Input):
+  def forward(self, Input):
     return np.tanh(Input)
-  def backward(Input):
+  def backward(self, Input):
     return 1 - np.square(Input)
 
 class relu:
-  def forward(Input):
+  def forward(self, Input):
     Output = np.maximum(0, Input)
     return Output
-  def backward(Input):
+  def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
-    return Equation(Input)
-  def EquationForDerivative(Input):
+    return Equation( Input)
+  def EquationForDerivative(self, Input):
     return 0 if (Input <= 0) else 1
 
 class leakyrelu:
@@ -97,13 +97,13 @@ class softmax:
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input, np.sum(np.exp(Input)))
   def EquationForDerivative(self, Input, SumExpOfInput):
-    return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
+    return (np.exp(Input) * (SumExpOfInput - np.exp(Input))) / (SumExpOfInput) ** 2
 
 class stablesoftmax:
-  def forward(Input):
+  def forward(self, Input):
     return np.exp(Input - np.max(Input)) / np.sum(np.exp(Input - np.max(Input)))
-  def backward(Input):
+  def backward(self, Input):
     Equation = np.vectorize(self.EquationForDerivative, otypes=[float])
     return Equation(Input, np.sum(np.exp(Input)))
-  def EquationForDerivative(Input, SumExpOfInput):
-    return (np.exp(Input) * (SumExpOfInput - np.exp(Input)))/(SumExpOfInput) ** 2
+  def EquationForDerivative(self, Input, SumExpOfInput):
+    return (np.exp(Input) * (SumExpOfInput - np.exp(Input))) / (SumExpOfInput) ** 2

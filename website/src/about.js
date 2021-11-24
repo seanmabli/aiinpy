@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import content from './content.json';
+import content from './content';
 import './index.css';
 
 function about() {
