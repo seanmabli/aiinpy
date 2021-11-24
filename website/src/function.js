@@ -1,9 +1,13 @@
-import { Link } from 'react-router-dom';
+import { useParams } from "react-router";
 import content from './content';
 import './index.css';
 
-function blog() {
-  return(
+function Function() {
+
+  const { id } = useParams();
+  const postcontent = content.filter(content => content.id === id);
+  
+  return (
     <div className="site">
       <div className="about">
         <Link to="/" className="p notext-decoration">aiinpy</Link>
@@ -15,8 +19,15 @@ function blog() {
           )
         })}
       </div>
+      <div className="function">
+        {postcontent.map((item) => {
+          return (
+            <p>{item.title}</p>
+          ) 
+        })}
+      </div>
     </div>
-  )
+  );
 }
 
-export default blog;
+export default Function;
