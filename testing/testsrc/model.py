@@ -3,10 +3,13 @@ from alive_progress import alive_bar
 
 class model:
   def __init__(self, inshape, outshape, Model):
-    self.inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
+    inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
     self.outshape = outshape if isinstance(outshape, tuple) else tuple([outshape])
-    self.Model = Model
-  
+    self.Model, self.inshape = Model, inshape
+
+    for i in self.Model:
+      inshape = i.modelinit(inshape)
+
   def forward(self, input):
     for i in range(len(self.Model)):
       input = self.Model[i].forward(input)

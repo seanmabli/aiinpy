@@ -7,6 +7,9 @@ class dropout:
   def __copy__(self):
     return type(self)(self.DropoutRate)
 
+  def modelinit(self, inshape):
+    pass
+
   def forward(self, input):
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=input.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)

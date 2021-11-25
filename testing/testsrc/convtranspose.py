@@ -2,15 +2,18 @@ import numpy as np
 from .activation import *
 
 class convtranspose:
-  def __init__(self, inshape, filtershape, learningrate, activation, Padding=False, Stride=(1, 1)):
-    self.inshape, self.filtershape, self.learningrate, self.activation, self.Padding, self.Stride = inshape, filtershape, learningrate, activation, Padding, Stride
+  def __init__(self, inshape, filtershape, learningrate, activation, Padding=False, stride=(1, 1)):
+    self.inshape, self.filtershape, self.learningrate, self.activation, self.Padding, self.stride = inshape, filtershape, learningrate, activation, Padding, stride
     if len(inshape) == 2:
       inshape = tuple([self.filtershape[0]]) + inshape
-    self.outshape = np.array([filtershape[0], ((inshape[1] + 1) * filtershape[1]) / Stride[0], ((inshape[2] + 1) * filtershape[2]) / Stride[1]], dtype=np.int)
+    self.outshape = np.array([filtershape[0], ((inshape[1] + 1) * filtershape[1]) / stride[0], ((inshape[2] + 1) * filtershape[2]) / stride[1]], dtype=np.int)
     self.out = np.zeros(self.outshape)
 
     self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
     self.bias = np.zeros(self.filtershape[0])
+
+  def modelinit(self, inshape):
+    pass
 
   def forward(self, input):
     self.input = input
@@ -20,7 +23,7 @@ class convtranspose:
     self.out = np.zeros(self.outshape)
     for i in range(0, self.inshape[1]):
       for j in range(0, self.inshape[2]):
-        self.out[:, i * self.Stride[0] : i * self.Stride[0] + self.filtershape[1], j * self.Stride[1] : j * self.Stride[1] + self.filtershape[2]] += self.input[:, i, j][:, np.newaxis, np.newaxis] * self.Filter
+        self.out[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]] += self.input[:, i, j][:, np.newaxis, np.newaxis] * self.Filter
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
     self.out = applyactivation(self.out, self.activation)
@@ -38,7 +41,7 @@ class convtranspose:
 
     for i in range(0, self.inshape[1]):
       for j in range(0, self.inshape[2]):
-        FilterΔ += self.input[:, i, j][:, np.newaxis, np.newaxis] * outGradient[:, i * self.Stride[0] : i * self.Stride[0] + self.filtershape[1], j * self.Stride[1] : j * self.Stride[1] + self.filtershape[2]]
+        FilterΔ += self.input[:, i, j][:, np.newaxis, np.newaxis] * outGradient[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]]
 
     self.bias += np.sum(outGradient, axis=(1, 2)) * self.learningrate
     self.Filter += FilterΔ * self.learningrate
@@ -49,13 +52,13 @@ class convtranspose:
     
     self.inError = np.zeros(self.inshape)
     if np.ndim(self.inError) == 3:
-      for i in range(int(self.inshape[1] / self.Stride[0])):
-        for j in range(int(self.inshape[2] / self.Stride[1])):
-         self.inError[:, i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]]), axis=(1, 2))
+      for i in range(int(self.inshape[1] / self.stride[0])):
+        for j in range(int(self.inshape[2] / self.stride[1])):
+         self.inError[:, i * self.stride[0], j * self.stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]]), axis=(1, 2))
        
     if np.ndim(self.inError) == 2:
-      for i in range(int(self.inshape[0] / self.Stride[0])):
-        for j in range(int(self.inshape[1] / self.Stride[1])):
-         self.inError[i * self.Stride[0], j * self.Stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]]))
+      for i in range(int(self.inshape[0] / self.stride[0])):
+        for j in range(int(self.inshape[1] / self.stride[1])):
+         self.inError[i * self.stride[0], j * self.stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]]))
 
     return self.inError

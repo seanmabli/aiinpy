@@ -61,7 +61,7 @@
   },
   {
     "title": "aiinpy.pool",
-    "model": "aiinpy.pool(self, Stride, Filtershape, Type)",
+    "model": "aiinpy.pool(self, inshape, stride, filtershape, opperation)",
     "url": "/pool",
     "id": "pool"
   },
@@ -127,13 +127,13 @@
   },
   {
     "title": "aiinpy.convtranspose",
-    "model": "aiinpy.convtranspose(self, inshape, filtershape, learningrate, activation, Padding=False, Stride=(1, 1))",
+    "model": "aiinpy.convtranspose(self, inshape, filtershape, learningrate, activation, Padding=False, stride=(1, 1))",
     "url": "/convtranspose",
     "id": "convtranspose"
   },
   {
     "title": "aiinpy.conv",
-    "model": "aiinpy.conv(self, inshape, filtershape, learningrate, activation=identity, Padding=False, Stride=(1, 1))",
+    "model": "aiinpy.conv(self, inshape, outshape, filtershape, learningrate, activation=identity, Padding=False, stride=(1, 1))",
     "url": "/conv",
     "id": "conv"
   },

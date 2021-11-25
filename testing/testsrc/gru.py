@@ -23,6 +23,9 @@ class gru:
   def __copy__(self):
     return type(self)(self.inshape, self.outshape, self.outactivation, self.HidSize, self.learningrate)
 
+  def modelinit(self, inshape):
+    pass
+
   def forward(self, input):
     self.input = input
     self.cellSize = len(input)
