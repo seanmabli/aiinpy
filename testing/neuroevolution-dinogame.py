@@ -10,7 +10,7 @@ model = ai.neuroevolution(4, 3, PopulationSize, [
 
 DisplayShape = (960, 540)
 
-Alive = np.array([True] * PopulationSize, dtype=bool)
+alive = np.array([True] * PopulationSize, dtype=bool)
 Score = np.array([0] * PopulationSize)
 Velocity = np.array([0] * PopulationSize, dtype=float)
 
@@ -28,13 +28,13 @@ DinoShape = np.array([DinoWalkShape] * PopulationSize)
 Dino = np.array([np.array([20, DisplayShape[1] - DinoWalkShape[1]])] * PopulationSize)
 
 for Generation in range(100):
-  while np.sum(Alive) != 0:
+  while np.sum(alive) != 0:
     # Object
     Object[0, :] -= Speed
 
     if Object[0, 0] <= -ObjectShape[0]:
       for i in range (PopulationSize):
-        if Alive[i]:
+        if alive[i]:
           Score[i] += 1
           if Score[i] > HighScore:
             HighScore = Score[i]
@@ -48,20 +48,20 @@ for Generation in range(100):
         Object[0, 2] = np.random.randint(1000, 1400)
       if np.random.random_sample() <= 0.25:
         Object[1, 2] = DisplayShape[1] - (ObjectShape[1] + DinoWalkShape[1]) + np.random.randint(0, 10)
-        ObjectType[2] = 'Bird'
+        ObjectType[2] = 'bird'
       else:
         Object[1, 2] = DisplayShape[1] - ObjectShape[1] - np.random.randint(0, 20)
         ObjectType[2] = 'Cactus'
 
     # Dino
-    In = np.array([(Object[0, 0] - (20 + DinoDuckShape[0])) / 1400, 0 if ObjectType[0] == 'Cactus' else 1, (Object[0, 1] - (20 + DinoWalkShape[0])) / 1400, 0 if ObjectType[1] == 'Cactus' else 1])
-    Out = model.forwardmulti(In)
+    in = np.array([(Object[0, 0] - (20 + DinoDuckShape[0])) / 1400, 0 if ObjectType[0] == 'Cactus' else 1, (Object[0, 1] - (20 + DinoWalkShape[0])) / 1400, 0 if ObjectType[1] == 'Cactus' else 1])
+    out = model.forwardmulti(in)
 
     for i in range(PopulationSize):
-      if Out[i, 1] > Out[i, 0] and Out[i, 1] > Out[i, 2] and Dino[i, 1] == DisplayShape[1] - DinoShape[i, 1]: # Jump
+      if out[i, 1] > out[i, 0] and out[i, 1] > out[i, 2] and Dino[i, 1] == DisplayShape[1] - DinoShape[i, 1]: # Jump
         Velocity[i] = - 10
         DinoShape[i, :] = DinoWalkShape
-      if Out[i, 2] > Out[i, 0] and Out[i, 2] > Out[i, 1] and Dino[i, 1] == DisplayShape[1] - DinoShape[i, 1]: # Duck
+      if out[i, 2] > out[i, 0] and out[i, 2] > out[i, 1] and Dino[i, 1] == DisplayShape[1] - DinoShape[i, 1]: # Duck
         DinoShape[i, :] = DinoDuckShape
         Dino[i, 1] = DisplayShape[1] - DinoDuckShape[1]
 
@@ -76,7 +76,7 @@ for Generation in range(100):
     for i in range(PopulationSize):
       for j in range(len(Object[0])):
         if Dino[i, 0] < Object[0, j] + ObjectShape[0] and Dino[i, 0] + DinoShape[i, 0] > Object[0, j] and Dino[i, 1] < Object[1, j] + ObjectShape[1] and Dino[i, 1] + DinoShape[i, 1] > Object[1, j]:
-          Alive[i] = False
+          alive[i] = False
 
   # Mutate
   for i in range(PopulationSize):
@@ -86,7 +86,7 @@ for Generation in range(100):
 
   # Reset
   Score = np.array([0] * PopulationSize)
-  Alive = np.array([True] * PopulationSize, dtype=bool)
+  alive = np.array([True] * PopulationSize, dtype=bool)
   Velocity = np.array([0] * PopulationSize, dtype=float)
 
   Object[0, 0] += 400

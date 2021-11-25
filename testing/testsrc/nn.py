@@ -2,32 +2,32 @@ import numpy as np
 from .activation import *
 
 class nn:
-  def __init__(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0)):
-    self.WeightsInit, self.BiasesInit = WeightsInit, BiasesInit
-    self.InShape, self.OutShape = InShape, OutShape
-    self.Activation, self.LearningRate = Activation, LearningRate
+  def __init__(self, inshape, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0)):
+    self.weightsinit, self.biasesinit = weightsinit, biasesinit
+    self.inshape, self.outshape = inshape, outshape
+    self.activation, self.learningrate = activation, learningrate
     
-    self.Weights = np.random.uniform(WeightsInit[0], WeightsInit[1], (np.prod(InShape), np.prod(OutShape)))
-    self.Biases = np.random.uniform(BiasesInit[0], BiasesInit[1], np.prod(OutShape))
+    self.weights = np.random.uniform(weightsinit[0], weightsinit[1], (np.prod(inshape), np.prod(outshape)))
+    self.biases = np.random.uniform(biasesinit[0], biasesinit[1], np.prod(outshape))
     
   def __copy__(self):
-    return type(self)(self.InShape, self.OutShape, self.Activation, self.LearningRate, self.WeightsInit, self.BiasesInit)
+    return type(self)(self.inshape, self.outshape, self.activation, self.learningrate, self.weightsinit, self.biasesinit)
 
-  def forward(self, In):
-    self.In = In.flatten()
-    self.Out = self.Weights.T @ self.In + self.Biases
+  def forward(self, input):
+    self.input = input.flatten()
+    self.out = self.weights.T @ self.input + self.biases
     
-    self.Out = self.Activation.forward(self.Out)
+    self.out = self.activation.forward(self.out)
 
-    return self.Out.reshape(self.OutShape)
+    return self.out.reshape(self.outshape)
 
-  def backward(self, OutError):
-    OutError = OutError.flatten()
+  def backward(self, outError):
+    outError = outError.flatten()
     
-    OutGradient = self.Activation.backward(self.Out) * OutError
+    outGradient = self.activation.backward(self.out) * outError
       
-    InputError = self.Weights @ OutError
+    inputError = self.weights @ outError
       
-    self.Biases += OutGradient * self.LearningRate
-    self.Weights += np.outer(self.In.T, OutGradient) * self.LearningRate
-    return InputError.reshape(self.InShape)
+    self.biases += outGradient * self.learningrate
+    self.weights += np.outer(self.input.T, outGradient) * self.learningrate
+    return inputError.reshape(self.inshape)

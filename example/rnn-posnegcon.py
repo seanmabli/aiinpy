@@ -4,7 +4,7 @@ from data.posnegcon.VictorZhou import TrainingData, TestData
 import aiinpy as ai
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
-rnn_model = ai.rnn(len(TrainingDataUniqueWords), 2, Type='ManyToOne', OutActivation='StableSoftmax', LearningRate=0.05)
+rnn_model = ai.rnn(len(TrainingDataUniqueWords), 2, Type='ManyToOne', OutActivation='StableSoftmax', learningrate=0.05)
 
 NumOfTrainGen = 15000
 NumOfTestGen = len(list(TestData.items()))

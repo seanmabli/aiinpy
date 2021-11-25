@@ -1,46 +1,46 @@
-from Activation import *
+from activation import *
 from NN import NN
 import numpy as np
 
-def SingleHeadSelfAttention(In):
-  InToKey = NN(InSize=In.shape, OutSize=In.shape, Activation='Identity', LearningRate=0)
-  InToQuery = NN(InSize=In.shape, OutSize=In.shape, Activation='Identity', LearningRate=0)
-  InToValue = NN(InSize=In.shape, OutSize=In.shape, Activation='Identity', LearningRate=0)
+def SingleHeadSelfattention(in):
+  inToKey = NN(inshape=in.shape, outshape=in.shape, activation='Identity', learningrate=0)
+  inToQuery = NN(inshape=in.shape, outshape=in.shape, activation='Identity', learningrate=0)
+  inToValue = NN(inshape=in.shape, outshape=in.shape, activation='Identity', learningrate=0)
 
-  Key = InToKey.forward(In)
-  Query = InToQuery.forward(In)
-  Value = InToValue.forward(In)
+  Key = inToKey.forward(in)
+  Query = inToQuery.forward(in)
+  Value = inToValue.forward(in)
 
-  Out = np.dot(Query, Key.T) # MatMul
-  Out = Out / In.shape[1] ** 0.5 # Scale
+  out = np.dot(Query, Key.T) # MatMul
+  out = out / in.shape[1] ** 0.5 # Scale
   
-  Out[np.triu_indices(Out.shape[0], 1)] = float('-inf') # Mask (opt.)
+  out[np.triu_indices(out.shape[0], 1)] = float('-inf') # Mask (opt.)
 
-  Out = ApplyActivation(Out, "StableSoftmax") # SoftMax
-  Out = Out @ Value # MatMul
+  out = applyactivation(out, "StableSoftmax") # SoftMax
+  out = out @ Value # MatMul
 
-  return Out
+  return out
 
-def MultiHeadSelfAttention(In, NumOfHeads):
-  InToKey = NN(InShape=In.shape, OutShape=(In.shape[0], In.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
-  InToQuery = NN(InShape=In.shape, OutShape=(In.shape[0], In.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
-  InToValue = NN(InShape=In.shape, OutShape=(In.shape[0], In.shape[1] * NumOfHeads), Activation='Identity', LearningRate=0)
-  KeyQueryValueToOut = NN(InShape=(In.shape[0], In.shape[1] * NumOfHeads), OutShape=In.shape, Activation='Identity', LearningRate=0)
+def MultiHeadSelfattention(in, NumOfHeads):
+  inToKey = NN(inshape=in.shape, outshape=(in.shape[0], in.shape[1] * NumOfHeads), activation='Identity', learningrate=0)
+  inToQuery = NN(inshape=in.shape, outshape=(in.shape[0], in.shape[1] * NumOfHeads), activation='Identity', learningrate=0)
+  inToValue = NN(inshape=in.shape, outshape=(in.shape[0], in.shape[1] * NumOfHeads), activation='Identity', learningrate=0)
+  KeyQueryValueToout = NN(inshape=(in.shape[0], in.shape[1] * NumOfHeads), outshape=in.shape, activation='Identity', learningrate=0)
 
-  Key = InToKey.forward(In)
-  Query = InToQuery.forward(In)
-  Value = InToValue.forward(In)
+  Key = inToKey.forward(in)
+  Query = inToQuery.forward(in)
+  Value = inToValue.forward(in)
 
-  Out = np.dot(Query, Key.T) # MatMul
-  Out = Out / In.shape[1] ** 0.5 # Scale
+  out = np.dot(Query, Key.T) # MatMul
+  out = out / in.shape[1] ** 0.5 # Scale
   
-  Out[np.triu_indices(Out.shape[0], 1)] = float('-inf') # Mask (opt.)
+  out[np.triu_indices(out.shape[0], 1)] = float('-inf') # Mask (opt.)
 
-  Out = ApplyActivation(Out, "StableSoftmax") # SoftMax
-  Out = Out @ Value # MatMul
+  out = applyactivation(out, "StableSoftmax") # SoftMax
+  out = out @ Value # MatMul
 
-  Out = KeyQueryValueToOut.forward(Out)
-  return Out
+  out = KeyQueryValueToout.forward(out)
+  return out
 
-Input = np.array([[1, 0, 0], [0, 0, 1]])
-print(MultiHeadSelfAttention(Input, 8))
+input = np.array([[1, 0, 0], [0, 0, 1]])
+print(MultiHeadSelfattention(input, 8))

@@ -49,7 +49,7 @@
   },
   {
     "title": "aiinpy.rnn",
-    "model": "aiinpy.rnn(self, InSize, OutSize, Type, OutActivation=stablesoftmax(), HidSize=64, LearningRate=0.05)",
+    "model": "aiinpy.rnn(self, inshape, outshape, Type, outactivation=stablesoftmax(), HidSize=64, learningrate=0.05)",
     "url": "/rnn",
     "id": "rnn"
   },
@@ -61,25 +61,25 @@
   },
   {
     "title": "aiinpy.pool",
-    "model": "aiinpy.pool(self, Stride, FilterShape, Type)",
+    "model": "aiinpy.pool(self, Stride, Filtershape, Type)",
     "url": "/pool",
     "id": "pool"
   },
   {
     "title": "aiinpy.nn",
-    "model": "aiinpy.nn(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
+    "model": "aiinpy.nn(self, inshape, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0))",
     "url": "/nn",
     "id": "nn"
   },
   {
     "title": "aiinpy.neuroevolution",
-    "model": "aiinpy.neuroevolution(self, InSize, OutSize, PopulationSize, Model)",
+    "model": "aiinpy.neuroevolution(self, inshape, outshape, PopulationSize, Model)",
     "url": "/neuroevolution",
     "id": "neuroevolution"
   },
   {
     "title": "aiinpy.model",
-    "model": "aiinpy.model(self, InShape, OutShape, Model)",
+    "model": "aiinpy.model(self, inshape, outshape, Model)",
     "url": "/model",
     "id": "model"
   },
@@ -91,7 +91,7 @@
   },
   {
     "title": "aiinpy.lstm",
-    "model": "aiinpy.lstm(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
+    "model": "aiinpy.lstm(self, inshape, outshape, outactivation, HidSize=64, learningrate=0.05)",
     "url": "/lstm",
     "id": "lstm"
   },
@@ -109,7 +109,7 @@
   },
   {
     "title": "aiinpy.gru",
-    "model": "aiinpy.gru(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
+    "model": "aiinpy.gru(self, inshape, outshape, outactivation, HidSize=64, learningrate=0.05)",
     "url": "/gru",
     "id": "gru"
   },
@@ -127,13 +127,13 @@
   },
   {
     "title": "aiinpy.convtranspose",
-    "model": "aiinpy.convtranspose(self, InShape, FilterShape, LearningRate, Activation, Padding=False, Stride=(1, 1))",
+    "model": "aiinpy.convtranspose(self, inshape, filtershape, learningrate, activation, Padding=False, Stride=(1, 1))",
     "url": "/convtranspose",
     "id": "convtranspose"
   },
   {
     "title": "aiinpy.conv",
-    "model": "aiinpy.conv(self, InShape, FilterShape, LearningRate, Activation=identity, Padding=False, Stride=(1, 1))",
+    "model": "aiinpy.conv(self, inshape, filtershape, learningrate, activation=identity, Padding=False, Stride=(1, 1))",
     "url": "/conv",
     "id": "conv"
   },

@@ -7,13 +7,13 @@ class dropout:
   def __copy__(self):
     return type(self)(self.DropoutRate)
 
-  def forward(self, In):
-    self.Dropout = np.random.binomial(1, self.DropoutRate, size=In.shape)
+  def forward(self, input):
+    self.Dropout = np.random.binomial(1, self.DropoutRate, size=input.shape)
     self.Dropout = np.where(self.Dropout == 0, 1, 0)
-    return self.Dropout * In
+    return self.Dropout * input
 
-  def backward(self, OutError):
-    return self.Dropout * OutError  
+  def backward(self, outError):
+    return self.Dropout * outError  
     
-  def ChangeDropoutRate(self, NewRate):
+  def changeDropoutRate(self, NewRate):
     self.DropoutRate = NewRate

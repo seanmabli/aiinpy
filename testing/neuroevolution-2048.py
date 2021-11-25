@@ -14,7 +14,7 @@ model = ai.neuroevolution((4, 4), 4, PopulationSize, [
   ai.nn(16, 4, ai.stablesoftmax(), 0.1)
 ])
 
-Alive = True
+alive = True
 Score = np.zeros(PopulationSize, dtype=int)
 
 Board = np.ones((4, 4), dtype=int)
@@ -35,10 +35,10 @@ with alive_bar(NumOfGenerations) as bar:
   for Generation in range(NumOfGenerations):
     for Player in range(PopulationSize):
       for _ in range(NumOfRunPerPlayer):
-        while Alive:
-          Out = model.forwardsingle(np.log2(Board) / 11, Player)
+        while alive:
+          out = model.forwardsingle(np.log2(Board) / 11, Player)
 
-          if np.max(Out) == Out[0]:
+          if np.max(out) == out[0]:
             PreviousBoard[:, :] = Board[:, :].copy()
             for _ in range(3):
               for i in reversed(range(3)):
@@ -52,7 +52,7 @@ with alive_bar(NumOfGenerations) as bar:
 
             NewRandom(1)
 
-          if np.max(Out) == Out[1]:
+          if np.max(out) == out[1]:
             PreviousBoard[:, :] = Board[:, :].copy()
             for _ in range(3):
               for i in range(4):
@@ -66,7 +66,7 @@ with alive_bar(NumOfGenerations) as bar:
 
             NewRandom(1)
 
-          if np.max(Out) == Out[2]:
+          if np.max(out) == out[2]:
             PreviousBoard[:, :] = Board[:, :].copy()
             for _ in range(3):
               for i in range(1, 4):
@@ -80,7 +80,7 @@ with alive_bar(NumOfGenerations) as bar:
 
             NewRandom(1)
 
-          if np.max(Out) == Out[3]:
+          if np.max(out) == out[3]:
             PreviousBoard[:, :] = Board[:, :].copy()
             for _ in range(3):
               for i in range(4):
@@ -97,11 +97,11 @@ with alive_bar(NumOfGenerations) as bar:
           Score[Player] = np.sum(Board[:, :])
 
           if np.array_equal(PreviousBoard[:, :], Board[:, :]):
-            Alive = False
+            alive = False
 
         Board = np.ones((4, 4), dtype=int)
         PreviousBoard = np.ones((4, 4), dtype=int)
-        Alive = True
+        alive = True
 
     for Player in range(PopulationSize):
       if Score[Player] == np.max(Score):

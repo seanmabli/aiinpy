@@ -1,4 +1,5 @@
 /wandb
+/.github/
 
 __pycache__/
 *.py[cod]
@@ -58,45 +59,45 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-firebase-debug.log*
-firebase-debug.*.log*
+website/logs
+website/*.log
+website/npm-debug.log*
+website/yarn-debug.log*
+website/yarn-error.log*
+website/firebase-debug.log*
+website/firebase-debug.*.log*
 
-.firebase/
+website/.firebase/
 
-pids
-*.pid
-*.seed
-*.pid.lock
+website/pids
+website/*.pid
+website/*.seed
+website/*.pid.lock
 
-lib-cov
+website/lib-cov
 
-coverage
+website/coverage
 
-.nyc_output
+website/.nyc_output
 
-.grunt
+website/.grunt
 
-bower_components
+website/bower_components
 
-.lock-wscript
+website/.lock-wscript
 
-build/Release
+website/build/Release
 
-node_modules/
+website/node_modules/
 
-.npm
+website/.npm
 
-.eslintcache
+website/.eslintcache
 
-.node_repl_history
+website/.node_repl_history
 
-*.tgz
+website/*.tgz
 
-.yarn-integrity
+website/.yarn-integrity
 
-.env
+website/.env

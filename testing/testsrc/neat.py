@@ -1,18 +1,18 @@
 import numpy as np
 
-class NEAT:
-  def __init__(self, InSize, OutSize):
-    NodeGenes = np.zeros((InSize + OutSize)) # Global (Inovation Number)
-    ConnectGenes = np.zeros(5) # Global, (In Node, Out Node, Weight, Enabled / Disabled, Innovation Number) * Num Of Nodes
+class NEaT:
+  def __init__(self, inshape, outshape):
+    NodeGenes = np.zeros((inshape + outshape)) # Global (inovation Number)
+    connectGenes = np.zeros(5) # Global, (in Node, out Node, Weight, Enabled / Disabled, innovation Number) * Num Of Nodes
 
-  def forward(self, In):
+  def forward(self, in):
     print("Forward Prop")
 
   def Mutate(self):
     print("Mutate")
 
-  def Crossover(self):
-    print("Crossover")
+  def crossover(self):
+    print("crossover")
 
   def Speciation(self):
     print("Speciation") 
