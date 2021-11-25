@@ -6,11 +6,13 @@ function about() {
   return(
     <div className="site">
       <div className="about">
-        <Link to="/" className="p notext-decoration">aiinpy</Link>
+        <div className="box">
+          <Link to="/" className="p notext-decoration">aiinpy</Link>
+        </div>
         {content.map((item) => {
           return (
             <div>
-              <Link to={item.url} className="h2 link"> {item.title} </Link> <br />
+              <Link to={item.url} className="h1 lighter link"> {item.title} </Link> <br />
             </div>
           )
         })}
