@@ -29,9 +29,7 @@ function Function() {
               <div className="box">
                 <p className="p">{item.id}</p>
               </div>
-              <p className="h1 lighter">model:&nbsp;{item.model}</p> <br />
-              <p className="h1 lighter">forward:&nbsp;{item.forward}</p>  <br />
-              <p className="h1 lighter">backward:&nbsp;{item.backward}</p> <br />
+              <p className="h1 lighter">{item.model}</p> <br />
             </div>
           ) 
         })}

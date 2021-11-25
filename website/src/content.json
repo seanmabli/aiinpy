@@ -2,192 +2,144 @@
   {
     "title": "aiinpy.texttobinary",
     "model": "aiinpy.texttobinary()",
-    "forward": "forward(In)",
-    "backward": "backward(In)",
     "url": "/texttobinary",
     "id": "texttobinary"
   },
   {
     "title": "aiinpy.tanh",
     "model": "aiinpy.tanh()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/tanh",
     "id": "tanh"
   },
   {
     "title": "aiinpy.stablesoftmax",
     "model": "aiinpy.stablesoftmax()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/stablesoftmax",
     "id": "stablesoftmax"
   },
   {
     "title": "aiinpy.softplus",
     "model": "aiinpy.softplus()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/softplus",
     "id": "softplus"
   },
   {
     "title": "aiinpy.softmax",
     "model": "aiinpy.softmax()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/softmax",
     "id": "softmax"
   },
   {
     "title": "aiinpy.silu",
     "model": "aiinpy.silu()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/silu",
     "id": "silu"
   },
   {
     "title": "aiinpy.sigmoid",
     "model": "aiinpy.sigmoid()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/sigmoid",
     "id": "sigmoid"
   },
   {
     "title": "aiinpy.selu",
     "model": "aiinpy.selu()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/selu",
     "id": "selu"
   },
   {
     "title": "aiinpy.rnn",
     "model": "aiinpy.rnn(self, InSize, OutSize, Type, OutActivation=stablesoftmax(), HidSize=64, LearningRate=0.05)",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/rnn",
     "id": "rnn"
   },
   {
     "title": "aiinpy.relu",
     "model": "aiinpy.relu()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/relu",
     "id": "relu"
   },
   {
     "title": "aiinpy.pool",
     "model": "aiinpy.pool(self, Stride, FilterShape, Type)",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/pool",
     "id": "pool"
   },
   {
     "title": "aiinpy.nn",
     "model": "aiinpy.nn(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/nn",
     "id": "nn"
   },
   {
     "title": "aiinpy.neuroevolution",
     "model": "aiinpy.neuroevolution(self, InSize, OutSize, PopulationSize, Model)",
-    "forward": "forwardmulti(self, In)",
-    "backward": "",
     "url": "/neuroevolution",
     "id": "neuroevolution"
   },
   {
     "title": "aiinpy.model",
     "model": "aiinpy.model(self, InShape, OutShape, Model)",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/model",
     "id": "model"
   },
   {
     "title": "aiinpy.mish",
     "model": "aiinpy.mish()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/mish",
     "id": "mish"
   },
   {
     "title": "aiinpy.lstm",
     "model": "aiinpy.lstm(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/lstm",
     "id": "lstm"
   },
   {
     "title": "aiinpy.leakyrelu",
     "model": "aiinpy.leakyrelu(self, alpha=0.01)",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/leakyrelu",
     "id": "leakyrelu"
   },
   {
     "title": "aiinpy.identity",
     "model": "aiinpy.identity()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/identity",
     "id": "identity"
   },
   {
     "title": "aiinpy.gru",
     "model": "aiinpy.gru(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/gru",
     "id": "gru"
   },
   {
     "title": "aiinpy.gaussian",
     "model": "aiinpy.gaussian()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/gaussian",
     "id": "gaussian"
   },
   {
     "title": "aiinpy.dropout",
     "model": "aiinpy.dropout(self, DropoutRate)",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/dropout",
     "id": "dropout"
   },
   {
     "title": "aiinpy.convtranspose",
     "model": "aiinpy.convtranspose(self, InShape, FilterShape, LearningRate, Activation, Padding=False, Stride=(1, 1))",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/convtranspose",
     "id": "convtranspose"
   },
   {
     "title": "aiinpy.conv",
     "model": "aiinpy.conv(self, InShape, FilterShape, LearningRate, Activation=identity, Padding=False, Stride=(1, 1))",
-    "forward": "forward(self, In)",
-    "backward": "backward(self, OutError)",
     "url": "/conv",
     "id": "conv"
   },
   {
     "title": "aiinpy.binarystep",
     "model": "aiinpy.binarystep()",
-    "forward": "forward(self, Input)",
-    "backward": "backward(self, Input)",
     "url": "/binarystep",
     "id": "binarystep"
   }

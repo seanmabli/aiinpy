@@ -7,11 +7,9 @@ classes = np.array([], dtype=object)
 source = np.array([])
 
 title = np.array([])
+model = np.array([])
 url = np.array([])
 urlid = np.array([])
-model = np.array([])
-forward = np.array([])
-backward = np.array([])
 
 for name, obj in inspect.getmembers(ai):
   if inspect.isclass(obj):
@@ -27,16 +25,10 @@ for i in range(len(classes)):
   else:
     model = np.append(model, 'aiinpy.' + classes[i].__name__ + '()')
 
-  source[i] = source[i][source[i].find('forward') - 1 : ]
-  forward = np.append(forward, source[i][source[i].find('forward') : source[i].find('):') + 1])
-
-  source[i] = source[i][source[i].find('backward') - 1 : ]
-  backward = np.append(backward, source[i][source[i].find('backward') : source[i].find('):') + 1])
-
-data = np.array([title, model, forward, backward, url, urlid], dtype=str)
+data = np.array([title, model, url, urlid], dtype=str)
 data = np.rot90(data).tolist()
 
-jsondata = [{"title" : data[i][0], "model" : data[i][1], "forward" : data[i][2], "backward" : data[i][3], "url" : data[i][4], "id" : data[i][5]} for i in range(len(data))]
+jsondata = [{"title" : data[i][0], "model" : data[i][1], "url" : data[i][2], "id" : data[i][3]} for i in range(len(data))]
 
 with open("website\src\content.json", "w") as write_file:
   json.dump(jsondata, write_file, indent=2)
