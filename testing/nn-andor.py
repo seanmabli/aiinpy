@@ -9,9 +9,9 @@ for i in range(100):
 
 # NN Model
 model = ai.model(2, 2, [
-  ai.nn(2, 16, ai.relu(), 0.1),
-  ai.nn(16, 16, ai.relu(), 0.1),
-  ai.nn(16, 2, ai.sigmoid(), 0.1)
+  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
+  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
+  ai.nn(outshape=2, activation=ai.sigmoid(), learningrate=0.1)
 ])
 
 model.train(inTrainData, outTrainData, 100)

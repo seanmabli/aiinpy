@@ -19,6 +19,7 @@ class nn:
 
     self.weights = np.random.uniform(self.weightsinit[0], self.weightsinit[1], (np.prod(inshape), np.prod(self.outshape)))
     self.biases = np.random.uniform(self.biasesinit[0], self.biasesinit[1], np.prod(self.outshape))
+    return self.outshape
 
   def forward(self, input):
     self.input = input.flatten()

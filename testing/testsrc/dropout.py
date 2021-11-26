@@ -8,7 +8,7 @@ class dropout:
     return type(self)(self.DropoutRate)
 
   def modelinit(self, inshape):
-    pass
+    return inshape
 
   def forward(self, input):
     self.Dropout = np.random.binomial(1, self.DropoutRate, size=input.shape)

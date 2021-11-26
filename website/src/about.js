@@ -8,6 +8,7 @@ function about() {
       <div className="about">
         <div className="box">
           <Link to="/" className="p notext-decoration">aiinpy</Link>
+          <p className="h1">0.0.16</p>
         </div>
         {content.map((item) => {
           return (

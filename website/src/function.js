@@ -12,12 +12,13 @@ function Function() {
     <div className="site">
       <div className="about">
         <div className="box">
-          <Link to="/" className="p notext-decoration">aiinpy</Link>
+          <Link to="/" className="p notext-decoration">aiinpy</Link> <br />
         </div>
+        <p className="h1 lighter">0.0.16</p>
         {content.map((item) => {
           return (
             <div>
-              <Link to={item.url} className="h1 lighter link"> {item.title} </Link> <br />
+              <Link to={item.url} className="h1 lighter notext-decoration"> {item.title} </Link> <br />
             </div>
           )
         })}

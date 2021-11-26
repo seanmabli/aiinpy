@@ -1,9 +1,9 @@
 New In 0.0.17 (12-1-2021):
 - Create Gated Recurrent Unit (GRU)
 - Neuroevolution for any model
+- Create aiinpy documentation (aiinpy.org)
 
 For 0.0.17 (12-1-2021):
-- aiinpy wiki/documentation and detailed blog posts about the diffrent functionallities
 - Image segmentation with conv
 - Create General Adversarial Networks (GAN)
 - Create Transformer

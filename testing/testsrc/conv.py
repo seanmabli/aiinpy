@@ -2,20 +2,34 @@ import numpy as np
 from .activation import *
 
 class conv:
-  def __init__(self, inshape, outshape, filtershape, learningrate, activation=identity, Padding=False, stride=(1, 1)):
-    self.inshape, self.outshape, self.filtershape, self.learningrate, self.activation, self.Padding, self.stride = inshape, outshape, filtershape, learningrate, activation, Padding, stride
-    if len(outshape) == 3:
-      self.filtershape = tuple([outshape[0]]) + filtershape
+  def __init__(self, filtershape, learningrate, activation=identity, padding=False, stride=(1, 1), inshape=None):
+    self.learningrate, self.activation, self.padding, self.stride = learningrate, activation, padding, stride
+    self.inshape = inshape
 
-    self.out = np.zeros(self.outshape)
+    self.filtershape = filtershape
     self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
-    self.bias = np.zeros(self.outshape[0])
+    self.bias = np.zeros(self.filtershape[0])
+
+    if inshape is not None:
+      if len(inshape) == 2:
+        inshape = tuple([self.filtershape[0]]) + inshape
+      if padding == True:
+        inshape = (inshape[0], inshape[1] + self.filtershape[1] - 1, inshape[2] + self.filtershape[2] - 1)
+      self.outshape = tuple([filtershape[0], int((inshape[1] - filtershape[1] + 1) / self.stride[0]), int((inshape[2] - filtershape[2] + 1) / self.stride[1])])
+      self.out = np.zeros(self.outshape)
 
   def __copy__(self):
-    return type(self)(self.inshape, self.filtershape, self.learningrate, self.activation, self.Padding, self.stride)
+    return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
 
   def modelinit(self, inshape):
-    pass
+    if len(inshape) == 2:
+      inshape = tuple([self.filtershape[0]]) + inshape
+    if self.padding == True:
+      inshape = (inshape[0], inshape[1] + self.filtershape[1] - 1, inshape[2] + self.filtershape[2] - 1)
+    self.outshape = tuple([self.filtershape[0], int((inshape[1] - self.filtershape[1] + 1) / self.stride[0]), int((inshape[2] - self.filtershape[2] + 1) / self.stride[1])])
+    self.out = np.zeros(self.outshape)
+
+    return self.outshape
 
   def SetSlopeForLeakyReLU(self, Slope):
     LeakyReLU.Slope = Slope
@@ -24,7 +38,7 @@ class conv:
     self.input = input
     if(input.ndim == 2):
       self.input = np.stack(([self.input] * self.filtershape[0]))
-    if (self.Padding == True):
+    if (self.padding == True):
       self.input = np.pad(self.input, int((len(self.Filter[0]) - 1) / 2), mode='constant')[1 : self.filtershape[0] + 1]
 
     for i in range(0, self.outshape[1], self.stride[0]):

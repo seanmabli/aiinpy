@@ -19,9 +19,9 @@ for i in range(1000):
 
 # CNN Model
 model = ai.model((28, 28), 10, [
-  ai.conv((28, 28), (4, 26, 26), (3, 3), 0.01, ai.relu(), False),
-  ai.pool((4, 26, 26), (2, 2), (2, 2), 'Max'),
-  ai.nn((4, 13, 13), 10, ai.stablesoftmax(), 0.1, (0, 0))
+  ai.conv(filtershape=(4, 3, 3), learningrate=0.01, activation=ai.relu(), padding=True),
+  ai.pool(stride=(2, 2), filtershape=(2, 2), opperation='Max'),
+  ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
 ])
 
 model.train(inTrainData, outTrainDataReal, 5000)

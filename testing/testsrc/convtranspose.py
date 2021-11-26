@@ -2,8 +2,8 @@ import numpy as np
 from .activation import *
 
 class convtranspose:
-  def __init__(self, inshape, filtershape, learningrate, activation, Padding=False, stride=(1, 1)):
-    self.inshape, self.filtershape, self.learningrate, self.activation, self.Padding, self.stride = inshape, filtershape, learningrate, activation, Padding, stride
+  def __init__(self, inshape, filtershape, learningrate, activation, padding=False, stride=(1, 1)):
+    self.inshape, self.filtershape, self.learningrate, self.activation, self.padding, self.stride = inshape, filtershape, learningrate, activation, padding, stride
     if len(inshape) == 2:
       inshape = tuple([self.filtershape[0]]) + inshape
     self.outshape = np.array([filtershape[0], ((inshape[1] + 1) * filtershape[1]) / stride[0], ((inshape[2] + 1) * filtershape[2]) / stride[1]], dtype=np.int)
@@ -28,7 +28,7 @@ class convtranspose:
     self.out += self.bias[:, np.newaxis, np.newaxis]
     self.out = applyactivation(self.out, self.activation)
 
-    if self.Padding == True:
+    if self.padding == True:
       self.out = self.out[:, 1 : self.outshape[1] - 1, 1 : self.outshape[2] - 1]
 
     return self.out

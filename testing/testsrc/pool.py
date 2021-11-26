@@ -1,45 +1,61 @@
 import numpy as np
 
 class pool: 
-  def __init__(self, inshape, stride, filtershape, opperation):
-    self.stride, self.filtershape, self.opperation = stride, filtershape, opperation
-    if len(inshape) == 2:
-      self.out = np.zeros((int(np.floor(inshape[0] / self.stride[0])), int(np.floor(inshape[1] / self.stride[1]))))
-      while self.out.shape[0] * self.stride[0] + self.filtershape[0] - self.stride[0] < inshape[0]:
-        self.out = self.out[ : - 1, :]
-      while self.out.shape[1] * self.stride[1] + self.filtershape[1] - self.stride[1] < inshape[1]:
-        self.out = self.out[:, : - 1]
-    elif len(inshape) == 3:
-      self.out = np.zeros((inshape[0], int(np.floor(inshape[1] / self.stride[0])), int(np.floor(inshape[2] / self.stride[1]))))
-      while self.out.shape[1] * self.stride[0] + self.filtershape[0] - self.stride[0] < inshape[1]:
-        self.out = self.out[:, : - 1, :]
-      while self.out.shape[2] * self.stride[1] + self.filtershape[1] - self.stride[1] < inshape[2]:
-        self.out = self.out[:, :, : - 1]
+  def __init__(self, stride, filtershape, opperation, inshape=None):
+    self.stride, self.filtershape, self.opperation, self.inshape = stride, filtershape, opperation, inshape
+    if inshape is not None and len(inshape) == 2:
+      outshape = tuple([int(np.floor(inshape[0] / stride[0])), int(np.floor(inshape[1] / stride[1]))])
+      while outshape[0] * stride[0] + filtershape[0] - stride[0] < inshape[0]:
+        outshape[0] -= 1
+      while outshape[1] * stride[1] + filtershape[1] - stride[1] < inshape[1]:
+        outshape[1] -= 1
+      self.outshape, self.out = outshape, np.zeros(outshape)
+    elif inshape is not None and len(inshape) == 3:
+      outshape = tuple([inshape[0], int(np.floor(inshape[1] / stride[0])), int(np.floor(inshape[2] / stride[1]))])
+      while outshape[1] * stride[0] + filtershape[0] - stride[0] < inshape[1]:
+        outshape[1] -= 1
+      while outshape[2] * stride[1] + filtershape[1] - stride[1] < inshape[2]:
+        outshape[2] -= 1
+      self.outshape, self.out = outshape, np.zeros(outshape)
 
   def __copy__(self):
-    return type(self)(self.stride, self.filtershape, self.opperation)
+    return type(self)(self.stride, self.filtershape, self.opperation, self.inshape)
 
   def modelinit(self, inshape):
-    pass
+    self.inshape = inshape
+    if len(inshape) == 2:
+      outshape = tuple([int(np.floor(inshape[0] / self.stride[0])), int(np.floor(inshape[1] / self.stride[1]))])
+      while outshape[0] * self.stride[0] + self.filtershape[0] - self.stride[0] < inshape[0]:
+        outshape[0] -= 1
+      while outshape[1] * self.stride[1] + self.filtershape[1] - self.stride[1] < inshape[1]:
+        outshape[1] -= 1
+    elif len(inshape) == 3:
+      outshape = tuple([inshape[0], int(np.floor(inshape[1] / self.stride[0])), int(np.floor(inshape[2] / self.stride[1]))])
+      while outshape[1] * self.stride[0] + self.filtershape[0] - self.stride[0] < inshape[1]:
+        outshape[1] -= 1
+      while outshape[2] * self.stride[1] + self.filtershape[1] - self.stride[1] < inshape[2]:
+        outshape[2] -= 1
+    self.outshape, self.out = outshape, np.zeros(outshape)
+    return outshape
 
   def forward(self, input):
     self.input = input
 
     if self.opperation == 'Max':
-      for i in range(self.out.shape[1]):
-        for j in range(self.out.shape[2]):
+      for i in range(self.outshape[1]):
+        for j in range(self.outshape[2]):
           self.out[:, i, j] = np.amax(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
     elif self.opperation == 'Min':
-      for i in range(self.out.shape[1]):
-        for j in range(self.out.shape[2]):
+      for i in range(self.outshape[1]):
+        for j in range(self.outshape[2]):
           self.out[:, i, j] = np.amin(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
     elif self.opperation == 'Mean':
-      for i in range(self.out.shape[1]):
-        for j in range(self.out.shape[2]):
+      for i in range(self.outshape[1]):
+        for j in range(self.outshape[2]):
           self.out[:, i, j] = np.mean(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
     elif self.opperation == 'Sum':
-      for i in range(self.out.shape[1]):
-        for j in range(self.out.shape[2]):
+      for i in range(self.outshape[1]):
+        for j in range(self.outshape[2]):
           self.out[:, i, j] = np.sum(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
     return self.out
 
