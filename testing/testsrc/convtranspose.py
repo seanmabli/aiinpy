@@ -13,7 +13,7 @@ class convtranspose:
     self.bias = np.zeros(self.filtershape[0])
 
   def modelinit(self, inshape):
-    pass
+    return self.outshape
 
   def forward(self, input):
     self.input = input

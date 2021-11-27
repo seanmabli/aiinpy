@@ -2,71 +2,71 @@ import numpy as np
 from alive_progress import alive_bar
 
 class model:
-  def __init__(self, inshape, outshape, Model):
-    inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
+  def __init__(self, inshape, outshape, model):
+    self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
     self.outshape = outshape if isinstance(outshape, tuple) else tuple([outshape])
-    self.Model, self.inshape = Model, inshape
+    self.model = model
 
-    for i in self.Model:
+    for i in self.model:
       inshape = i.modelinit(inshape)
 
   def forward(self, input):
-    for i in range(len(self.Model)):
-      input = self.Model[i].forward(input)
+    for i in range(len(self.model)):
+      input = self.model[i].forward(input)
     return input
 
   def backward(self, outError):
-    for i in reversed(range(len(self.Model))):
-      outError = self.Model[i].backward(outError)
+    for i in reversed(range(len(self.model))):
+      outError = self.model[i].backward(outError)
     return outError
 
-  def train(self, inTrainData, outTrainData, NumOfGen):
-    # Data Preprocessing
-    NumOfData = (set(self.inshape) ^ set(inTrainData.shape)).pop()
-    if inTrainData.shape.index(NumOfData) != 0:
-      x = list(range(0, len(inTrainData.shape)))
-      x.pop(inTrainData.shape.index(NumOfData))
-      inTrainData = np.transpose(inTrainData, tuple([inTrainData.shape.index(NumOfData)]) + tuple(x))
-    if outTrainData.shape.index(NumOfData) != 0:
-      x = list(range(0, len(outTrainData.shape)))
-      x.pop(outTrainData.shape.index(NumOfData))
-      outTrainData = np.transpose(outTrainData, tuple([outTrainData.shape.index(NumOfData)]) + tuple(x))
+  def train(self, data, NumOfGen):
+    # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
+    NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
+    if data[0].shape.index(NumOfData) != 0:
+      x = list(range(0, len(data[0].shape)))
+      x.pop(data[0].shape.index(NumOfData))
+      data[0] = np.transpose(data[0], tuple([data[0].shape.index(NumOfData)]) + tuple(x))
+    if data[1].shape.index(NumOfData) != 0:
+      x = list(range(0, len(data[1].shape)))
+      x.pop(data[1].shape.index(NumOfData))
+      data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     # Training
     with alive_bar(NumOfGen) as bar:
       for _ in range (NumOfGen):
         Random = np.random.randint(0, NumOfData)
-        input = inTrainData[Random]
-        for i in range(len(self.Model)):
-          input = self.Model[i].forward(input)
+        input = data[0][Random]
+        for i in range(len(self.model)):
+          input = self.model[i].forward(input)
 
-        outError = outTrainData[Random] - input
-        for i in reversed(range(len(self.Model))):
-          outError = self.Model[i].backward(outError)
+        outError = data[1][Random] - input
+        for i in reversed(range(len(self.model))):
+          outError = self.model[i].backward(outError)
 
         bar()
 
-  def test(self, inTestData, outTestData):
-    # Data Preprocessing
-    NumOfData = (set(self.inshape) ^ set(inTestData.shape)).pop()
-    if inTestData.shape.index(NumOfData) != 0:
-      x = list(range(0, len(inTestData.shape)))
-      x.pop(inTestData.shape.index(NumOfData))
-      inTestData = np.transpose(inTestData, tuple([inTestData.shape.index(NumOfData)]) + tuple(x))
-    if outTestData.shape.index(NumOfData) != 0:
-      x = list(range(0, len(outTestData.shape)))
-      x.pop(outTestData.shape.index(NumOfData))
-      outTestData = np.transpose(outTestData, tuple([outTestData.shape.index(NumOfData)]) + tuple(x))
+  def test(self, data):
+    # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
+    NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
+    if data[0].shape.index(NumOfData) != 0:
+      x = list(range(0, len(data[0].shape)))
+      x.pop(data[0].shape.index(NumOfData))
+      data[0] = np.transpose(data[0], tuple([data[0].shape.index(NumOfData)]) + tuple(x))
+    if data[1].shape.index(NumOfData) != 0:
+      x = list(range(0, len(data[1].shape)))
+      x.pop(data[1].shape.index(NumOfData))
+      data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     # Testing
     testcorrect = 0
     with alive_bar(NumOfData) as bar:
       for Generation in range (NumOfData):
-        input = inTestData[Generation]
-        for i in range(len(self.Model)):
-          input = self.Model[i].forward(input)
+        input = data[0][Generation]
+        for i in range(len(self.model)):
+          input = self.model[i].forward(input)
 
-        testcorrect += 1 if np.argmax(input) == np.argmax(outTestData[Generation]) else 0
+        testcorrect += 1 if np.argmax(input) == np.argmax(data[1][Generation]) else 0
         bar()
 
     return testcorrect / NumOfData

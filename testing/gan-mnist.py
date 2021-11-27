@@ -31,8 +31,8 @@ dis_model.train(DisDatain, DisDataout, 2000)
 wandb.log({"Discriminator accuracy": dis_model.test(DisDatain, DisDataout)})
 
 # Train Generator
-for i in range(len(dis_model.Model)):
-  dis_model.Model[i].learningrate = 0
+for i in range(len(dis_model.model)):
+  dis_model.model[i].learningrate = 0
 
 with alive_bar(10000) as bar:
   for Generation in range(10000):

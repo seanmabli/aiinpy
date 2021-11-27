@@ -7,7 +7,7 @@ outTrainData = np.zeros((2, 100))
 for i in range(100):
   outTrainData[:, i] = [1, 0] if sum(inTrainData[:, i]) == 1 else [0, 1]
 
-# NN Model
+# NN model
 model = ai.model(2, 2, [
   ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
   ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
