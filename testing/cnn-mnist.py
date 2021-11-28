@@ -25,4 +25,4 @@ model = ai.model((28, 28), 10, [
 ])
 
 model.train((inTrainData, outTrainDataReal), 5000)
-wandb.log({'accuracy': model.test(inTestData, outTestDataReal)})
+wandb.log({'accuracy': model.test((inTestData, outTestDataReal))})
