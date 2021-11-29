@@ -10,7 +10,6 @@ class convmatrix:
     self.Filter = filter # np.random.uniform(-0.25, 0.25, (self.filtershape))
     self.biases = np.zeros(self.filtershape[0])
 
-    '''
     if inshape is not None:
       self.inshape = inshape
       if len(inshape) == 2:
@@ -25,7 +24,6 @@ class convmatrix:
         for j in range(self.filtershape[1]):
           self.x[:, j * self.inshape[1] : (j * self.inshape[1]) + self.filtershape[1]] = self.Filter[:, :, j]
         self.filtermatrix[i : i + (self.filtershape[1] * self.inshape[1]), :, i] = self.x.T
-    '''
 
   def __copy__(self):
     return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
@@ -39,11 +37,9 @@ class convmatrix:
     self.outone = np.zeros(self.outshape)
       
     self.filtermatrix = np.zeros((np.prod(self.inshape), self.filtershape[0], np.prod(self.outshape[1:])))
-    self.x = np.zeros((self.filtershape[0], self.filtershape[1] * self.inshape[1]))
-    for i in range(np.prod(self.outshape[1:]) - self.inshape[1] + self.filtershape[1]):
-      for j in range(self.filtershape[1]):
-        self.x[:, j * self.inshape[1] : (j * self.inshape[1]) + self.filtershape[1]] = self.Filter[:, :, j]
-      self.filtermatrix[i : i + (self.filtershape[1] * self.inshape[1]), :, i] = self.x
+    for i in range(np.prod(self.outshape[1:])):
+      
+
 
     return self.outshape
 
