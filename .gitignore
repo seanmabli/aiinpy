@@ -1,5 +1,6 @@
 /wandb
 /.github/
+.spyproject
 
 __pycache__/
 *.py[cod]

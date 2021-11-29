@@ -2,28 +2,29 @@ import numpy as np
 from .activation import *
 
 class convmatrix:
-  def __init__(self, filtershape, learningrate, activation=identity, inshape=None):
+  def __init__(self, filtershape, filter, learningrate, activation=identity, inshape=None):
     self.learningrate, self.activation = learningrate, activation
     self.inshape = inshape
 
     self.filtershape = filtershape
-    self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
+    self.Filter = filter # np.random.uniform(-0.25, 0.25, (self.filtershape))
     self.biases = np.zeros(self.filtershape[0])
 
     '''
     if inshape is not None:
+      self.inshape = inshape
       if len(inshape) == 2:
         inshape = tuple([self.filtershape[0]]) + inshape
 
-      self.outshape = tuple([filtershape[0], inshape[1] - filtershape[1] + 1, inshape[2] - filtershape[2] + 1])
-      self.out = np.zeros(self.outshape)
-      
-      self.filtermatrix = np.zeros((self.filtershape[0], np.prod(self.inshape), np.prod(self.outshape)))
-      for i in range(np.prod(self.outshape)):
-        x = np.zeros((self.filtershape[0], self.filtershape[1] * self.inshape[1]))
+      self.outshape = tuple([self.filtershape[0], inshape[1] - self.filtershape[1] + 1, inshape[2] - self.filtershape[2] + 1])
+      self.outone = np.zeros(self.outshape)
+
+      self.filtermatrix = np.zeros((np.prod(self.inshape), self.filtershape[0], np.prod(self.outshape[1:])))
+      self.x = np.zeros((self.filtershape[0], self.filtershape[1] * self.inshape[1]))
+      for i in range(np.prod(self.outshape[1:]) - self.inshape[1] + self.filtershape[1]):
         for j in range(self.filtershape[1]):
-          x[j * self.inshape[1] : (j + self.filtershape[1]) * self.inshape[1]] = self.Filter[:, j, :]
-        self.filtermatrix[:, i : i + (self.filtershape[1] * self.inshape[1]), i] = x
+          self.x[:, j * self.inshape[1] : (j * self.inshape[1]) + self.filtershape[1]] = self.Filter[:, :, j]
+        self.filtermatrix[i : i + (self.filtershape[1] * self.inshape[1]), :, i] = self.x.T
     '''
 
   def __copy__(self):
@@ -33,15 +34,16 @@ class convmatrix:
     self.inshape = inshape
     if len(inshape) == 2:
       inshape = tuple([self.filtershape[0]]) + inshape
+      
     self.outshape = tuple([self.filtershape[0], inshape[1] - self.filtershape[1] + 1, inshape[2] - self.filtershape[2] + 1])
     self.outone = np.zeros(self.outshape)
       
-    self.filtermatrix = np.zeros((np.prod(self.outshape), np.prod(self.inshape)))
+    self.filtermatrix = np.zeros((np.prod(self.inshape), self.filtershape[0], np.prod(self.outshape[1:])))
     self.x = np.zeros((self.filtershape[0], self.filtershape[1] * self.inshape[1]))
-    for i in range(np.prod(self.outshape) - self.inshape[1] + self.filtershape[1]):
+    for i in range(np.prod(self.outshape[1:]) - self.inshape[1] + self.filtershape[1]):
       for j in range(self.filtershape[1]):
-        self.x[j * self.inshape[1] : (j * self.inshape[1]) + self.filtershape[1]] = self.Filter[:, :, j]
-      self.filtermatrix[i, i : i + (self.filtershape[1] * self.inshape[1])] = self.x
+        self.x[:, j * self.inshape[1] : (j * self.inshape[1]) + self.filtershape[1]] = self.Filter[:, :, j]
+      self.filtermatrix[i : i + (self.filtershape[1] * self.inshape[1]), :, i] = self.x
 
     return self.outshape
 
@@ -49,23 +51,22 @@ class convmatrix:
     LeakyReLU.Slope = Slope
 
   def forward(self, input):
-    self.input = input
-
     if(input.ndim == 2):
-      input = np.stack(([input] * self.filtershape[0]))
+      self.input = np.stack(([input] * self.filtershape[0]))
 
     for i in range(0, self.outshape[1]):
       for j in range(0, self.outshape[2]):
-        self.outone[:, i, j] = np.sum(np.multiply(input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], self.Filter), axis=(1, 2))
+        self.outone[:, i, j] = np.sum(np.multiply(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], self.Filter), axis=(1, 2))
 
     self.outone += self.biases[:, np.newaxis, np.newaxis]
     self.outone = self.activation.forward(self.outone)
 
-    self.out = self.filtermatrix @ self.input.flatten() + self.biases[:, np.newaxis]
+    self.out = self.filtermatrix.T @ input.reshape(np.prod(self.inshape)) + self.biases[np.newaxis, :]
     self.out = self.activation.forward(self.out)
     self.out = self.out.reshape(self.outshape)
 
-    return self.out
+    print(np.sum(abs(self.out - self.outone)))
+    return self.out, self.outone
   
   def backward(self, outError):
     FilterΔ = np.zeros(self.filtershape)
@@ -74,7 +75,7 @@ class convmatrix:
 
     for i in range(0, self.outshape[1]):
       for j in range(0, self.outshape[2]):
-        FilterΔ += self.input[i : i + self.filtershape[1], j : j + self.filtershape[2]] * outGradient[:, i, j][:, np.newaxis, np.newaxis]
+        FilterΔ += self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * outGradient[:, i, j][:, np.newaxis, np.newaxis]
     
     self.biases += np.sum(outGradient, axis=(1, 2)) * self.learningrate
     self.Filter += FilterΔ * self.learningrate
@@ -82,8 +83,8 @@ class convmatrix:
     for i in range(np.prod(self.outshape[1:]) - self.inshape[1] + self.filtershape[1]):
       for j in range(self.filtershape[1]):
         self.x[:, j * self.inshape[1] : (j * self.inshape[1]) + self.filtershape[1]] = self.Filter[:, :, j]
-      self.filtermatrix[:, i, i : i + (self.filtershape[1] * self.inshape[1])] = self.x
-    
+      self.filtermatrix[i : i + (self.filtershape[1] * self.inshape[1]), :, i] = self.x.T
+
     '''
     # in Error
     RotFilter = np.rot90(np.rot90(self.Filter))
