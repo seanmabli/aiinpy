@@ -1,123 +1,39 @@
 [
   {
-    "title": "aiinpy.texttobinary",
-    "model": "aiinpy.texttobinary()",
-    "url": "/texttobinary",
-    "id": "texttobinary"
-  },
-  {
-    "title": "aiinpy.tanh",
-    "model": "aiinpy.tanh()",
-    "url": "/tanh",
-    "id": "tanh"
-  },
-  {
-    "title": "aiinpy.stablesoftmax",
-    "model": "aiinpy.stablesoftmax()",
-    "url": "/stablesoftmax",
-    "id": "stablesoftmax"
-  },
-  {
-    "title": "aiinpy.softplus",
-    "model": "aiinpy.softplus()",
-    "url": "/softplus",
-    "id": "softplus"
-  },
-  {
-    "title": "aiinpy.softmax",
-    "model": "aiinpy.softmax()",
-    "url": "/softmax",
-    "id": "softmax"
-  },
-  {
-    "title": "aiinpy.silu",
-    "model": "aiinpy.silu()",
-    "url": "/silu",
-    "id": "silu"
-  },
-  {
-    "title": "aiinpy.sigmoid",
-    "model": "aiinpy.sigmoid()",
-    "url": "/sigmoid",
-    "id": "sigmoid"
-  },
-  {
-    "title": "aiinpy.selu",
-    "model": "aiinpy.selu()",
-    "url": "/selu",
-    "id": "selu"
-  },
-  {
     "title": "aiinpy.rnn",
-    "model": "aiinpy.rnn(self, inshape, outshape, Type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05)",
+    "model": "aiinpy.rnn(self, InSize, OutSize, Type, OutActivation='StableSoftmax', HidSize=64, LearningRate=0.05)",
     "url": "/rnn",
     "id": "rnn"
   },
   {
-    "title": "aiinpy.relu",
-    "model": "aiinpy.relu()",
-    "url": "/relu",
-    "id": "relu"
-  },
-  {
     "title": "aiinpy.pool",
-    "model": "aiinpy.pool(self, inshape, stride, filtershape, opperation)",
+    "model": "aiinpy.pool(self, Stride, FilterShape, Type)",
     "url": "/pool",
     "id": "pool"
   },
   {
     "title": "aiinpy.nn",
-    "model": "aiinpy.nn(self, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0), inshape=None)",
+    "model": "aiinpy.nn(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0)",
     "url": "/nn",
     "id": "nn"
   },
   {
     "title": "aiinpy.neuroevolution",
-    "model": "aiinpy.neuroevolution(self, inshape, outshape, PopulationSize, Model)",
+    "model": "aiinpy.neuroevolution(self, InSize, OutSize, MutationRate, PopulationSize, Activation)",
     "url": "/neuroevolution",
     "id": "neuroevolution"
   },
   {
     "title": "aiinpy.model",
-    "model": "aiinpy.model(self, inshape, outshape, Model)",
+    "model": "aiinpy.model(self, InShape, OutShape, Model)",
     "url": "/model",
     "id": "model"
   },
   {
-    "title": "aiinpy.mish",
-    "model": "aiinpy.mish()",
-    "url": "/mish",
-    "id": "mish"
-  },
-  {
     "title": "aiinpy.lstm",
-    "model": "aiinpy.lstm(self, inshape, outshape, outactivation, hidshape=64, learningrate=0.05)",
+    "model": "aiinpy.lstm(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
     "url": "/lstm",
     "id": "lstm"
-  },
-  {
-    "title": "aiinpy.leakyrelu",
-    "model": "aiinpy.leakyrelu(self, alpha=0.01)",
-    "url": "/leakyrelu",
-    "id": "leakyrelu"
-  },
-  {
-    "title": "aiinpy.identity",
-    "model": "aiinpy.identity()",
-    "url": "/identity",
-    "id": "identity"
-  },
-  {
-    "title": "aiinpy.gru",
-    "model": "aiinpy.gru(self, inshape, outshape, outactivation, hidshape=64, learningrate=0.05)",
-    "url": "/gru",
-    "id": "gru"
-  },
-  {
-    "title": "aiinpy.gaussian",
-    "model": "aiinpy.gaussian()",
-    "url": "/gaussian",
-    "id": "gaussian"
   },
   {
     "title": "aiinpy.dropout",
@@ -126,21 +42,87 @@
     "id": "dropout"
   },
   {
-    "title": "aiinpy.convtranspose",
-    "model": "aiinpy.convtranspose(self, inshape, filtershape, learningrate, activation, Padding=False, stride=(1, 1))",
-    "url": "/convtranspose",
-    "id": "convtranspose"
-  },
-  {
     "title": "aiinpy.conv",
-    "model": "aiinpy.conv(self, filtershape, learningrate, activation=identity, Padding=False, stride=(1, 1), inshape=None, outshape=None)",
+    "model": "aiinpy.conv(self, InShape, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1))",
     "url": "/conv",
     "id": "conv"
   },
   {
-    "title": "aiinpy.binarystep",
-    "model": "aiinpy.binarystep()",
-    "url": "/binarystep",
-    "id": "binarystep"
+    "title": "aiinpy.Tanh",
+    "model": "aiinpy.Tanh()",
+    "url": "/Tanh",
+    "id": "Tanh"
+  },
+  {
+    "title": "aiinpy.StableSoftmax",
+    "model": "aiinpy.StableSoftmax()",
+    "url": "/StableSoftmax",
+    "id": "StableSoftmax"
+  },
+  {
+    "title": "aiinpy.Softplus",
+    "model": "aiinpy.Softplus()",
+    "url": "/Softplus",
+    "id": "Softplus"
+  },
+  {
+    "title": "aiinpy.Softmax",
+    "model": "aiinpy.Softmax()",
+    "url": "/Softmax",
+    "id": "Softmax"
+  },
+  {
+    "title": "aiinpy.Sigmoid",
+    "model": "aiinpy.Sigmoid()",
+    "url": "/Sigmoid",
+    "id": "Sigmoid"
+  },
+  {
+    "title": "aiinpy.SiLU",
+    "model": "aiinpy.SiLU()",
+    "url": "/SiLU",
+    "id": "SiLU"
+  },
+  {
+    "title": "aiinpy.SELU",
+    "model": "aiinpy.SELU()",
+    "url": "/SELU",
+    "id": "SELU"
+  },
+  {
+    "title": "aiinpy.ReLU",
+    "model": "aiinpy.ReLU()",
+    "url": "/ReLU",
+    "id": "ReLU"
+  },
+  {
+    "title": "aiinpy.Mish",
+    "model": "aiinpy.Mish()",
+    "url": "/Mish",
+    "id": "Mish"
+  },
+  {
+    "title": "aiinpy.LeakyReLU",
+    "model": "aiinpy.LeakyReLU()",
+    "url": "/LeakyReLU",
+    "id": "LeakyReLU"
+  },
+  {
+    "title": "aiinpy.Identity",
+    "model": "aiinpy.Identity()",
+    "url": "/Identity",
+    "id": "Identity"
+  },
+  {
+    "title": "aiinpy.Gaussian",
+    "model": "aiinpy.Gaussian()",
+    "url": "/Gaussian",
+    "id": "Gaussian"
+  },
+  {
+    "title": "aiinpy.BinaryStep",
+    "model": "aiinpy.BinaryStep()",
+    "url": "/BinaryStep",
+    "id": "BinaryStep"
   }
 ]

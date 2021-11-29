@@ -1,4 +1,4 @@
-import testsrc as ai
+import aiinpy as ai
 import numpy as np
 import inspect
 import json

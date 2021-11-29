@@ -5,19 +5,21 @@ import info from './info';
 import './index.css';
 
 function Navbar() {
-  const version = info[0].version;
+  const [version, setVersion] = useState(info[0].currentversion);
   
-  function setversion(val) {
-    info[0].version = val.target.value;
+  function getversion(val) {
+    setVersion(val.target.value);
+    if (info[0].possibleversions.includes(val.target.value) === true) {
+      info[0].currentversion = val.target.value;
+    }
   }
 
   return (
     <div>
       <div className="box">
         <Link to="/" className="p notext-decoration">aiinpy</Link> <br/>
-        <h1>{version}</h1>
-        <input type="text" value={info[0].version} onChange={setversion} />
       </div>
+      <input type="text" value={version} onChange={getversion} className="h1 lighter version"/>
       {content.map((item) => {
         return (
           <div>
