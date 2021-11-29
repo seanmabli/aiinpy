@@ -38,7 +38,7 @@ class convmatrix:
       
     self.filtermatrix = np.zeros((np.prod(self.inshape), self.filtershape[0], np.prod(self.outshape[1:])))
     for i in range(np.prod(self.outshape[1:])):
-      
+      pass
 
 
     return self.outshape
