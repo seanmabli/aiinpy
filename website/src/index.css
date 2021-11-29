@@ -37,10 +37,6 @@
   text-decoration: none;
 }
 
-.link:hover {
-  text-decoration: underline;
-}
-
 .p {
   font-size: 26px;
   color: #838383;

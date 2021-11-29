@@ -4,8 +4,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import about from './about';
 import Function from './function';
 import './index.css';
-import 'bootstrap';
-import 'bootstrap/dist/js/bootstrap.js';
 
 ReactDOM.render(
   <Router>
