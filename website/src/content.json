@@ -4,70 +4,70 @@
     "model": "aiinpy.POOL(self, Stride)",
     "url": "/POOL",
     "id": "POOL",
-    "version": "0.0.2"
+    "version": "0.0.02"
   },
   {
     "title": "aiinpy.NN",
     "model": "aiinpy.NN(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1))",
     "url": "/NN",
     "id": "NN",
-    "version": "0.0.2"
+    "version": "0.0.02"
   },
   {
     "title": "aiinpy.CONV",
     "model": "aiinpy.CONV(self, FilterShape, LearningRate)",
     "url": "/CONV",
     "id": "CONV",
-    "version": "0.0.2"
+    "version": "0.0.02"
   },
   {
     "title": "aiinpy.POOL",
     "model": "aiinpy.POOL(self, Stride)",
     "url": "/POOL",
     "id": "POOL",
-    "version": "0.0.3"
+    "version": "0.0.03"
   },
   {
     "title": "aiinpy.NN",
     "model": "aiinpy.NN(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
     "url": "/NN",
     "id": "NN",
-    "version": "0.0.3"
+    "version": "0.0.03"
   },
   {
     "title": "aiinpy.CONV",
     "model": "aiinpy.CONV(self, FilterShape, LearningRate)",
     "url": "/CONV",
     "id": "CONV",
-    "version": "0.0.3"
+    "version": "0.0.03"
   },
   {
     "title": "aiinpy.RNN",
     "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
     "url": "/RNN",
     "id": "RNN",
-    "version": "0.0.7"
+    "version": "0.0.07"
   },
   {
     "title": "aiinpy.POOL",
     "model": "aiinpy.POOL(self, Stride)",
     "url": "/POOL",
     "id": "POOL",
-    "version": "0.0.7"
+    "version": "0.0.07"
   },
   {
     "title": "aiinpy.NN",
     "model": "aiinpy.NN(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
     "url": "/NN",
     "id": "NN",
-    "version": "0.0.7"
+    "version": "0.0.07"
   },
   {
     "title": "aiinpy.CONV",
     "model": "aiinpy.CONV(self, FilterShape, LearningRate)",
     "url": "/CONV",
     "id": "CONV",
-    "version": "0.0.7"
+    "version": "0.0.07"
   },
   {
     "title": "aiinpy.RNN",
