@@ -1,12 +1,14 @@
 import { useParams } from "react-router";
 import Navbar from './navbar';
 import content from './content';
+import info from './info';
 import './index.css';
 
 function Function() {
 
   const { id } = useParams();
-  const postcontent = content.filter(content => content.id === id);
+  const contentfiltedbyid = content.filter(content => content.id === id);
+  const contentfiltedbyversion = contentfiltedbyid.filter(content => content.version === info[0].currentversion);
   
   return (
     <div className="site">
@@ -14,7 +16,7 @@ function Function() {
         <Navbar />
       </div>
       <div className="function">
-        {postcontent.map((item) => {
+        {contentfiltedbyversion.map((item) => {
           return (
             <div>
               <div className="box">

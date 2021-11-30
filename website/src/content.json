@@ -1,478 +1,499 @@
 [
   {
-    "0.0.0": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.POOL",
+    "model": "aiinpy.POOL(self, Stride)",
+    "url": "/POOL",
+    "id": "POOL",
+    "version": "0.0.2"
   },
   {
-    "0.0.1": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.NN",
+    "model": "aiinpy.NN(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1))",
+    "url": "/NN",
+    "id": "NN",
+    "version": "0.0.2"
   },
   {
-    "0.0.2": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.CONV",
+    "model": "aiinpy.CONV(self, FilterShape, LearningRate)",
+    "url": "/CONV",
+    "id": "CONV",
+    "version": "0.0.2"
   },
   {
-    "0.0.3": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.POOL",
+    "model": "aiinpy.POOL(self, Stride)",
+    "url": "/POOL",
+    "id": "POOL",
+    "version": "0.0.3"
   },
   {
-    "0.0.4": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.NN",
+    "model": "aiinpy.NN(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
+    "url": "/NN",
+    "id": "NN",
+    "version": "0.0.3"
   },
   {
-    "0.0.5": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.CONV",
+    "model": "aiinpy.CONV(self, FilterShape, LearningRate)",
+    "url": "/CONV",
+    "id": "CONV",
+    "version": "0.0.3"
   },
   {
-    "0.0.6": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.RNN",
+    "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
+    "url": "/RNN",
+    "id": "RNN",
+    "version": "0.0.7"
   },
   {
-    "0.0.7": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.POOL",
+    "model": "aiinpy.POOL(self, Stride)",
+    "url": "/POOL",
+    "id": "POOL",
+    "version": "0.0.7"
   },
   {
-    "0.0.8": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.NN",
+    "model": "aiinpy.NN(self, CurrentLayerShape, FollowingLayerShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
+    "url": "/NN",
+    "id": "NN",
+    "version": "0.0.7"
   },
   {
-    "0.0.9": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.CONV",
+    "model": "aiinpy.CONV(self, FilterShape, LearningRate)",
+    "url": "/CONV",
+    "id": "CONV",
+    "version": "0.0.7"
   },
   {
-    "0.0.10": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.RNN",
+    "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
+    "url": "/RNN",
+    "id": "RNN",
+    "version": "0.0.10"
   },
   {
-    "0.0.11": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.POOL",
+    "model": "aiinpy.POOL(self, Stride)",
+    "url": "/POOL",
+    "id": "POOL",
+    "version": "0.0.10"
   },
   {
-    "0.0.12": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.NN",
+    "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
+    "url": "/NN",
+    "id": "NN",
+    "version": "0.0.10"
   },
   {
-    "0.0.13": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.CONV",
+    "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
+    "url": "/CONV",
+    "id": "CONV",
+    "version": "0.0.10"
   },
   {
-    "0.0.14": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.Tanh",
+    "model": "aiinpy.Tanh(Input)",
+    "url": "/Tanh",
+    "id": "Tanh",
+    "version": "0.0.11"
   },
   {
-    "0.0.15": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.StableSoftMax",
+    "model": "aiinpy.StableSoftMax(Input)",
+    "url": "/StableSoftMax",
+    "id": "StableSoftMax",
+    "version": "0.0.11"
   },
   {
-    "0.0.16": [
-      {
-        "title": "aiinpy.RNN",
-        "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
-        "url": "/RNN",
-        "id": "RNN"
-      },
-      {
-        "title": "aiinpy.POOL",
-        "model": "aiinpy.POOL(self, Stride)",
-        "url": "/POOL",
-        "id": "POOL"
-      },
-      {
-        "title": "aiinpy.NN",
-        "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
-        "url": "/NN",
-        "id": "NN"
-      },
-      {
-        "title": "aiinpy.CONV",
-        "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
-        "url": "/CONV",
-        "id": "CONV"
-      }
-    ]
+    "title": "aiinpy.Sigmoid",
+    "model": "aiinpy.Sigmoid(self, Input)",
+    "url": "/Sigmoid",
+    "id": "Sigmoid",
+    "version": "0.0.11"
+  },
+  {
+    "title": "aiinpy.ReLU",
+    "model": "aiinpy.ReLU(Input)",
+    "url": "/ReLU",
+    "id": "ReLU",
+    "version": "0.0.11"
+  },
+  {
+    "title": "aiinpy.RNN",
+    "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
+    "url": "/RNN",
+    "id": "RNN",
+    "version": "0.0.11"
+  },
+  {
+    "title": "aiinpy.POOL",
+    "model": "aiinpy.POOL(self, Stride)",
+    "url": "/POOL",
+    "id": "POOL",
+    "version": "0.0.11"
+  },
+  {
+    "title": "aiinpy.NN",
+    "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0))",
+    "url": "/NN",
+    "id": "NN",
+    "version": "0.0.11"
+  },
+  {
+    "title": "aiinpy.LeakyReLU",
+    "model": "aiinpy.LeakyReLU(Input)",
+    "url": "/LeakyReLU",
+    "id": "LeakyReLU",
+    "version": "0.0.11"
+  },
+  {
+    "title": "aiinpy.CONV",
+    "model": "aiinpy.CONV(self, FilterShape, LearningRate, Padding='None', Stride=(1, 1))",
+    "url": "/CONV",
+    "id": "CONV",
+    "version": "0.0.11"
+  },
+  {
+    "title": "aiinpy.Tanh",
+    "model": "aiinpy.Tanh()",
+    "url": "/Tanh",
+    "id": "Tanh",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.StableSoftMax",
+    "model": "aiinpy.StableSoftMax()",
+    "url": "/StableSoftMax",
+    "id": "StableSoftMax",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.Sigmoid",
+    "model": "aiinpy.Sigmoid()",
+    "url": "/Sigmoid",
+    "id": "Sigmoid",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.ReLU",
+    "model": "aiinpy.ReLU()",
+    "url": "/ReLU",
+    "id": "ReLU",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.RNN",
+    "model": "aiinpy.RNN(self, InputSize, OutputSize, Type, HiddenSize=64, LearningRate=0.05)",
+    "url": "/RNN",
+    "id": "RNN",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.POOL",
+    "model": "aiinpy.POOL(self, Stride)",
+    "url": "/POOL",
+    "id": "POOL",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.NN",
+    "model": "aiinpy.NN(self, InputSize, OutputSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0)",
+    "url": "/NN",
+    "id": "NN",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.LeakyReLU",
+    "model": "aiinpy.LeakyReLU()",
+    "url": "/LeakyReLU",
+    "id": "LeakyReLU",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.CONV",
+    "model": "aiinpy.CONV(self, FilterShape, LearningRate, Activation='None', Padding='None', Stride=(1, 1), DropoutRate=0)",
+    "url": "/CONV",
+    "id": "CONV",
+    "version": "0.0.13"
+  },
+  {
+    "title": "aiinpy.Tanh",
+    "model": "aiinpy.Tanh()",
+    "url": "/Tanh",
+    "id": "Tanh",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.StableSoftmax",
+    "model": "aiinpy.StableSoftmax()",
+    "url": "/StableSoftmax",
+    "id": "StableSoftmax",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.Softplus",
+    "model": "aiinpy.Softplus()",
+    "url": "/Softplus",
+    "id": "Softplus",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.Softmax",
+    "model": "aiinpy.Softmax()",
+    "url": "/Softmax",
+    "id": "Softmax",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.Sigmoid",
+    "model": "aiinpy.Sigmoid()",
+    "url": "/Sigmoid",
+    "id": "Sigmoid",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.SiLU",
+    "model": "aiinpy.SiLU()",
+    "url": "/SiLU",
+    "id": "SiLU",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.SELU",
+    "model": "aiinpy.SELU()",
+    "url": "/SELU",
+    "id": "SELU",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.ReLU",
+    "model": "aiinpy.ReLU()",
+    "url": "/ReLU",
+    "id": "ReLU",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.RNN",
+    "model": "aiinpy.RNN(self, InputSize, OutputSize, HidSize=64, LearningRate=0.05)",
+    "url": "/RNN",
+    "id": "RNN",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.POOL",
+    "model": "aiinpy.POOL(self, Stride, PoolShape)",
+    "url": "/POOL",
+    "id": "POOL",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.NeuroEvolution",
+    "model": "aiinpy.NeuroEvolution(self, InSize, OutSize, MutationRate, PopulationSize, Activation)",
+    "url": "/NeuroEvolution",
+    "id": "NeuroEvolution",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.NN",
+    "model": "aiinpy.NN(self, InSize, OutSize, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0)",
+    "url": "/NN",
+    "id": "NN",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.Mish",
+    "model": "aiinpy.Mish()",
+    "url": "/Mish",
+    "id": "Mish",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.LeakyReLU",
+    "model": "aiinpy.LeakyReLU()",
+    "url": "/LeakyReLU",
+    "id": "LeakyReLU",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.Identity",
+    "model": "aiinpy.Identity()",
+    "url": "/Identity",
+    "id": "Identity",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.Gaussian",
+    "model": "aiinpy.Gaussian()",
+    "url": "/Gaussian",
+    "id": "Gaussian",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.CONV",
+    "model": "aiinpy.CONV(self, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1), DropoutRate=0)",
+    "url": "/CONV",
+    "id": "CONV",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.BinaryStep",
+    "model": "aiinpy.BinaryStep()",
+    "url": "/BinaryStep",
+    "id": "BinaryStep",
+    "version": "0.0.15"
+  },
+  {
+    "title": "aiinpy.rnn",
+    "model": "aiinpy.rnn(self, InSize, OutSize, Type, OutActivation='StableSoftmax', HidSize=64, LearningRate=0.05)",
+    "url": "/rnn",
+    "id": "rnn",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.pool",
+    "model": "aiinpy.pool(self, Stride, FilterShape, Type)",
+    "url": "/pool",
+    "id": "pool",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.nn",
+    "model": "aiinpy.nn(self, InShape, OutShape, Activation, LearningRate, WeightsInit=(-1, 1), BiasesInit=(0, 0), DropoutRate=0)",
+    "url": "/nn",
+    "id": "nn",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.neuroevolution",
+    "model": "aiinpy.neuroevolution(self, InSize, OutSize, MutationRate, PopulationSize, Activation)",
+    "url": "/neuroevolution",
+    "id": "neuroevolution",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.model",
+    "model": "aiinpy.model(self, InShape, OutShape, Model)",
+    "url": "/model",
+    "id": "model",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.lstm",
+    "model": "aiinpy.lstm(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05)",
+    "url": "/lstm",
+    "id": "lstm",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.dropout",
+    "model": "aiinpy.dropout(self, DropoutRate)",
+    "url": "/dropout",
+    "id": "dropout",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.conv",
+    "model": "aiinpy.conv(self, InShape, FilterShape, LearningRate, Activation='None', Padding=False, Stride=(1, 1))",
+    "url": "/conv",
+    "id": "conv",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.Tanh",
+    "model": "aiinpy.Tanh()",
+    "url": "/Tanh",
+    "id": "Tanh",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.StableSoftmax",
+    "model": "aiinpy.StableSoftmax()",
+    "url": "/StableSoftmax",
+    "id": "StableSoftmax",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.Softplus",
+    "model": "aiinpy.Softplus()",
+    "url": "/Softplus",
+    "id": "Softplus",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.Softmax",
+    "model": "aiinpy.Softmax()",
+    "url": "/Softmax",
+    "id": "Softmax",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.Sigmoid",
+    "model": "aiinpy.Sigmoid()",
+    "url": "/Sigmoid",
+    "id": "Sigmoid",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.SiLU",
+    "model": "aiinpy.SiLU()",
+    "url": "/SiLU",
+    "id": "SiLU",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.SELU",
+    "model": "aiinpy.SELU()",
+    "url": "/SELU",
+    "id": "SELU",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.ReLU",
+    "model": "aiinpy.ReLU()",
+    "url": "/ReLU",
+    "id": "ReLU",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.Mish",
+    "model": "aiinpy.Mish()",
+    "url": "/Mish",
+    "id": "Mish",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.LeakyReLU",
+    "model": "aiinpy.LeakyReLU()",
+    "url": "/LeakyReLU",
+    "id": "LeakyReLU",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.Identity",
+    "model": "aiinpy.Identity()",
+    "url": "/Identity",
+    "id": "Identity",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.Gaussian",
+    "model": "aiinpy.Gaussian()",
+    "url": "/Gaussian",
+    "id": "Gaussian",
+    "version": "0.0.16"
+  },
+  {
+    "title": "aiinpy.BinaryStep",
+    "model": "aiinpy.BinaryStep()",
+    "url": "/BinaryStep",
+    "id": "BinaryStep",
+    "version": "0.0.16"
   }
 ]

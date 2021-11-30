@@ -1,10 +1,13 @@
 import subprocess
-import inspect
-import numpy as np
-import runpy
+import json
+import pickle
 
-classesbyversion = np.array([])
+possibleversions = [2, 3, 7, 10, 11, 13, 15, 16]
+data = []
 
-for version in range(17):
+for version in possibleversions:
   subprocess.run('pip install aiinpy==0.0.' + str(version))
-  runpy.run_path(path_name='website.py')
+  subprocess.run('python3 websiteinfo/websiteinfo.py')
+  data += pickle.load(open('websiteinfo/datatransfer.txt', 'rb'))
+  
+json.dump(data, open("website\src\content.json", "w"), indent=2)

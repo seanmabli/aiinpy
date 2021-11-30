@@ -14,13 +14,15 @@ function Navbar() {
     }
   }
 
+  const contentfiltedbyversion = content.filter(content => content.version === info[0].currentversion);
+  
   return (
     <div>
       <div className="box">
         <Link to="/" className="p notext-decoration">aiinpy</Link> <br/>
       </div>
       <input type="text" value={version} onChange={getversion} className="h1 lighter version"/>
-      {content.map((item) => {
+      {contentfiltedbyversion.map((item) => {
         return (
           <div>
             <Link to={item.url} className="h1 lighter link"> {item.title} </Link> <br />
