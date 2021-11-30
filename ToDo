@@ -1,16 +1,20 @@
 New In 0.0.17 (12-1-2021):
-- Create Gated Recurrent Unit (GRU)
+- Gated Recurrent Unit (GRU)
 - Neuroevolution for any model
 - Create aiinpy documentation (aiinpy.org)
 
-For 0.0.17 (12-1-2021):
-- Image segmentation with conv
-- Create General Adversarial Networks (GAN)
-- Create Transformer
-- Train w/ Neural Evolution of Augmented Topologies (NEAT)
-- Add Deep Recurrent Neural Networks (DRNN)
-- Add Bidirectional Recurrent Neural Networks (BRNN)
-
 For 0.0.18 (1-1-2022):
-- Transfer from numpy/python to assembly
-- Transformers Leaning Based On Internet
+  Focus:
+  - Transfer from numpy/python to assembly
+  - Create Transformer
+  Other:
+  - Image segmentation with conv
+  - Create General Adversarial Networks (GAN)
+
+For 0.0.19 (2-1-2022):
+  Focus:
+  - Transformer Learning From Internet
+  - Train w/ Neural Evolution of Augmented Topologies (NEAT)
+  Other:
+  - Add Deep Recurrent Neural Networks (DRNN)
+  - Add Bidirectional Recurrent Neural Networks (BRNN)
