@@ -1,8 +1,3 @@
-New In 0.0.17 (12-1-2021):
-- Gated Recurrent Unit (GRU)
-- Neuroevolution for any model
-- Create aiinpy documentation (aiinpy.org)
-
 For 0.0.18 (1-1-2022):
   Focus:
   - Transfer from numpy/python to assembly
