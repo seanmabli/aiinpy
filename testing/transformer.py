@@ -1,6 +1,4 @@
-from activation import *
-from NN import NN
-import numpy as np
+import testsrc as ai
 
 def SingleHeadSelfattention(in):
   inToKey = NN(inshape=in.shape, outshape=in.shape, activation='Identity', learningrate=0)

@@ -1,9 +1,6 @@
-wandb/*
 .spyproject
-*.pyc
-*.cpython-39.pyc
-website/.firebase/*
-website/build/*
-website/node_modules/*
-website/.firebasesrc
-website/firebase.json
+testing/testsrc/__pycache__
+wandb
+website/build
+website/.firebase
+website/node_modules
