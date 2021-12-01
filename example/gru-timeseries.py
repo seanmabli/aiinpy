@@ -1,8 +1,9 @@
 import aiinpy as ai
 from alive_progress import alive_bar
 import numpy as np
+import wandb
 
-model = ai.lstm(inshape=1, outshape=1, outactivation=ai.identity(), learningrate=0.01)
+model = ai.gru(inshape=1, outshape=1, outactivation=ai.identity(), learningrate=0.01)
 
 Data = np.genfromtxt('example\data\Timeseries\Airpassenger.csv', dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
@@ -35,5 +36,5 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     inError = model.backward(outError)
 
     bar()
-  
-print(error / NumOfTestGen)
+
+  print(error / NumOfTestGen)

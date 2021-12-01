@@ -3,10 +3,10 @@ from .activation import *
 
 class rnn:
   def __init__(self, outshape, Type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05, inshape=None):
-    self.learningrate, self.hidshape, self.outshape, self.Type, self.outactivation = learningrate, hidshape, outshape, Type, outactivation
-
+    self.learningrate, self.Type, self.outactivation = learningrate, Type, outactivation
+    self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
+    
     if inshape is not None:
-      self.inshape = inshape
       self.weightsinToHid = np.random.uniform(-0.005, 0.005, (hidshape, inshape))
 
     self.weightsHidToHid = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
@@ -16,7 +16,7 @@ class rnn:
     self.outbiases = np.zeros(outshape)
 
   def __copy__(self):
-    return type(self)(self.inshape, self.outshape, self.Type, self.outactivation, self.hidshape, self.learningrate)
+    return type(self)(self.outshape, self.Type, self.outactivation, self.hidshape, self.learningrate, self.inshape)
 
   def modelinit(self, inshape):
     self.inshape = inshape

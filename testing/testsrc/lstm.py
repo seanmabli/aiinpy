@@ -3,10 +3,10 @@ from .activation import *
 
 class lstm:
   def __init__(self, outshape, outactivation, hidshape=64, learningrate=0.05, inshape=None):
-    self.outshape, self.outactivation, self.hidshape, self.learningrate = outshape, outactivation, hidshape, learningrate
-
+    self.outactivation, self.learningrate = outactivation, learningrate
+    self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
+    
     if inshape is not None:
-      self.inshape = inshape
       self.weightsinToForgetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
       self.weightsinToinGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
       self.weightsinTooutGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
@@ -26,7 +26,7 @@ class lstm:
     self.outbias = np.zeros(outshape)
 
   def __copy__(self):
-    return type(self)(self.inshape, self.outshape, self.outactivation, self.hidshape, self.learningrate)
+    return type(self)(self.outshape, self.outactivation, self.hidshape, self.learningrate, self.inshape)
 
   def modelinit(self, inshape):
     self.inshape = inshape

@@ -26,15 +26,15 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
 
     bar()
 
-  error = 0
+  Error = 0
   for Generation in range(NumOfTestGen):
     input = TestData[Generation : Generation + 5]
     out = model.forward(input)
 
-    outError = TestData[Generation + 1 : Generation + 6] - out
-    error += np.sum(outError)
+    outError = TestData[Generation + 1 : Generation + 6] - Out
+    Error += abs(TestData[Generation + 6] - Out[4])
     inError = model.backward(outError)
 
     bar()
-
-  print(error / NumOfTestGen)
+  
+print(Error / NumOfTestGen)

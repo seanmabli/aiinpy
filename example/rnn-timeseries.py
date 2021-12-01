@@ -1,10 +1,10 @@
-import numpy as np
-from alive_progress import alive_bar
 import aiinpy as ai
+from alive_progress import alive_bar
+import numpy as np
 
-rnn_model = ai.rnn(InSize=1, outshape=1, Type='ManyToMany', OutActivation='Identity', learningrate=0.01)
+model = ai.rnn(inshape=1, outshape=1, Type='ManyToMany', outactivation=ai.identity(), learningrate=0.01)
 
-Data = np.genfromtxt('example\data\Timeseries\Airpassenger.csv', dtype=int)
+Data = np.genfromtxt("example\data\Timeseries\Airpassenger.csv", dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
 
 TrainingData = Data[0 : 100, np.newaxis]
@@ -17,23 +17,23 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
   for Generation in range(NumOfTrainGen):
     Random = np.random.randint(0, len(TrainingData) - 5)
 
-    In = TrainingData[Random : Random + 5]
-    Out = rnn_model.forward
+    input = TrainingData[Random : Random + 5]
+    out = model.forward(input)
 
-    OutError = TrainingData[Random + 1 : Random + 6] - Out
-    InError = rnn_model.backward(OutError)
+    OutError = TrainingData[Random + 1 : Random + 6] - out
+    inError = model.backward(OutError)
 
     bar()
 
-  Error = 0
+  error = 0
   for Generation in range(NumOfTestGen):
-    In = TestData[Generation : Generation + 5]
-    Out = rnn_model.forward
+    input = TestData[Generation : Generation + 5]
+    out = model.forward(input)
 
-    OutError = TestData[Generation + 1 : Generation + 6] - Out
-    InError = rnn_model.backward(OutError)
+    OutError = TestData[Generation + 1 : Generation + 6] - out
+    error += np.sum(OutError)
+    inError = model.backward(OutError)
 
-    Error += abs(TestData[Generation + 6] - Out[4])
     bar()
 
-print(Error / NumOfTestGen)
+  print(error / NumOfTestGen)

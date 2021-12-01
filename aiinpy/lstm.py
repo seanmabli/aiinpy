@@ -2,131 +2,144 @@ import numpy as np
 from .activation import *
 
 class lstm:
-  def __init__(self, InSize, OutSize, OutActivation, HidSize=64, LearningRate=0.05):
-    self.LearningRate, self.HidSize, self.OutSize, self.OutActivation = LearningRate, HidSize, OutSize, OutActivation
+  def __init__(self, outshape, outactivation, hidshape=64, learningrate=0.05, inshape=None):
+    self.outactivation, self.learningrate = outactivation, learningrate
+    self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
+    
+    if inshape is not None:
+      self.weightsinToForgetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+      self.weightsinToinGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+      self.weightsinTooutGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+      self.weightsinTocellMemGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
 
-    self.WeightsInToForgetGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
-    self.WeightsInToInGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
-    self.WeightsInToOutGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
-    self.WeightsInToCellMemGate = np.random.uniform(-0.005, 0.005, (InSize, HidSize))
+    self.weightsHidToForgetGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightsHidToinputGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightsHidTooutputGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightsHidTocellMemGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
 
-    self.WeightsHidToForgetGate = np.random.uniform(-0.005, 0.005, (HidSize, HidSize))
-    self.WeightsHidToInputGate = np.random.uniform(-0.005, 0.005, (HidSize, HidSize))
-    self.WeightsHidToOutputGate = np.random.uniform(-0.005, 0.005, (HidSize, HidSize))
-    self.WeightsHidToCellMemGate = np.random.uniform(-0.005, 0.005, (HidSize, HidSize))
+    self.ForgetGatebiases = np.zeros(hidshape)
+    self.inGatebiases = np.zeros(hidshape)
+    self.outGatebiases = np.zeros(hidshape)
+    self.cellMemGatebiases = np.zeros(hidshape)
 
-    self.ForgetGateBiases = np.zeros(HidSize)
-    self.InGateBiases = np.zeros(HidSize)
-    self.OutGateBiases = np.zeros(HidSize)
-    self.CellMemGateBiases = np.zeros(HidSize)
+    self.weightsHidToout = np.random.uniform(-0.005, 0.005, (hidshape, outshape))
+    self.outbias = np.zeros(outshape)
 
-    self.WeightsHidToOut = np.random.uniform(-0.005, 0.005, (HidSize, OutSize))
-    self.OutBias = np.zeros(OutSize)
-  
-  def forward(self, In):
-    self.In = In
-    self.CellSize = len(In)
+  def __copy__(self):
+    return type(self)(self.outshape, self.outactivation, self.hidshape, self.learningrate, self.inshape)
 
-    self.Hid = np.zeros((self.CellSize + 1, self.HidSize))
-    self.CellMem = np.zeros((self.CellSize + 1, self.HidSize))
-    self.Out = np.zeros((self.CellSize, self.OutSize))
+  def modelinit(self, inshape):
+    self.inshape = inshape
+    self.weightsinToForgetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+    self.weightsinToinGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+    self.weightsinTooutGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+    self.weightsinTocellMemGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+    return self.outshape
 
-    self.ForgetGate = np.zeros((self.CellSize, self.HidSize))
-    self.InGate = np.zeros((self.CellSize, self.HidSize))
-    self.OutGate = np.zeros((self.CellSize, self.HidSize))
-    self.CellMemGate = np.zeros((self.CellSize, self.HidSize))
+  def forward(self, input):
+    self.input = input
+    self.cellSize = len(input)
 
-    for i in range(self.CellSize):
-      self.ForgetGate[i, :] = ApplyActivation((self.WeightsInToForgetGate.T @ self.In[i, :]) + (self.WeightsHidToForgetGate.T @ self.Hid[i, :]) + self.ForgetGateBiases, 'Sigmoid')
-      self.InGate[i, :] = ApplyActivation((self.WeightsInToInGate.T @ self.In[i, :]) + (self.WeightsHidToInputGate.T @ self.Hid[i, :]) + self.InGateBiases, 'Sigmoid')
-      self.OutGate[i, :] = ApplyActivation((self.WeightsInToOutGate.T @ self.In[i, :]) + (self.WeightsHidToOutputGate.T @ self.Hid[i, :]) + self.OutGateBiases, 'Sigmoid')
-      self.CellMemGate[i, :] = ApplyActivation((self.WeightsInToCellMemGate.T @ self.In[i, :]) + (self.WeightsHidToCellMemGate.T @ self.Hid[i, :]) + self.CellMemGateBiases, 'Tanh')
+    self.Hid = np.zeros((self.cellSize + 1, self.hidshape))
+    self.cellMem = np.zeros((self.cellSize + 1, self.hidshape))
+    self.out = np.zeros((self.cellSize, self.outshape))
 
-      self.CellMem[i + 1, :] = (self.ForgetGate[i, :] * self.CellMem[i, :]) + (self.InGate[i, :] * self.CellMemGate[i, :])
-      self.Hid[i + 1, :] = self.OutGate[i, :] * ApplyActivation(self.CellMem[i + 1, :], 'Tanh')
-      self.Out[i, :] = ApplyActivation(self.WeightsHidToOut.T @ self.Hid[i + 1, :] + self.OutBias, self.OutActivation)
+    self.ForgetGate = np.zeros((self.cellSize, self.hidshape))
+    self.inGate = np.zeros((self.cellSize, self.hidshape))
+    self.outGate = np.zeros((self.cellSize, self.hidshape))
+    self.cellMemGate = np.zeros((self.cellSize, self.hidshape))
 
-    return self.Out
+    for i in range(self.cellSize):
+      self.ForgetGate[i, :] = sigmoid().forward((self.weightsinToForgetGate.T @ self.input[i, :]) + (self.weightsHidToForgetGate.T @ self.Hid[i, :]) + self.ForgetGatebiases)
+      self.inGate[i, :] = sigmoid().forward((self.weightsinToinGate.T @ self.input[i, :]) + (self.weightsHidToinputGate.T @ self.Hid[i, :]) + self.inGatebiases)
+      self.outGate[i, :] = sigmoid().forward((self.weightsinTooutGate.T @ self.input[i, :]) + (self.weightsHidTooutputGate.T @ self.Hid[i, :]) + self.outGatebiases)
+      self.cellMemGate[i, :] = tanh().forward((self.weightsinTocellMemGate.T @ self.input[i, :]) + (self.weightsHidTocellMemGate.T @ self.Hid[i, :]) + self.cellMemGatebiases)
 
-  def backward(self, OutError):
-    InError = np.zeros(self.In.shape)
-    HidError = np.zeros(self.HidSize)
-    CellMemError = np.zeros(self.HidSize)
+      self.cellMem[i + 1, :] = (self.ForgetGate[i, :] * self.cellMem[i, :]) + (self.inGate[i, :] * self.cellMemGate[i, :])
+      self.Hid[i + 1, :] = self.outGate[i, :] * tanh().forward(self.cellMem[i + 1, :])
+      self.out[i, :] = self.outactivation.forward(self.weightsHidToout.T @ self.Hid[i + 1, :] + self.outbias)
 
-    WeightsInToForgetGateΔ = np.zeros(self.WeightsInToForgetGate.shape)
-    WeightsInToInGateΔ = np.zeros(self.WeightsInToInGate.shape)
-    WeightsInToOutGateΔ = np.zeros(self.WeightsInToOutGate.shape)
-    WeightsInToCellMemGateΔ = np.zeros(self.WeightsInToCellMemGate.shape)
+    return self.out
 
-    WeightsHidToForgetGateΔ = np.zeros(self.WeightsHidToForgetGate.shape)
-    WeightsHidToInputGateΔ = np.zeros(self.WeightsHidToInputGate.shape)
-    WeightsHidToOutputGateΔ = np.zeros(self.WeightsHidToOutputGate.shape)
-    WeightsHidToCellMemGateΔ = np.zeros(self.WeightsHidToCellMemGate.shape)
+  def backward(self, outError):
+    inError = np.zeros(self.input.shape)
+    HidError = np.zeros(self.hidshape)
+    cellMemError = np.zeros(self.hidshape)
 
-    ForgetGateBiasesΔ = np.zeros(self.ForgetGateBiases.shape)
-    InGateBiasesΔ = np.zeros(self.InGateBiases.shape)
-    OutGateBiasesΔ = np.zeros(self.OutGateBiases.shape)
-    CellMemGateBiasesΔ = np.zeros(self.CellMemGateBiases.shape)
+    weightsinToForgetGateΔ = np.zeros(self.weightsinToForgetGate.shape)
+    weightsinToinGateΔ = np.zeros(self.weightsinToinGate.shape)
+    weightsinTooutGateΔ = np.zeros(self.weightsinTooutGate.shape)
+    weightsinTocellMemGateΔ = np.zeros(self.weightsinTocellMemGate.shape)
 
-    WeightsHidToOutΔ = np.zeros(self.WeightsHidToOut.shape)
-    OutBiasΔ = np.zeros(self.OutBias.shape)
+    weightsHidToForgetGateΔ = np.zeros(self.weightsHidToForgetGate.shape)
+    weightsHidToinputGateΔ = np.zeros(self.weightsHidToinputGate.shape)
+    weightsHidTooutputGateΔ = np.zeros(self.weightsHidTooutputGate.shape)
+    weightsHidTocellMemGateΔ = np.zeros(self.weightsHidTocellMemGate.shape)
 
-    for i in reversed(range(self.CellSize)):
-      OutGradient = ActivationDerivative(self.Out[i, :], self.OutActivation) * OutError[i, :]
+    ForgetGatebiasesΔ = np.zeros(self.ForgetGatebiases.shape)
+    inGatebiasesΔ = np.zeros(self.inGatebiases.shape)
+    outGatebiasesΔ = np.zeros(self.outGatebiases.shape)
+    cellMemGatebiasesΔ = np.zeros(self.cellMemGatebiases.shape)
+
+    weightsHidTooutΔ = np.zeros(self.weightsHidToout.shape)
+    outbiasΔ = np.zeros(self.outbias.shape)
+
+    for i in reversed(range(self.cellSize)):
+      outGradient = self.outactivation.backward(self.out[i, :]) * outError[i, :]
       
-      HidError += self.WeightsHidToOut @ OutError[i, :]
+      HidError += self.weightsHidToout @ outError[i, :]
 
-      CellMemError += HidError * self.OutGate[i] * ActivationDerivative(ApplyActivation(self.CellMem[i + 1, :], 'Tanh'), 'Tanh')
-      OutGateError = HidError * ApplyActivation(self.CellMem[i + 1, :], 'Tanh')
+      cellMemError += HidError * self.outGate[i] * tanh().backward(tanh().forward(self.cellMem[i + 1, :]))
+      outGateError = HidError * tanh().forward(self.cellMem[i + 1, :])
 
-      ForgetGateError = CellMemError * self.CellMem[i, :]
-      InGateError = CellMemError * self.CellMemGate[i, :]
-      CellMemGateError = CellMemError * self.InGate[i, :]
+      ForgetGateError = cellMemError * self.cellMem[i, :]
+      inGateError = cellMemError * self.cellMemGate[i, :]
+      cellMemGateError = cellMemError * self.inGate[i, :]
 
-      CellMemError *= self.ForgetGate[i, :]
+      cellMemError *= self.ForgetGate[i, :]
 
-      ForgetGateGradient = ActivationDerivative(self.ForgetGate[i, :], 'Sigmoid') * ForgetGateError
-      InGateGradient = ActivationDerivative(self.InGate[i, :], 'Sigmoid') * InGateError
-      OutGateGradient = ActivationDerivative(self.OutGate[i, :], 'Sigmoid') * OutGateError
-      CellMemGateGradient = ActivationDerivative(self.CellMemGate[i, :], 'Tanh') * CellMemGateError
+      ForgetGateGradient = sigmoid().backward(self.ForgetGate[i, :]) * ForgetGateError
+      inGateGradient = sigmoid().backward(self.inGate[i, :]) * inGateError
+      outGateGradient = sigmoid().backward(self.outGate[i, :]) * outGateError
+      cellMemGateGradient = tanh().backward(self.cellMemGate[i, :]) * cellMemGateError
 
-      HidError = self.WeightsHidToForgetGate @ ForgetGateError + self.WeightsHidToInputGate @ InGateError + self.WeightsHidToOutputGate @ OutGateError + self.WeightsHidToCellMemGate @ CellMemGateError
-      InError[i, :] = self.WeightsInToForgetGate @ ForgetGateError + self.WeightsInToInGate @ InGateError + self.WeightsInToOutGate @ OutGateError + self.WeightsInToCellMemGate @ CellMemGateError
+      HidError = self.weightsHidToForgetGate @ ForgetGateError + self.weightsHidToinputGate @ inGateError + self.weightsHidTooutputGate @ outGateError + self.weightsHidTocellMemGate @ cellMemGateError
+      inError[i, :] = self.weightsinToForgetGate @ ForgetGateError + self.weightsinToinGate @ inGateError + self.weightsinTooutGate @ outGateError + self.weightsinTocellMemGate @ cellMemGateError
 
-      WeightsInToForgetGateΔ += np.outer(self.In[i, :].T, ForgetGateGradient)
-      WeightsInToInGateΔ += np.outer(self.In[i, :].T, InGateGradient)
-      WeightsInToOutGateΔ += np.outer(self.In[i, :].T, OutGateGradient)
-      WeightsInToCellMemGateΔ += np.outer(self.In[i, :].T, CellMemGateGradient)
+      weightsinToForgetGateΔ += np.outer(self.input[i, :].T, ForgetGateGradient)
+      weightsinToinGateΔ += np.outer(self.input[i, :].T, inGateGradient)
+      weightsinTooutGateΔ += np.outer(self.input[i, :].T, outGateGradient)
+      weightsinTocellMemGateΔ += np.outer(self.input[i, :].T, cellMemGateGradient)
 
-      WeightsHidToForgetGateΔ += np.outer(self.Hid[i, :].T, ForgetGateGradient)
-      WeightsHidToInputGateΔ += np.outer(self.Hid[i, :].T, InGateGradient)
-      WeightsHidToOutputGateΔ += np.outer(self.Hid[i, :].T, OutGateGradient)
-      WeightsHidToCellMemGateΔ += np.outer(self.Hid[i, :].T, CellMemGateGradient)
+      weightsHidToForgetGateΔ += np.outer(self.Hid[i, :].T, ForgetGateGradient)
+      weightsHidToinputGateΔ += np.outer(self.Hid[i, :].T, inGateGradient)
+      weightsHidTooutputGateΔ += np.outer(self.Hid[i, :].T, outGateGradient)
+      weightsHidTocellMemGateΔ += np.outer(self.Hid[i, :].T, cellMemGateGradient)
 
-      ForgetGateBiasesΔ += ForgetGateGradient
-      InGateBiasesΔ += InGateGradient
-      OutGateBiasesΔ += OutGateGradient
-      CellMemGateBiasesΔ += CellMemGateGradient
+      ForgetGatebiasesΔ += ForgetGateGradient
+      inGatebiasesΔ += inGateGradient
+      outGatebiasesΔ += outGateGradient
+      cellMemGatebiasesΔ += cellMemGateGradient
 
-      WeightsHidToOutΔ += np.outer(self.Hid[i].T, OutGradient)
-      OutBiasΔ += OutGradient
+      weightsHidTooutΔ += np.outer(self.Hid[i].T, outGradient)
+      outbiasΔ += outGradient
 
-    self.WeightsInToForgetGate += np.clip(WeightsInToForgetGateΔ, -1, 1) * self.LearningRate
-    self.WeightsInToInGate += np.clip(WeightsInToInGateΔ, -1, 1) * self.LearningRate
-    self.WeightsInToOutGate += np.clip(WeightsInToOutGateΔ, -1, 1) * self.LearningRate
-    self.WeightsInToCellMemGate += np.clip(WeightsInToCellMemGateΔ, -1, 1) * self.LearningRate
+    self.weightsinToForgetGate += np.clip(weightsinToForgetGateΔ, -1, 1) * self.learningrate
+    self.weightsinToinGate += np.clip(weightsinToinGateΔ, -1, 1) * self.learningrate
+    self.weightsinTooutGate += np.clip(weightsinTooutGateΔ, -1, 1) * self.learningrate
+    self.weightsinTocellMemGate += np.clip(weightsinTocellMemGateΔ, -1, 1) * self.learningrate
 
-    self.WeightsHidToForgetGate += np.clip(WeightsHidToForgetGateΔ, -1, 1) * self.LearningRate
-    self.WeightsHidToInputGate += np.clip(WeightsHidToInputGateΔ, -1, 1) * self.LearningRate
-    self.WeightsHidToOutputGate += np.clip(WeightsHidToOutputGateΔ, -1, 1) * self.LearningRate
-    self.WeightsHidToCellMemGate += np.clip(WeightsHidToCellMemGateΔ, -1, 1) * self.LearningRate
+    self.weightsHidToForgetGate += np.clip(weightsHidToForgetGateΔ, -1, 1) * self.learningrate
+    self.weightsHidToinputGate += np.clip(weightsHidToinputGateΔ, -1, 1) * self.learningrate
+    self.weightsHidTooutputGate += np.clip(weightsHidTooutputGateΔ, -1, 1) * self.learningrate
+    self.weightsHidTocellMemGate += np.clip(weightsHidTocellMemGateΔ, -1, 1) * self.learningrate
 
-    self.ForgetGateBiases += np.clip(ForgetGateBiasesΔ, -1, 1) * self.LearningRate
-    self.InGateBiases += np.clip(InGateBiasesΔ, -1, 1) * self.LearningRate
-    self.OutGateBiases += np.clip(OutGateBiasesΔ, -1, 1) * self.LearningRate
-    self.CellMemGateBiases += np.clip(CellMemGateBiasesΔ, -1, 1) * self.LearningRate
+    self.ForgetGatebiases += np.clip(ForgetGatebiasesΔ, -1, 1) * self.learningrate
+    self.inGatebiases += np.clip(inGatebiasesΔ, -1, 1) * self.learningrate
+    self.outGatebiases += np.clip(outGatebiasesΔ, -1, 1) * self.learningrate
+    self.cellMemGatebiases += np.clip(cellMemGatebiasesΔ, -1, 1) * self.learningrate
 
-    self.WeightsHidToOut += np.clip(WeightsHidToOutΔ, -1, 1) * self.LearningRate
-    self.OutBias += np.clip(OutBiasΔ, -1, 1) * self.LearningRate
+    self.weightsHidToout += np.clip(weightsHidTooutΔ, -1, 1) * self.learningrate
+    self.outbias += np.clip(outbiasΔ, -1, 1) * self.learningrate
 
-    return InError
+    return inError

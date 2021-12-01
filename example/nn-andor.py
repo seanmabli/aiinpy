@@ -1,18 +1,18 @@
-import numpy as np
 import aiinpy as ai
+import numpy as np
 
 # Create Dataset
-InTrainData = np.random.choice(([0, 1]), (2, 100))
-OutTrainData = np.zeros((2, 100))
+inTrainData = np.random.choice(([0, 1]), (2, 100))
+outTrainData = np.zeros((2, 100))
 for i in range(100):
-  OutTrainData[:, i] = [1, 0] if sum(InTrainData[:, i]) == 1 else [0, 1]
+  outTrainData[:, i] = [1, 0] if sum(inTrainData[:, i]) == 1 else [0, 1]
 
-# NN Model
+# NN model
 model = ai.model(2, 2, [
-  ai.nn(2, 16, 'ReLU', 0.1),
-  ai.nn(16, 16, 'ReLU', 0.1),
-  ai.nn(16, 2, 'Sigmoid', 0.1)
+  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
+  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
+  ai.nn(outshape=2, activation=ai.sigmoid(), learningrate=0.1)
 ])
 
-model.train(InTrainData, OutTrainData)
-print(model.test(InTrainData, OutTrainData))
+model.train((inTrainData, outTrainData), 100)
+print(model.test((inTrainData, outTrainData)))

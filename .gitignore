@@ -1,6 +1,7 @@
 wandb/*
 .spyproject
 *.pyc
+*.cpython-39.pyc
 website/.firebase/*
 website/build/*
 website/node_modules/*

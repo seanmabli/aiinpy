@@ -1,10 +1,10 @@
-import numpy as np
-from alive_progress import alive_bar
-from data.posnegcon.VictorZhou import TrainingData, TestData
 import aiinpy as ai
+import numpy as np
+from data.posnegcon.VictorZhou import TrainingData, TestData
+from alive_progress import alive_bar
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
-rnn_model = ai.rnn(len(TrainingDataUniqueWords), 2, Type='ManyToOne', OutActivation='StableSoftmax', learningrate=0.05)
+model = ai.rnn(len(TrainingDataUniqueWords), 2, Type='ManyToOne', outactivation=ai.stablesoftmax(), learningrate=0.05)
 
 NumOfTrainGen = 15000
 NumOfTestGen = len(list(TestData.items()))
@@ -14,33 +14,33 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
     items = list(TrainingData.items())
     Random = np.random.randint(0, len(TrainingDataUniqueWords))
 
-    InputSentenceSplit = list(items[Random][0].split(' '))
-    Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
-    for i in range(len(InputSentenceSplit)):
-      Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
+    inputSentenceSplit = list(items[Random][0].split(' '))
+    input = np.zeros((len(inputSentenceSplit), len(TrainingDataUniqueWords)))
+    for i in range(len(inputSentenceSplit)):
+      input[i, TrainingDataUniqueWords.index(inputSentenceSplit[i])] = 1
 
-    Output = rnn_model.forward(Input)
+    output = model.forward(input)
 
-    RealOutput = np.zeros(Output.shape)
-    RealOutput[(1 if items[Random][1] == True else 0)] = 1
+    Realoutput = np.zeros(output.shape)
+    Realoutput[(1 if items[Random][1] == True else 0)] = 1
 
-    NumberCorrect = int(np.argmax(Output) == (1 if items[Random][1] == True else 0))
+    NumberCorrect = int(np.argmax(output) == (1 if items[Random][1] == True else 0))
 
-    OutputError = RealOutput - Output
-    rnn_model.backward(OutputError)
+    outputError = Realoutput - output
+    model.backward(outputError)
     bar()
 
   NumberCorrect = 0
   for Generation in range(NumOfTestGen):
     items = list(TestData.items())
 
-    InputSentenceSplit = list(items[Generation][0].split(' '))
-    Input = np.zeros((len(InputSentenceSplit), len(TrainingDataUniqueWords)))
-    for i in range(len(InputSentenceSplit)):
-      Input[i, TrainingDataUniqueWords.index(InputSentenceSplit[i])] = 1
+    inputSentenceSplit = list(items[Generation][0].split(' '))
+    input = np.zeros((len(inputSentenceSplit), len(TrainingDataUniqueWords)))
+    for i in range(len(inputSentenceSplit)):
+      input[i, TrainingDataUniqueWords.index(inputSentenceSplit[i])] = 1
 
-    Output = rnn_model.forward(Input)
-    NumberCorrect += int(np.argmax(Output) == (1 if items[Generation][1] == True else 0))
+    output = model.forward(input)
+    NumberCorrect += int(np.argmax(output) == (1 if items[Generation][1] == True else 0))
     bar()
 
 print(NumberCorrect / NumOfTestGen)

@@ -1,5 +1,5 @@
-import numpy as np
 import testsrc as ai
+import numpy as np
 
 # Create Dataset
 inTrainData = np.random.choice(([0, 1]), (2, 100))
@@ -14,5 +14,5 @@ model = ai.model(2, 2, [
   ai.nn(outshape=2, activation=ai.sigmoid(), learningrate=0.1)
 ])
 
-model.train(inTrainData, outTrainData, 100)
-print(model.test(inTrainData, outTrainData))
+model.train((inTrainData, outTrainData), 100)
+print(model.test((inTrainData, outTrainData)))

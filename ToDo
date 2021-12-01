@@ -10,6 +10,8 @@ For 0.0.18 (1-1-2022):
   Other:
   - Image segmentation with conv
   - Create General Adversarial Networks (GAN)
+  - Acivation Layers
+  - Add Other Activation Functions (See activation.py)
 
 For 0.0.19 (2-1-2022):
   Focus:

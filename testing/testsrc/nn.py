@@ -5,14 +5,14 @@ class nn:
   def __init__(self, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0), inshape=None):
     self.weightsinit, self.biasesinit = weightsinit, biasesinit
     self.activation, self.learningrate = activation, learningrate
+    self.inshape = inshape
     if inshape is not None:
       self.weights = np.random.uniform(weightsinit[0], weightsinit[1], (np.prod(inshape), np.prod(outshape)))
       self.biases = np.random.uniform(biasesinit[0], biasesinit[1], np.prod(outshape))
-      self.inshape = inshape
     self.outshape = outshape
     
   def __copy__(self):
-    return type(self)(self.inshape, self.outshape, self.activation, self.learningrate, self.weightsinit, self.biasesinit)
+    return type(self)(self.outshape, self.activation, self.learningrate, self.weightsinit, self.biasesinit, self.inshape)
 
   def modelinit(self, inshape):
     self.inshape = inshape

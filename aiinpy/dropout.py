@@ -1,16 +1,22 @@
 import numpy as np
 
 class dropout:
-  def __init__(self, DropoutRate):
-    self.DropoutRate = DropoutRate
-  
-  def forward(self, In):
-    self.Dropout = np.random.binomial(1, self.DropoutRate, size=In.shape)
-    self.Dropout = np.where(self.Dropout == 0, 1, 0)
-    return self.Dropout * In
+  def __init__(self, dropoutrate):
+    self.dropoutrate = dropoutrate
 
-  def backward(self, OutError):
-    return self.Dropout * OutError  
+  def __copy__(self):
+    return type(self)(self.dropoutrate)
+
+  def modelinit(self, inshape):
+    return inshape
+
+  def forward(self, input):
+    self.Dropout = np.random.binomial(1, self.dropoutrate, size=input.shape)
+    self.Dropout = np.where(self.Dropout == 0, 1, 0)
+    return self.Dropout * input
+
+  def backward(self, outError):
+    return self.Dropout * outError  
     
-  def ChangeDropoutRate(self, NewRate):
-    self.DropoutRate = NewRate
+  def changeDropoutRate(self, NewRate):
+    self.dropoutrate = NewRate

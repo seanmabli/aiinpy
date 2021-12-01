@@ -1,25 +1,45 @@
 import numpy as np
-from .activation import *
+from alive_progress import alive_bar
+from copy import copy
 
 class neuroevolution:
-  def __init__(self, InSize, OutSize, MutationRate, PopulationSize, Activation):
-    self.Weights = np.random.uniform(-1, 1, (PopulationSize, InSize, OutSize))
-    self.Biases = np.random.uniform(0, 0, (PopulationSize, OutSize))
-    self.MutationRate, self.PopulationSize, self.Activation = MutationRate, PopulationSize, Activation
+  def __init__(self, inshape, outshape, PopulationSize, model):
+    self.inshape, self.outshape, self.PopulationSize = inshape, outshape, PopulationSize
+    
+    self.model = np.zeros((PopulationSize, len(model)), dtype=object)
+    for i in range(PopulationSize):
+      for j in range(len(model)):
+        self.model[i, j] = copy(model[j])
 
-  def forward(self, In):
-    self.Out = np.multiply(In, np.transpose(self.Weights, axes=(2, 0, 1)))
-    self.Out = np.transpose(np.sum(self.Out, axis=2), axes=(1, 0)) + self.Biases
-    return ApplyActivation(self.Out, self.Activation)
+  def forwardmulti(self, input):
+    out = np.zeros((self.PopulationSize, self.outshape))
+    for i in range(self.PopulationSize):
+      Hid = input
+      for j in range(self.model.shape[1]):
+        Hid = self.model[i, j].forward(Hid)
+      out[i] = Hid
+    return out
 
-  def Mutate(self, FavorablePlayer):
-    # Copy Weights and Biases
-    self.Weights = np.array([self.Weights[FavorablePlayer]] * self.PopulationSize)
-    self.Biases = np.array([self.Biases[FavorablePlayer]] * self.PopulationSize)
+  def forwardsingle(self, input, Player):
+    out = np.zeros(self.outshape)
+    for j in range(self.model.shape[1]):
+      input = self.model[Player, j].forward(input)
+    return input
 
-    # Mutate Weights & Biases
-    self.Weights *= np.random.choice([0, 1], self.Weights.shape, p=[self.MutationRate, 1 - self.MutationRate])
-    self.Weights = np.where(self.Weights == 0, np.random.uniform(-1, 1, self.Weights.shape), self.Weights)
+  def mutate(self, FavorablePlayer):
+    Favorablemodel = self.model[FavorablePlayer]
 
-    self.Biases *= np.random.choice([0, 1], self.Biases.shape, p=[self.MutationRate, 1 - self.MutationRate])
-    self.Biases = np.where(self.Biases == 0, np.random.uniform(-1, 1, self.Biases.shape), self.Biases)
+    for i in range(self.model.shape[1]):
+      self.model[0, i].weights = Favorablemodel[i].weights
+      self.model[0, i].biases = Favorablemodel[i].biases
+
+    for i in range(1, self.PopulationSize):
+      for j in range(self.model.shape[1]):
+        self.model[i, j].weights = Favorablemodel[j].weights
+        self.model[i, j].biases = Favorablemodel[j].biases
+
+        self.model[i, j].weights *= np.random.choice([0, 1], self.model[i, j].weights.shape, p=[self.model[i, j].learningrate, 1 - self.model[i, j].learningrate])
+        self.model[i, j].weights = np.where(self.model[i, j].weights == 0, np.random.uniform(-1, 1, self.model[i, j].weights.shape), self.model[i, j].weights)
+
+        self.model[i, j].biases *= np.random.choice([0, 1], self.model[i, j].biases.shape, p=[self.model[i, j].learningrate, 1 - self.model[i, j].learningrate])
+        self.model[i, j].biases = np.where(self.model[i, j].biases == 0, np.random.uniform(-1, 1, self.model[i, j].biases.shape), self.model[i, j].biases)
