@@ -8,8 +8,10 @@ class neuroevolution:
     
     self.model = np.zeros((PopulationSize, len(model)), dtype=object)
     for i in range(PopulationSize):
+      inshape = self.inshape
       for j in range(len(model)):
         self.model[i, j] = copy(model[j])
+        inshape = self.model[i, j].modelinit(inshape)
 
   def forwardmulti(self, input):
     out = np.zeros((self.PopulationSize, self.outshape))

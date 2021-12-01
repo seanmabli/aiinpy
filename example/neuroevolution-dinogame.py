@@ -1,11 +1,11 @@
-import numpy as np
 import aiinpy as ai
+import numpy as np
 
 PopulationSize = 1000
 
 model = ai.neuroevolution(4, 3, PopulationSize, [
-  ai.nn(4, 6, ai.identity(), 0.1),
-  ai.nn(6, 3, ai.identity(), 0.1)
+  ai.nn(outshape=6, activation=ai.identity(), learningrate=0.1),
+  ai.nn(outshape=3, activation=ai.identity(), learningrate=0.1)
 ])
 
 DisplayShape = (960, 540)

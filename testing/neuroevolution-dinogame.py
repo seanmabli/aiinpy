@@ -4,8 +4,8 @@ import testsrc as ai
 PopulationSize = 1000
 
 model = ai.neuroevolution(4, 3, PopulationSize, [
-  ai.nn(4, 6, ai.identity(), 0.1),
-  ai.nn(6, 3, ai.identity(), 0.1)
+  ai.nn(outshape=6, activation=ai.identity(), learningrate=0.1),
+  ai.nn(outshape=3, activation=ai.identity(), learningrate=0.1)
 ])
 
 DisplayShape = (960, 540)
@@ -54,8 +54,8 @@ for Generation in range(100):
         ObjectType[2] = 'Cactus'
 
     # Dino
-    in = np.array([(Object[0, 0] - (20 + DinoDuckShape[0])) / 1400, 0 if ObjectType[0] == 'Cactus' else 1, (Object[0, 1] - (20 + DinoWalkShape[0])) / 1400, 0 if ObjectType[1] == 'Cactus' else 1])
-    out = model.forwardmulti(in)
+    input = np.array([(Object[0, 0] - (20 + DinoDuckShape[0])) / 1400, 0 if ObjectType[0] == 'Cactus' else 1, (Object[0, 1] - (20 + DinoWalkShape[0])) / 1400, 0 if ObjectType[1] == 'Cactus' else 1])
+    out = model.forwardmulti(input)
 
     for i in range(PopulationSize):
       if out[i, 1] > out[i, 0] and out[i, 1] > out[i, 2] and Dino[i, 1] == DisplayShape[1] - DinoShape[i, 1]: # Jump

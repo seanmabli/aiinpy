@@ -22,6 +22,7 @@ class model:
 
   def train(self, data, NumOfGen):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
+    data = list(data) if type(data) == tuple else data
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:
       x = list(range(0, len(data[0].shape)))
@@ -48,6 +49,7 @@ class model:
 
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
+    data = list(data) if type(data) == tuple else data
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:
       x = list(range(0, len(data[0].shape)))
