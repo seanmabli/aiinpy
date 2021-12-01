@@ -26,11 +26,10 @@ for i in range(len(classes)):
   else:
     model = np.append(model, 'aiinpy.' + classes[i].__name__ + '()')
 
-version = version('aiinpy') if len(version('aiinpy')) == 6 else version('aiinpy')[:4] + '0' + version('aiinpy')[4]
 
-data = np.array([title, model, url, urlid, [version] * len(classes)], dtype=str)
+data = np.array([title, model, url, urlid, [version('aiinpy')] * len(classes)], dtype=str)
 data = np.rot90(data).tolist()
 
 data = [{'title' : data[i][0], 'model' : data[i][1], 'url' : data[i][2], 'id' : data[i][3], 'version' : data[i][4]} for i in range(len(data))]
 
-pickle.dump(data, open('websiteinfo/datatransfer.txt', 'wb'))
+pickle.dump(data, open('website/dataextract/datatransfer.txt', 'wb'))

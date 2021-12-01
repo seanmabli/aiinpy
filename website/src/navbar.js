@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import content from './content';
-import info from './info';
+import info from './version';
 import './index.css';
 
 function Navbar() {
@@ -9,7 +9,7 @@ function Navbar() {
   
   function getversion(val) {
     setVersion(val.target.value);
-    if (info[0].possibleversions.includes(val.target.value) === true) {
+    if (info[0].versions.includes(val.target.value) === true) {
       info[0].currentversion = val.target.value;
     }
   }

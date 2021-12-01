@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import Navbar from './navbar';
 import content from './content';
-import info from './info';
+import info from './version';
 import './index.css';
 
 function Function() {
