@@ -5,8 +5,9 @@ import info from './version';
 import './index.css';
 
 function Function() {
+  const { version, id } = useParams();
+  info[0].currentversion = version;
 
-  const { id } = useParams();
   const contentfiltedbyid = content.filter(content => content.id === id);
   const contentfiltedbyversion = contentfiltedbyid.filter(content => content.version === info[0].currentversion);
   

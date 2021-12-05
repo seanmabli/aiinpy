@@ -18,7 +18,7 @@ for name, obj in inspect.getmembers(ai):
 
 for i in range(len(classes)):
   title = np.append(title, 'aiinpy.' + classes[i].__name__)
-  url = np.append(url, '/' + classes[i].__name__)
+  url = np.append(url, '/' + version('aiinpy') + '/' + classes[i].__name__)
   urlid = np.append(urlid, classes[i].__name__ )
   source = np.append(source, inspect.getsource(classes[i]))
   if source[i].find('__init__') != -1:

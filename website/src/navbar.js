@@ -19,7 +19,7 @@ function Navbar() {
   return (
     <div>
       <div className="box">
-        <Link to="/" className="p notext-decoration">aiinpy</Link> <br/>
+        <Link to='/' className="p notext-decoration">aiinpy</Link> <br/>
       </div>
       <input type="text" value={version} onChange={getversion} className="h1 lighter version"/>
       {contentfiltedbyversion.map((item) => {
