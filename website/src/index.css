@@ -66,6 +66,12 @@
   outline: none !important;
 }
 
+.socialicon {
+  width: 10px;
+  height: 10px;
+  object-fit: cover;
+}
+
 @media screen and (max-width: 600px) {
   .about {
     display: none;
