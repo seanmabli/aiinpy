@@ -31,7 +31,7 @@ function Navbar() {
       })}
       <div className="box">
         <a href="https://github.com/seanmabli/aiinpy" className="h1 lighter link">github</a> 
-        <a href="https://pypi.org/project/aiinpy/" className="h1 lighter link">&nbsp; pypi</a> 
+        <a href="https://pypi.org/project/aiinpy/" className="h1 lighter link">&nbsp;pypi</a> 
       </div>
     </div>
   );
