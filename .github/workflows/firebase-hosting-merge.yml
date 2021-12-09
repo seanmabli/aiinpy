@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: ls
-      - run: cp website
+        working-directory: ./website
       - run: ls
       - run: npm ci
       - run: npm run build
