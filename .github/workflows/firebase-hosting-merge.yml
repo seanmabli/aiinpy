@@ -17,9 +17,8 @@ jobs:
       - name: npm run build
         working-directory: ./website
         run: npm run build
-      - name: firebase deploy
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         working-directory: ./website
-        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AIINPY }}'
