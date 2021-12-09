@@ -2,5 +2,4 @@
 testing/testsrc/__pycache__
 wandb
 website/build
-website/.firebase
 website/node_modules
