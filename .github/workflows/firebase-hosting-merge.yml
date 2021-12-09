@@ -3,6 +3,7 @@
 
 name: Deploy to Firebase Hosting on merge
 'on':
+  working-directory: ./website
   push:
     branches:
       - main
@@ -12,11 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: ls
-      - name: test
-        working-directory: ./website
-        run: ls
-        run: npm ci
-        run: npm run build
+      - run: npm ci
+      - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
