@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd website
+      - run: ls
+      - run: cp website
       - run: ls
       - run: npm ci
       - run: npm run build
