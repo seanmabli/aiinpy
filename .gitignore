@@ -1,6 +1,3 @@
 .spyproject
-.firebase
 testing/testsrc/__pycache__
 wandb
-website/build
-website/node_modules
