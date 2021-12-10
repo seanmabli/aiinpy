@@ -1,4 +1,5 @@
 .spyproject
+.firebase
 testing/testsrc/__pycache__
 wandb
 website/build

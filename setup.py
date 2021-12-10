@@ -5,5 +5,5 @@ setup(name='aiinpy',
       description='An artificial intelligence library?',
       license='MIT',
       packages=['aiinpy'],
-      url='https://github.com/SeanMabli/aiinpy',
+      url='https://aiinpy.org',
       install_requires=['numpy', 'alive_progress'])
