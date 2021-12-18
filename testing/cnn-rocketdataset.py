@@ -1,7 +1,25 @@
 import numpy as np
+from PIL import Image, ImageOps
 import testsrc as ai
 import wandb
+import time
 
+start = time.time()
+electronimages = np.zeros((23, 960, 540))
+falcon9images = np.zeros((72, 960, 540))
+soyuzimages = np.zeros((59, 960, 540))
+spaceshuttleimages = np.zeros((70, 960, 540))
+
+for i in range(23):
+  electronimages[i] = np.array(ImageOps.grayscale(Image.open('testing\\data\\rocketdataset\\electron\\' + str(i) + '.png'))).T
+for i in range(72):
+  falcon9images[i] = np.array(ImageOps.grayscale(Image.open('testing\\data\\rocketdataset\\falcon9\\' + str(i) + '.png'))).T
+for i in range(59):
+  soyuzimages[i] = np.array(ImageOps.grayscale(Image.open('testing\\data\\rocketdataset\\soyuz\\' + str(i) + '.png'))).T
+for i in range(70):
+  spaceshuttleimages[i] = np.array(ImageOps.grayscale(Image.open('testing\\data\\rocketdataset\\spaceshuttle\\' + str(i) + '.png'))).T
+
+print(time.time() - start)
 # wandb.init(project="cnn-rocketdataset")
 
 # Create Dataset
