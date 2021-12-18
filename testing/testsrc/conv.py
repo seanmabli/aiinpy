@@ -22,10 +22,12 @@ class conv:
     return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
 
   def modelinit(self, inshape):
+    self.inshape = inshape
     if len(inshape) == 2:
       inshape = tuple([self.filtershape[0]]) + inshape
     if self.padding == True:
       inshape = (inshape[0], inshape[1] + self.filtershape[1] - 1, inshape[2] + self.filtershape[2] - 1)
+      
     self.outshape = tuple([self.filtershape[0], int((inshape[1] - self.filtershape[1] + 1) / self.stride[0]), int((inshape[2] - self.filtershape[2] + 1) / self.stride[1])])
     self.out = np.zeros(self.outshape)
 
@@ -72,7 +74,7 @@ class conv:
         for j in range(int(self.inshape[2] / self.stride[1])):
          self.inError[:, i * self.stride[0], j * self.stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]]), axis=(1, 2))
        
-    if np.ndim(self.inError) == 2:
+    elif np.ndim(self.inError) == 2:
       for i in range(int(self.inshape[0] / self.stride[0])):
         for j in range(int(self.inshape[1] / self.stride[1])):
          self.inError[i * self.stride[0], j * self.stride[1]] = np.sum(np.multiply(RotFilter, PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]]))

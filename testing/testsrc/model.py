@@ -20,7 +20,7 @@ class model:
       outError = self.model[i].backward(outError)
     return outError
 
-  def train(self, data, NumOfGen):
+  def train(self, data, numofgen):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
     data = list(data) if type(data) == tuple else data
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
@@ -34,8 +34,8 @@ class model:
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     # Training
-    with alive_bar(NumOfGen) as bar:
-      for _ in range (NumOfGen):
+    with alive_bar(numofgen) as bar:
+      for _ in range (numofgen):
         Random = np.random.randint(0, NumOfData)
         input = data[0][Random]
         for i in range(len(self.model)):

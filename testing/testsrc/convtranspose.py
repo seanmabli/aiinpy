@@ -26,7 +26,7 @@ class convtranspose:
         self.out[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]] += self.input[:, i, j][:, np.newaxis, np.newaxis] * self.Filter
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
-    self.out = applyactivation(self.out, self.activation)
+    self.out = self.activation.forward(self.out)
 
     if self.padding == True:
       self.out = self.out[:, 1 : self.outshape[1] - 1, 1 : self.outshape[2] - 1]
@@ -36,7 +36,7 @@ class convtranspose:
   def backward(self, outError):
     FilterΔ = np.zeros(self.filtershape)
 
-    outGradient = activationDerivative(self.out, self.activation) * outError
+    outGradient = self.activation.backward(self.out) * outError
     outGradient = np.pad(outGradient, 1, mode='constant')[1 : self.filtershape[0] + 1, :, :]
 
     for i in range(0, self.inshape[1]):
