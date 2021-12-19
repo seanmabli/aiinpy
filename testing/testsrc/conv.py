@@ -2,10 +2,12 @@ import numpy as np
 from .activation import *
 
 class conv:
-  def __init__(self, filtershape, learningrate, activation=identity, padding=False, stride=(1, 1), inshape=None):
+  def __init__(self, filtershape, learningrate, activation=identity(), padding=False, stride=(1, 1), inshape=None):
     self.learningrate, self.activation, self.padding, self.stride = learningrate, activation, padding, stride
     self.inshape = inshape
 
+    if len(filtershape) == 2:
+      filtershape = tuple([1]) + filtershape
     self.filtershape = filtershape
     self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
     self.bias = np.zeros(self.filtershape[0])
@@ -15,6 +17,7 @@ class conv:
         inshape = tuple([self.filtershape[0]]) + inshape
       if padding == True:
         inshape = (inshape[0], inshape[1] + self.filtershape[1] - 1, inshape[2] + self.filtershape[2] - 1)
+      
       self.outshape = tuple([filtershape[0], int((inshape[1] - filtershape[1] + 1) / self.stride[0]), int((inshape[2] - filtershape[2] + 1) / self.stride[1])])
       self.out = np.zeros(self.outshape)
 

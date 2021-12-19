@@ -1,24 +1,31 @@
 import numpy as np
+import testsrc as ai
 
-input = np.zeros((4, 4))
-weight = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-
-def flattenweight(input, weight):
+def generateconvmatrix(input, weight):
+  out = []
   flattenweight = np.array(weight[0])
   for row in weight[1:]:
     flattenweight = np.append(flattenweight, np.zeros(input.shape[0] - weight.shape[0]))
     flattenweight = np.append(flattenweight, row)
-  return flattenweight
-    
-out = np.zeros((4, np.prod(input.shape))) # replace 4 with variable later
-fw = flattenweight(input, weight)
+  
+  i = 0
+  while i + len(flattenweight) <= np.prod(input.shape):
+    y = np.zeros((np.prod(input.shape)))
+    y[i : i + len(flattenweight)] = flattenweight
+    out.append(y)
+    if (np.prod(input.shape) - (i + len(flattenweight))) % input.shape[0] == 0:
+      i += weight.shape[0]
+    else:
+      i += 1
+  return np.array(out)
 
-i = 0
-for x in range(input.shape[0]):
-  out[x, i : i + len(fw)] = fw
-  if (np.prod(input.shape) - (i + len(fw))) % input.shape[0] == 0:
-    i += weight.shape[0]
-  else:
-    i += 1
+input = np.zeros((10, 10))
 
-print(out)
+conv = ai.conv(inshape=input.shape, filtershape=(9, 9), learningrate=0)
+convout = conv.forward(input)
+
+weight = conv.Filter.reshape(9, 9)
+convmatrix = generateconvmatrix(input, weight)
+convmatrixout = convmatrix.dot(input.flatten()).reshape(convout.shape)
+
+print(convout == convmatrixout)
