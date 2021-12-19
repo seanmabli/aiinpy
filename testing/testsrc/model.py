@@ -34,6 +34,7 @@ class model:
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     # Training
+    error = []
     with alive_bar(numofgen) as bar:
       for _ in range (numofgen):
         Random = np.random.randint(0, NumOfData)
@@ -42,10 +43,12 @@ class model:
           input = self.model[i].forward(input)
 
         outError = data[1][Random] - input
+        error.append(np.sum(abs(outError)))
         for i in reversed(range(len(self.model))):
           outError = self.model[i].backward(outError)
 
         bar()
+    return error
 
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
