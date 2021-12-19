@@ -56,16 +56,16 @@ class conv:
     return self.out
   
   def backward(self, outError):
-    FilterΔ = np.zeros(self.filtershape)
+    self.FilterΔ = np.zeros(self.filtershape)
     
     outGradient = self.activation.backward(self.out) * outError
 
     for i in range(0, self.outshape[1], self.stride[0]):
       for j in range(0, self.outshape[2], self.stride[1]):
-        FilterΔ += self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * outGradient[:, i, j][:, np.newaxis, np.newaxis]
+        self.FilterΔ += self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * outGradient[:, i, j][:, np.newaxis, np.newaxis]
     
     self.bias += np.sum(outGradient, axis=(1, 2)) * self.learningrate
-    self.Filter += FilterΔ * self.learningrate
+    self.Filter += self.FilterΔ * self.learningrate
 
     # in Error
     RotFilter = np.rot90(np.rot90(self.Filter))
