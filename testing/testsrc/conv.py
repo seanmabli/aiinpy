@@ -1,5 +1,17 @@
 import numpy as np
-from .activation import *
+from .binarystep import binarystep
+from .gaussian import gaussian
+from .identity import identity
+from .leakyrelu import leakyrelu
+from .mish import mish
+from .relu import relu
+from .selu import selu
+from .sigmoid import sigmoid
+from .silu import silu
+from .softmax import softmax
+from .softplus import softplus
+from .stablesoftmax import stablesoftmax
+from .tanh import tanh
 
 class conv:
   def __init__(self, filtershape, learningrate, activation=identity(), padding=False, stride=(1, 1), inshape=None):
@@ -9,7 +21,7 @@ class conv:
     if len(filtershape) == 2:
       filtershape = tuple([1]) + filtershape
     self.filtershape = filtershape
-    self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
+    self.Filter = np.random.uniform(-0.25, 0.25, self.filtershape)
     self.bias = np.zeros(self.filtershape[0])
 
     if inshape is not None:

@@ -1,5 +1,17 @@
 import numpy as np
-from .activation import *
+from .binarystep import binarystep
+from .gaussian import gaussian
+from .identity import identity
+from .leakyrelu import leakyrelu
+from .mish import mish
+from .relu import relu
+from .selu import selu
+from .sigmoid import sigmoid
+from .silu import silu
+from .softmax import softmax
+from .softplus import softplus
+from .stablesoftmax import stablesoftmax
+from .tanh import tanh
 
 class rnn:
   def __init__(self, outshape, Type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05, inshape=None):

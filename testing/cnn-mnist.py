@@ -25,4 +25,4 @@ model = ai.model((28, 28), 10, [
 ])
 
 model.train((inTrainData, outTrainDataReal), 5)
-# print(model.test((inTestData, outTestDataReal))) # wandb.log({'accuracy': model.test((inTestData, outTestDataReal))})
+print(model.test((inTestData, outTestDataReal))) # wandb.log({'accuracy': model.test((inTestData, outTestDataReal))})

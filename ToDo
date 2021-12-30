@@ -6,7 +6,9 @@ For 0.0.18 (1-1-2022):
   - Image segmentation with conv
   - Create General Adversarial Networks (GAN)
   - Acivation Layers
-  - Add Other Activation Functions (See activation.py)
+  - add GeLU activation
+  - add ELU activation
+  - add PReLU activation
 
 For 0.0.19 (2-1-2022):
   Focus:

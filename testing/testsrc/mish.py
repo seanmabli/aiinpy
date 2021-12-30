@@ -1,5 +1,5 @@
 import numpy as np
-from tanh from tanh
+from .tanh import tanh
 
 class mish:
   def forward(self, input):
