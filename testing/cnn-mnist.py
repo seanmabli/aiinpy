@@ -1,9 +1,9 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import testsrc as ai
-# import wandb
+import wandb
 
-# wandb.init(project="cnn-mnist")
+wandb.init(project="cnn-mnist")
 
 # Create Dataset
 inTrainData, outTrainData = extract_training_samples('digits')
@@ -24,5 +24,5 @@ model = ai.model((28, 28), 10, [
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
 ])
 
-model.train((inTrainData, outTrainDataReal), 5)
-print(model.test((inTestData, outTestDataReal))) # wandb.log({'accuracy': model.test((inTestData, outTestDataReal))})
+model.train((inTrainData, outTrainDataReal), 5000)
+wandb.log({'accuracy': model.test((inTestData, outTestDataReal))})

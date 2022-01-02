@@ -23,54 +23,23 @@ class convmatrix:
     self.filtershape = filtershape
 
     if inshape is not None:
-      if len(inshape) == 2:
-        inshape = tuple([filtershape[0]]) + inshape
-
-      self.bias = np.zeros(filtershape[0])
-
-      self.outshape = tuple([filtershape[0], inshape[1] - filtershape[1] + 1, inshape[2] - filtershape[2] + 1])
-      self.out = np.zeros(self.outshape)
+      self.outshape = tuple([filtershape[0], inshape[0] - filtershape[1] + 1, inshape[1] - filtershape[2] + 1])
 
       self.filtermatrix = np.zeros((np.prod(inshape), np.prod(self.outshape)))
-      x = np.zeros(inshape)
-      for filter in range(self.outshape[0]):
+      for f in range(self.outshape[0]):
         self.filter = np.random.uniform(-0.25, 0.25, filtershape[1:])
         for i in range(self.outshape[1]):
           for j in range(self.outshape[2]):
-            x[:, i : i + filtershape[1], j : j + filtershape[2]] = self.filter
-            self.filtermatrix[:, i * self.outshape[2] + j] = x.flatten()
-
-      print(self.filtermatrix)
+            x = np.zeros(inshape)
+            x[i : i + filtershape[1], j : j + filtershape[2]] = self.filter
+            self.filtermatrix[:, f * self.outshape[1] * self.outshape[2] + i * self.outshape[2] + j] = x.flatten()
 
   def modelinit(self, inshape):
-    if len(inshape) == 2:
-      inshape = tuple([self.filtershape[0]]) + inshape
-
-    flattenweight = np.random.uniform(-0.25, 0.25, self.filtershape[2])
-    for i in range(1, self.filtershape[1]):
-      flattenweight = np.append(flattenweight, np.zeros(inshape[1] - self.filtershape[2]))
-      flattenweight = np.append(flattenweight, np.random.uniform(-0.25, 0.25, self.filtershape[2]))
-
-    self.filter = []
-    i = 0
-    while i + len(flattenweight) <= np.prod(inshape):
-      y = np.zeros((np.prod(inshape)))
-      y[i : i + len(flattenweight)] = flattenweight
-      self.filter.append(y)
-      if (np.prod(inshape) - (i + len(flattenweight))) % inshape[0] == 0:
-        i += self.filtershape[1]
-      else:
-        i += 1
-    self.filter = np.array(self.filter)
-    self.bias = np.zeros(self.filtershape[0])
-    
-    self.outshape = tuple([self.filtershape[0], inshape[1] - self.filtershape[1] + 1, inshape[2] - self.filtershape[2] + 1])
     return self.outshape
 
   def forward(self, input):
     self.input = input
-    print(self.filter.shape)
-    self.out = self.filter @ input.flatten() + self.bias
+    self.out = input.flatten() @ self.filtermatrix
 
     self.out = self.activation.forward(self.out)
 
@@ -81,7 +50,7 @@ class convmatrix:
 
     outgradient = self.activation.backward(self.out) * outerror
 
-    inputerror = np.flip((self.filter.T @ outerror).reshape(self.inshape), axis=1)
+    # inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
 
-    self.filter += np.outer(self.input.flatten().T, outgradient).reshape(self.filter.shape)
-    return inputerror
+    self.filtermatrix += np.outer(self.input.flatten().T, outgradient) * self.learningrate
+    # return inputerror
