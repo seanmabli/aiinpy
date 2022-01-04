@@ -48,8 +48,8 @@ class conv:
 
     return self.outshape
 
-  def SetSlopeForLeakyReLU(self, Slope):
-    LeakyReLU.Slope = Slope
+  def setactivationalpha(self, alpha):
+    leakyrelu.alpha = alpha
 
   def forward(self, input):
     self.input = input

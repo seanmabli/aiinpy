@@ -38,19 +38,13 @@ class convmatrix:
     return self.outshape
 
   def forward(self, input):
-    self.input = input
-    self.out = input.flatten() @ self.filtermatrix
-
-    self.out = self.activation.forward(self.out)
-
+    self.input = input.flatten()
+    self.out = self.activation.forward(self.input @ self.filtermatrix)
     return self.out.reshape(self.outshape)
 
   def backward(self, outerror):
     outerror = outerror.flatten()
-
     outgradient = self.activation.backward(self.out) * outerror
-
     # inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
-
-    self.filtermatrix += np.outer(self.input.flatten().T, outgradient) * self.learningrate
+    self.filtermatrix += np.outer(self.input.T, outgradient) * self.learningrate
     # return inputerror

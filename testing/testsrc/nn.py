@@ -35,19 +35,13 @@ class nn:
 
   def forward(self, input):
     self.input = input.flatten()
-    self.out = self.weights.T @ self.input + self.biases
-    
-    self.out = self.activation.forward(self.out)
-
+    self.out = self.activation.forward(self.weights.T @ self.input + self.biases)
     return self.out.reshape(self.outshape)
 
   def backward(self, outerror):
     outerror = outerror.flatten()
-    
     outgradient = self.activation.backward(self.out) * outerror
-      
     inputerror = self.weights @ outerror
-      
     self.biases += outgradient * self.learningrate
     self.weights += np.outer(self.input.T, outgradient) * self.learningrate
     return inputerror.reshape(self.inshape)
