@@ -16,6 +16,7 @@ from .model import model
 from .neuroevolution import neuroevolution
 from .nn import nn
 from .pool import pool
+from .prelu import prelu
 from .relu import relu
 from .rnn import rnn
 from .selu import selu

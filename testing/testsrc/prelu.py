@@ -1,6 +1,6 @@
 import numpy as np
 
-class elu:
+class prelu:
   def __init__(self, alpha):
     self.alpha = alpha
     self.forwardequationvectorized = np.vectorize(self.forwardequation, otypes=[float])
@@ -10,15 +10,10 @@ class elu:
     return self.forwardequationvectorized(input)
 
   def forwardequation(self, input):
-    return self.alpha * (np.exp(input) - 1) if input <= 0 else input
+    return input if input >= 0 else self.alpha * input
 
   def backward(self, input):
     return self.backwardequationvectorized(input)
 
   def backwardequation(self, input):
-    if input < 0:
-      return self.alpha * np.exp(input)
-    elif input > 0:
-      return 1
-    elif input == 0 and self.alpha == 1:
-      return 1
+    return 1 if input >= 0 else self.alpha
