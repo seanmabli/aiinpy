@@ -4,6 +4,7 @@ from .conv import conv
 from .convmatrix import convmatrix
 from .convtranspose import convtranspose
 from .dropout import dropout
+from .elu import elu
 from .gaussian import gaussian
 from .gru import gru
 from .identity import identity

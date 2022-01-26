@@ -1,18 +1,15 @@
 For 0.0.18 (1-1-2022):
 Focus:
-- Transfer from numpy/python to assembly                                                                       
-- Create Transformer                                                                                                   
-Other:                                                                                                                 
-- Image segmentation with conv                                                                                         
-- Create General Adversarial Networks (GAN)                                                                             
-- Acivation Layers                                                                                                     
-- add GeLU activation                                                                                                   
-- add ELU activation                                                                                                   
-- add PReLU activation                                                                                                                                                                                                                        
-For 0.0.19 (2-1-2022):                                                                                                    
-Focus:                                                                                                                  
-- Transformer Learning From Internet                                                                                    
-- Train w/ Neural Evolution of Augmented Topologies (NEAT)                                                              
-Other:                                                                                                                  
-- Add Deep Recurrent Neural Networks (DRNN)                                                                             
+- Create Transformer
+Other:
+- Image Segmentation with conv                                                                       
+- Create General Adversarial Networks (GAN)                                                         
+- Acivation Layers
+- add GeLU activation                                                                                 - add PReLU activation                                                                                
+
+For 0.0.19 (2-1-2022):                                                                                Focus:
+- Transformer Learning From Internet
+- Train w/ Neural Evolution of Augmented Topologies (NEAT)
+Other:
+- Add Deep Recurrent Neural Networks (DRNN)
 - Add Bidirectional Recurrent Neural Networks (BRNN)                  
