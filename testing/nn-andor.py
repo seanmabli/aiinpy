@@ -1,5 +1,8 @@
 import testsrc as ai
 import numpy as np
+import wandb
+
+wandb.init(project="nn-andor")
 
 # Create Dataset
 inTrainData = np.random.choice(([0, 1]), (2, 100))
@@ -15,4 +18,4 @@ model = ai.model(2, 2, [
 ])
 
 model.train((inTrainData, outTrainData), 100)
-print(model.test((inTrainData, outTrainData)))
+wandb.log({"test accuracy": model.test((inTrainData, outTrainData))})

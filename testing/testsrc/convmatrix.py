@@ -14,8 +14,8 @@ from .stablesoftmax import stablesoftmax
 from .tanh import tanh
 
 class convmatrix:
-  def __init__(self, filtershape, learningrate, activation=identity(), inshape=None):
-    self.learningrate, self.activation = learningrate, activation
+  def __init__(self, filtershape, learningrate, activation=identity(), padding=False, stride=(1, 1), inshape=None):
+    self.learningrate, self.activation, self.padding, self.stride = learningrate, activation, padding, stride
     self.inshape = inshape
     
     if len(filtershape) == 2:

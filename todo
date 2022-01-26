@@ -1,15 +1,18 @@
-For 0.0.18 (1-1-2022):
-Focus:
-- Create Transformer
+For 0.0.18 (2-1-2021):
+- Full integration of convmatrix
+
+For 0.0.19 (2-16-2021):
+- Convert to C
+
+For 0.0.20 (3-10-2021):
+- Add transformer
+
 Other:
 - Image Segmentation with conv                                                                       
 - Create General Adversarial Networks (GAN)                                                         
 - Acivation Layers
 - add GeLU activation
-
-For 0.0.19 (2-1-2022):                                                                                Focus:
 - Transformer Learning From Internet
-- Train w/ Neural Evolution of Augmented Topologies (NEAT)
-Other:
+- Train w/ Neural Evolution of Augmented Topologies
 - Add Deep Recurrent Neural Networks (DRNN)
 - Add Bidirectional Recurrent Neural Networks (BRNN)                  
