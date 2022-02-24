@@ -3,3 +3,4 @@ testing/testsrc/__pycache__
 wandb
 .cpython-39.pyc
 .pyc
+.vscode
