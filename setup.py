@@ -6,4 +6,4 @@ setup(name='aiinpy',
       license='MIT',
       packages=['aiinpy'],
       url='https://aiinpy.org',
-      install_requires=['numpy', 'alive_progress'])
+      install_requires=['numpy'])

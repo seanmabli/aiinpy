@@ -1,5 +1,5 @@
 import numpy as np
-from alive_progress import alive_bar
+import sys
 
 class model:
   def __init__(self, inshape, outshape, model):
@@ -35,19 +35,20 @@ class model:
 
     # Training
     error = []
-    with alive_bar(numofgen) as bar:
-      for _ in range (numofgen):
-        Random = np.random.randint(0, NumOfData)
-        input = data[0][Random]
-        for i in range(len(self.model)):
-          input = self.model[i].forward(input)
+    for gen in range(numofgen):
+      Random = np.random.randint(0, NumOfData)
+      input = data[0][Random]
+      for i in range(len(self.model)):
+        input = self.model[i].forward(input)
 
-        outError = data[1][Random] - input
-        error.append(np.sum(abs(outError)))
-        for i in reversed(range(len(self.model))):
-          outError = self.model[i].backward(outError)
+      outError = data[1][Random] - input
+      error.append(np.sum(abs(outError)))
+      for i in reversed(range(len(self.model))):
+        outError = self.model[i].backward(outError)
 
-        bar()
+      sys.stdout.write('\r training: ' + str(gen) + '/' + str(numofgen))
+      sys.stdout.flush()
+    
     return error
 
   def test(self, data):
@@ -65,13 +66,14 @@ class model:
 
     # Testing
     testcorrect = 0
-    with alive_bar(NumOfData) as bar:
-      for Generation in range (NumOfData):
-        input = data[0][Generation]
-        for i in range(len(self.model)):
-          input = self.model[i].forward(input)
+    for gen in range (NumOfData):
+      input = data[0][gen]
+      for i in range(len(self.model)):
+        input = self.model[i].forward(input)
 
-        testcorrect += 1 if np.argmax(input) == np.argmax(data[1][Generation]) else 0
-        bar()
+      testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
+
+      sys.stdout.write('\r training: ' + str(gen) + '/' + str(NumOfData))
+      sys.stdout.flush()
 
     return testcorrect / NumOfData

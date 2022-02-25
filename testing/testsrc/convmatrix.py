@@ -18,20 +18,19 @@ class convmatrix:
     self.learningrate, self.activation, self.padding, self.stride = learningrate, activation, padding, stride
     self.inshape = inshape
     
-    if len(filtershape) == 2:
-      filtershape = tuple([1]) + filtershape
-    self.filtershape = filtershape
-
+    self.filtershape = tuple([1]) + filtershape if len(filtershape) == 2 else filtershape
+    1
+    
     if inshape is not None:
       self.outshape = tuple([filtershape[0], inshape[0] - filtershape[1] + 1, inshape[1] - filtershape[2] + 1])
 
       self.filtermatrix = np.zeros((np.prod(inshape), np.prod(self.outshape)))
       for f in range(self.outshape[0]):
-        self.filter = np.random.uniform(-0.25, 0.25, filtershape[1:])
+        self.filter = np.random.uniform(-0.25, 0.25, self.filtershape[1:])
         for i in range(self.outshape[1]):
           for j in range(self.outshape[2]):
             x = np.zeros(inshape)
-            x[i : i + filtershape[1], j : j + filtershape[2]] = self.filter
+            x[i : i + self.filtershape[1], j : j + self.filtershape[2]] = self.filter
             self.filtermatrix[:, f * self.outshape[1] * self.outshape[2] + i * self.outshape[2] + j] = x.flatten()
 
   def modelinit(self, inshape):
