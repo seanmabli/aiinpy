@@ -2,7 +2,7 @@
 #include <cmath>
 
 using namespace std;
-class tanha {
+class tanh_a {
   public:
 
   double forward(double input) {
@@ -16,12 +16,13 @@ class tanha {
 
 int main()
 {
-  tanha activation;
+  tanh_a activation;
   double input = 0.3;
   double outputforward = activation.forward(input);
   double outputbackward = activation.backward(input);
 
-  cout << outputforward << outputbackward;
+  cout "forward: " << outputforward << "\n";
+  cout "backward: "  << outputbackward << "\n";
 
   return 0;
 }

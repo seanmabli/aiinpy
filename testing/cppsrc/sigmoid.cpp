@@ -21,7 +21,8 @@ int main()
   double outputforward = activation.forward(input);
   double outputbackward = activation.backward(input);
 
-  cout << outputforward << outputbackward;
+  cout "forward: " << outputforward << "\n";
+  cout "backward: "  << outputbackward < "\n";
 
   return 0;
 }

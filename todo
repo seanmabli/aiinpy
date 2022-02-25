@@ -8,11 +8,11 @@ For 0.0.20 (3-10-2021):
 - Add transformer
 
 Other:
-- Image Segmentation with conv                                                                       
-- Create General Adversarial Networks (GAN)                                                         
+- Image Segmentation with conv
+- Create General Adversarial Networks (GAN)
 - Acivation Layers
 - add GeLU activation
 - Transformer Learning From Internet
 - Train w/ Neural Evolution of Augmented Topologies
 - Add Deep Recurrent Neural Networks (DRNN)
-- Add Bidirectional Recurrent Neural Networks (BRNN)                  
+- Add Bidirectional Recurrent Neural Networks (BRNN)
