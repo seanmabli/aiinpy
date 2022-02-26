@@ -1,28 +1,30 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include <cmath>
 
 using namespace std;
-class sigmoid {
-  public:
 
-  double forward(double input) {
-    return 1 / (1 + exp(-input));
-  }
+double sigmoidforward(double input) { return 1 / (1 + exp(-input)); }
+double sigmoidbackward(double input) { return input * (1 - input); }
 
-  double backward(double input) {
-    return input * (1 - input);
-  }
-};
+int main() {
+  vector <double> input = { 1.5483257342, 3.54324, 4.54832905, 5.87629 };
 
-int main()
-{
-  sigmoid activation;
-  double input = 0.3;
-  double outputforward = activation.forward(input);
-  double outputbackward = activation.backward(input);
+  vector <double> outputforward (input.size());
+  vector <double> outputbackward (input.size());
 
-  cout "forward: " << outputforward << "\n";
-  cout "backward: "  << outputbackward < "\n";
+  transform(input.begin(), input.end(), outputforward.begin(), sigmoidforward);
+  cout << "forward: ";
+  for (int i = 0; i < outputforward.size(); i++)
+		cout << outputforward[i] << ' ';
+  cout << "\n";
+
+  transform(input.begin(), input.end(), outputbackward.begin(), sigmoidbackward);
+  cout << "backward: ";
+  for (int i = 0; i < outputbackward.size(); i++)
+		cout << outputbackward[i] << ' ';
+  cout << "\n";
 
   return 0;
 }
