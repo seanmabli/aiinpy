@@ -1,17 +1,23 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
+
 class binarystep {
-	public:
-		
-		double forward(double input) {
-			return (input < 0) ? 0 : 1;
+	public:	
+		vector <double> forward(vector <double> input) {
+      transform(input.begin(), input.end(), input.begin(), [](double input){ return (input < 0) ? 0 : 1; });
+      return input;
 		}
 
-		double backward(double input) {
-			return 1;
+		vector <double> backward(vector <double> input) {
+			return { [1] * input.size() };
 		}
 };
+
+
 
 int main() {
 	binarystep activation;

@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include "printvector.cpp"
 
 using namespace std;
 
@@ -17,14 +18,6 @@ class sigmoid {
       return input;
     }
 };
-
-void printvector(char label[], vector <double> input) {
-  cout << label;
-  for (int i = 0; i < input.size(); i++)
-    cout << input[i] << ' ';
-  cout << "\n";
-}
-
 
 int main() {
   vector <double> input = { 1.5483257342, 3.54324, 4.54832905, 5.87629 };
