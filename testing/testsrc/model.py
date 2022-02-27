@@ -73,7 +73,7 @@ class model:
 
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
 
-      sys.stdout.write('\r training: ' + str(gen) + '/' + str(NumOfData))
+      sys.stdout.write('\r testing: ' + str(gen) + '/' + str(NumOfData))
       sys.stdout.flush()
 
     return testcorrect / NumOfData
