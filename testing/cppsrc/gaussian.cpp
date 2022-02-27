@@ -3,15 +3,15 @@
 #include <algorithm>
 #include <cmath>
 
-class sigmoid {
+class gaussian {
   public:
     vector <double> forward(vector <double> input) {
-      transform(input.begin(), input.end(), input.begin(), [](double input){ return 1 / (1 + exp(-input)); });
+      transform(input.begin(), input.end(), input.begin(), [](double input){ return exp(-pow(input, 2)); });
       return input;
     }
 
     vector <double> backward(vector <double> input) {
-      transform(input.begin(), input.end(), input.begin(), [](double input){ return input * (1 - input); });
+      transform(input.begin(), input.end(), input.begin(), [](double input){ return -2 * input * exp(-pow(input, 2)); });
       return input;
     }
 };

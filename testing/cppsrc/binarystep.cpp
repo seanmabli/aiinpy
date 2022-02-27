@@ -1,9 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <cmath>
-
-using namespace std;
 
 class binarystep {
 	public:	
@@ -13,20 +10,6 @@ class binarystep {
 		}
 
 		vector <double> backward(vector <double> input) {
-			return { [1] * input.size() };
+			return vector <double> (input.size(), 1);
 		}
 };
-
-
-
-int main() {
-	binarystep activation;
-	double input = 0.3;
-	double outputforward = activation.forward(input);
-	double outputbackward = activation.backward(input);
-
-	cout << "forward: " << outputforward << "\n";
-	cout << "backward: " << outputbackward << "\n";
-
-	return 0;
-}
