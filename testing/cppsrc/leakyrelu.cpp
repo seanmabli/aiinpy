@@ -2,23 +2,21 @@
 #include <vector>
 #include <algorithm>
 
-using namespace std;
-
 class leakyrelu {
   public:
-    double a;
+    double _alpha;
  
     leakyrelu(double alpha = 0.01) {
-      a = alpha;
+      _alpha = alpha;
     }
 
     vector <double> forward(vector <double> input) {
-      transform(input.begin(), input.end(), input.begin(), [&](double input){ return (a * input < input) ? input : 0; });
+      transform(input.begin(), input.end(), input.begin(), [&](double input){ return (_alpha * input < input) ? input : 0; });
       return input;
     }
 
     vector <double> backward(vector <double> input) {
-      transform(input.begin(), input.end(), input.begin(), [&](double input){ return (input <= 0) ? a : 1; });
+      transform(input.begin(), input.end(), input.begin(), [&](double input){ return (input <= 0) ? _alpha : 1; });
       return input;
     }
 };

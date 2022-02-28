@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "printvector.cpp"
+#include "print.cpp"
 #include "binarystep.cpp"
 #include "sigmoid.cpp"
 #include "gaussian.cpp"
@@ -18,8 +18,8 @@ int main() {
 
   leakyrelu activation;
 
-  printvector("forward: ", activation.forward(input));
-  printvector("backward: ", activation.backward(input));  
+  printvectordouble("forward: ", activation.forward(input));
+  printvectordouble("backward: ", activation.backward(input));  
 
   return 0;
 }

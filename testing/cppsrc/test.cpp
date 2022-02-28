@@ -1,29 +1,18 @@
 #include <iostream>
- 
 using namespace std;
 
-class box {
-   public:
-      box(double l = 2.0, double b = 2.0, double h = 2.0) {
-         length = l;
-         breadth = b;
-         height = h;
-      }
-      double Volume() {
-         return length * breadth * height;
-      }
-
-      double length;
-      double breadth;
-      double height;
-};
-
-int main() {
-   box Box1(3.3, 1.2, 1.5);
-   box Box2(8.5, 6.0, 2.0);
-
-   cout << Box1.Volume() << "\n";
-   cout << Box2.Volume() << "\n";
-
+int main()
+{
+   int sz;
+   cout<<"Enter the size of array::";
+   cin>>sz;
+   int randArray[sz];
+   for(int i=0;i<sz;i++)
+      randArray[i]=rand()%100;  //Generate number between 0 to 99
+  
+   cout<<"\nElements of the array::"<<endl;
+  
+   for(int i=0;i<sz;i++)
+      cout<<"Elements no "<<i+1<<"::"<<randArray[i]<<endl;
    return 0;
 }
