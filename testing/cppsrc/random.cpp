@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <chrono>
 
@@ -16,4 +17,32 @@ int main()
   }
   
   cout << bin << "\n";
+}
+*/
+
+#include <random>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    vector<int> count(6);
+  
+    random_device rnd_device;
+    mt19937 mersenne_engine {rnd_device()};
+    uniform_int_distribution<int> dist {0, 5};
+
+    vector<int> vec(1000000000);
+    generate(vec.begin(), vec.end(), [&dist, &mersenne_engine](){ return dist(mersenne_engine); });
+    
+    for (auto i : vec) {
+      count[i] += 1;
+    }
+  
+    for (auto i : count) {
+      cout << i << ' ';
+    }
 }
