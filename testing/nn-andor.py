@@ -12,12 +12,12 @@ for i in range(100):
 
 # NN model
 model = ai.model(2, 2, [
-  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
-  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.1),
-  ai.nn(outshape=2, activation=ai.sigmoid(), learningrate=0.1)
+  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.01),
+  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.01),
+  ai.nn(outshape=2, activation=ai.stablesoftmax(), learningrate=0.01)
 ])
 
-model.train((inTrainData, outTrainData), 100)
+model.train((inTrainData, outTrainData), 12000)
  #wandb.log({"test accuracy": model.test((inTrainData, outTrainData))})
 print(model.test((inTrainData, outTrainData)))
-print(model.use(inTrainData))
+print(np.around(model.use(inTrainData), 2))
