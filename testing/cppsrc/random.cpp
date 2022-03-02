@@ -35,7 +35,7 @@ int main() {
     mt19937 mersenne_engine {rnd_device()};
     uniform_int_distribution<int> dist {0, 5};
 
-    vector<int> vec(1000000000);
+    vector<int> vec(100000000);
     generate(vec.begin(), vec.end(), [&dist, &mersenne_engine](){ return dist(mersenne_engine); });
     
     for (auto i : vec) {

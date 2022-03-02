@@ -46,8 +46,7 @@ class model:
       for i in reversed(range(len(self.model))):
         outError = self.model[i].backward(outError)
 
-      sys.stdout.write('\r training: ' + str(gen) + '/' + str(numofgen))
-      sys.stdout.flush()
+      sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
     
     return error
 
@@ -66,6 +65,7 @@ class model:
 
     # Testing
     testcorrect = 0
+    print('')
     for gen in range (NumOfData):
       input = data[0][gen]
       for i in range(len(self.model)):
@@ -73,7 +73,30 @@ class model:
 
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
 
-      sys.stdout.write('\r testing: ' + str(gen) + '/' + str(NumOfData))
-      sys.stdout.flush()
-
+      sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
+      
     return testcorrect / NumOfData
+
+  def use(self, indata):
+    # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
+    data = list(data) if type(data) == tuple else data
+    NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
+    if data[0].shape.index(NumOfData) != 0:
+      x = list(range(0, len(data[0].shape)))
+      x.pop(data[0].shape.index(NumOfData))
+      data[0] = np.transpose(data[0], tuple([data[0].shape.index(NumOfData)]) + tuple(x))
+    if data[1].shape.index(NumOfData) != 0:
+      x = list(range(0, len(data[1].shape)))
+      x.pop(data[1].shape.index(NumOfData))
+      data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
+
+    # Testing
+    testcorrect = 0
+    outdata = np.zeros(indata.shape)
+    for gen in range (NumOfData):
+      input = data[0][gen]
+      for i in range(len(self.model)):
+        input = self.model[i].forward(input)
+      output[x] = input
+
+    return outdata
