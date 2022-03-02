@@ -23,8 +23,8 @@ class model:
   def train(self, data, numofgen):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
     data = list(data) if type(data) == tuple else data
-    data[0] = np.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else None
-    data[1] = np.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else None
+    data[0] = np.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
+    data[1] = np.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
 
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:
@@ -56,6 +56,9 @@ class model:
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
     data = list(data) if type(data) == tuple else data
+    data[0] = np.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
+    data[1] = np.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
+
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:
       x = list(range(0, len(data[0].shape)))
@@ -81,6 +84,9 @@ class model:
     return testcorrect / NumOfData
 
   def use(self, indata):
+
+
+    indata = np.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
     NumOfData = (set(self.inshape) ^ set(indata.shape)).pop()
     if indata.shape.index(NumOfData) != 0:
       x = list(range(0, len(indata.shape)))
