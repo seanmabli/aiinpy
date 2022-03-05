@@ -1,48 +1,44 @@
-/*
-#include <iostream>
-#include <chrono>
-
-using namespace std;
-
-int main()
-{
-  int dec = chrono::system_clock::to_time_t(chrono::system_clock::now());
-  cout << dec << " ";
-
-  string bin{};
-    
-  while(dec > 0) {
-    if(dec % 2 == 0) { bin.insert(bin.begin( ), '0'); } else { bin.insert(bin.begin( ), '1'); }     
-    dec >>= 1;
-  }
-  
-  cout << bin << "\n";
-}
-*/
 
 #include <random>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
 #include <vector>
+#include <numeric>
 
 using namespace std;
 
+template<typename T>
+double getAverage(std::vector<T> const& v) {
+    if (v.empty()) {
+        return 0;
+    }
+    return accumulate(v.begin(), v.end(), 0.0) / v.size();
+}
+
 int main() {
-    vector<int> count(6);
-  
     random_device rnd_device;
     mt19937 mersenne_engine {rnd_device()};
-    uniform_int_distribution<int> dist {0, 5};
+    uniform_real_distribution<double> dist {0, 1};
 
-    vector<int> vec(100000000);
+    vector<vector<double>> vec(10);
     generate(vec.begin(), vec.end(), [&dist, &mersenne_engine](){ return dist(mersenne_engine); });
     
-    for (auto i : vec) {
-      count[i] += 1;
-    }
-  
-    for (auto i : count) {
-      cout << i << ' ';
+    // double avg = getAverage(vec);
+    // cout << "Average is " << avg << '\n';
+}
+
+/*
+#include <random>
+#include <iostream>
+using namespace std;
+int main()
+{
+    random_device rd; 
+    mt19937 gen(rd()); 
+    uniform_real_distribution<> dis(0,1.0);
+    for (int i = 0; i < 5; ++i) {
+            cout << dis(gen) << '\n';
     }
 }
+*/
