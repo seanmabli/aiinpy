@@ -1,6 +1,9 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import testsrc as ai
+import wandb
+
+wandb.init(project='cnn-regular-vs-matrix')
 
 # Create Dataset
 inTrainData, outTrainData = extract_training_samples('digits')
@@ -15,11 +18,19 @@ for i in range(1000):
   outTestDataReal[i, outTestData[i]] = 1
 
 # CNN model
-model = ai.model((28, 28), 10, [
+modela = ai.model((28, 28), 10, [
+  ai.convmatrix(inshape=(28, 28), filtershape=(4, 3, 3), learningrate=0.01, activation=ai.relu()),
+  ai.pool(stride=(2, 2), filtershape=(2, 2), opperation='Max'),
+  ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
+])
+
+modelb = ai.model((28, 28), 10, [
   ai.conv(inshape=(28, 28), filtershape=(4, 3, 3), learningrate=0.01, activation=ai.relu()),
   ai.pool(stride=(2, 2), filtershape=(2, 2), opperation='Max'),
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
 ])
 
-model.train((inTrainData, outTrainDataReal), 5000)
-print(model.test((inTestData, outTestDataReal)))
+modela.train((inTrainData, outTrainDataReal), 5000)
+modelb.train((inTrainData, outTrainDataReal), 5000)
+
+wandb.log({'matrix' : modela.test((inTestData, outTestDataReal)), 'regular' : modelb.test((inTestData, outTestDataReal))})
