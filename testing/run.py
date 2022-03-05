@@ -1,4 +1,4 @@
-import runpy
+import subprocess
 
 while True:
-  runpy.run_path('cnn-mnist.py')
+  print(subprocess.Popen("python3 cnn-mnist.py", shell=True, stdout=subprocess.PIPE).communicate()[0])

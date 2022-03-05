@@ -1,5 +1,5 @@
 import numpy as np
-import sys
+# mport sys
 
 class model:
   def __init__(self, inshape, outshape, model):
@@ -49,7 +49,7 @@ class model:
       for i in reversed(range(len(self.model))):
         outError = self.model[i].backward(outError)
 
-      sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
+      # sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
     
     return error
 
@@ -79,13 +79,11 @@ class model:
 
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
 
-      sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
+      # sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
       
     return testcorrect / NumOfData
 
   def use(self, indata):
-
-
     indata = np.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
     NumOfData = (set(self.inshape) ^ set(indata.shape)).pop()
     if indata.shape.index(NumOfData) != 0:
