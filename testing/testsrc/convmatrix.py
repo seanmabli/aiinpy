@@ -25,12 +25,13 @@ class convmatrix:
       self.outshape = tuple([filtershape[0], inshape[0] - filtershape[1] + 1, inshape[1] - filtershape[2] + 1])
 
       self.filtermatrix = np.zeros((np.prod(inshape), np.prod(self.outshape)))
+      self.filter = np.random.uniform(-0.25, 0.25, self.filtershape)
+
       for f in range(self.outshape[0]):
-        self.filter = np.random.uniform(-0.25, 0.25, self.filtershape[1:])
         for i in range(self.outshape[1]):
           for j in range(self.outshape[2]):
             x = np.zeros(inshape)
-            x[i : i + self.filtershape[1], j : j + self.filtershape[2]] = self.filter
+            x[i : i + self.filtershape[1], j : j + self.filtershape[2]] = self.filter[f]
             self.filtermatrix[:, f * self.outshape[1] * self.outshape[2] + i * self.outshape[2] + j] = x.flatten()
 
   def modelinit(self, inshape):
@@ -44,6 +45,6 @@ class convmatrix:
   def backward(self, outerror):
     outerror = outerror.flatten()
     outgradient = self.activation.backward(self.out) * outerror
-    # inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
+    inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
     self.filtermatrix += np.outer(self.input.T, outgradient) * self.learningrate
-    # return inputerror
+    return inputerror

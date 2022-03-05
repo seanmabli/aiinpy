@@ -1,5 +1,6 @@
 import numpy as np
-# mport sys
+import sys
+import time
 
 class model:
   def __init__(self, inshape, outshape, model):
@@ -38,6 +39,7 @@ class model:
 
     # Training
     error = []
+    print('')
     for gen in range(numofgen):
       Random = np.random.randint(0, NumOfData)
       input = data[0][Random]
@@ -45,11 +47,11 @@ class model:
         input = self.model[i].forward(input)
 
       outError = data[1][Random] - input
-      error.append(np.sum(abs(outError)))
+      # error.append(np.sum(abs(outError)))
       for i in reversed(range(len(self.model))):
         outError = self.model[i].backward(outError)
-
-      # sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
+      error.append(outError)
+      sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
     
     return error
 
@@ -78,7 +80,7 @@ class model:
         input = self.model[i].forward(input)
 
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
-
+ 
       # sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
       
     return testcorrect / NumOfData
