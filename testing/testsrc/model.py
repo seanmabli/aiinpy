@@ -42,15 +42,15 @@ class model:
     print('')
     for gen in range(numofgen):
       Random = np.random.randint(0, NumOfData)
-      input = data[0][Random]
+      input = data[0][gen]
       for i in range(len(self.model)):
         input = self.model[i].forward(input)
+        error.append(input)
 
-      outError = data[1][Random] - input
+      outError = data[1][gen] - input
       # error.append(np.sum(abs(outError)))
       for i in reversed(range(len(self.model))):
         outError = self.model[i].backward(outError)
-      error.append(outError)
       sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
     
     return error

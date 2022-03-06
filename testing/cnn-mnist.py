@@ -30,11 +30,23 @@ modelb = ai.model((28, 28), 10, [
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
 ])
 
-modelb.model[0].Filter = modela.model[0].filter
-print(modelb.model[0].Filter == modela.model[0].filter)
+modelb.model[0].filter = modela.model[0].filter
+modelb.model[2].weights = modela.model[2].weights
+modelb.model[2].biases = modela.model[2].biases
 
-a = modela.train((inTrainData, outTrainDataReal), 5000)
-b = modelb.train((inTrainData, outTrainDataReal), 5)
+a = modela.train((inTrainData, outTrainDataReal), 10)
+b = modelb.train((inTrainData, outTrainDataReal), 10)
+
+print('\n')
+
+x = np.zeros((10, 3))
+u = np.empty((10, 3), dtype=tuple)
+for j in range(len(a)):
+  x[j // 3, j % 3] = abs(np.round(np.sum(abs(a[j]) - abs(b[j])), 3))
+  u[j // 3, j % 3] = a[j].shape
+
+print(x)
+print(u)
 
 # print(modela.test((inTestData, outTestDataReal)))
 
