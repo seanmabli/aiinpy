@@ -1,6 +1,6 @@
 import numpy as np
 from PIL import Image, ImageOps
-import testsrc as ai
+import src as ai
 import wandb
 
 wandb.init(project="cnn-rocketdataset")

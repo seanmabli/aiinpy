@@ -1,4 +1,4 @@
-import testsrc as ai
+import src
 from alive_progress import alive_bar
 import numpy as np
 import wandb

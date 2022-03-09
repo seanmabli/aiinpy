@@ -1,4 +1,4 @@
-import testsrc as ai
+import src as ai
 from emnist import extract_training_samples, extract_test_samples
 import numpy as np
 

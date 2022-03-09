@@ -1,6 +1,6 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-import testsrc as ai
+import src as ai
 import time
 
 # Create Dataset

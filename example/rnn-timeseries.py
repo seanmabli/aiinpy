@@ -1,4 +1,4 @@
-import testsrc as ai
+import src as ai
 from alive_progress import alive_bar
 import numpy as np
 

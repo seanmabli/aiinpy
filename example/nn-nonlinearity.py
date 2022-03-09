@@ -1,4 +1,4 @@
-import testsrc as ai
+import src as ai
 import numpy as np
 import matplotlib.pyplot as plt
 

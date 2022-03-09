@@ -1,6 +1,6 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-import testsrc as ai
+import src
 import wandb
 from alive_progress import alive_bar
 
