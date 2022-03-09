@@ -1,13 +1,13 @@
 For 0.0.18 (3-10-2021):
-- Convert to C
-- Full integration of convmatrix
+- Complete documentation
+- Create General Adversarial Networks (GAN)
 
 For 0.0.19 (4-1-2021):
 - Add transformer
 
 Other:
+- Convert to C
 - Image Segmentation with conv
-- Create General Adversarial Networks (GAN)
 - Acivation Layers
 - add GeLU activation
 - Transformer Learning From Internet
