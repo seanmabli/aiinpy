@@ -26,4 +26,4 @@ docs/.github
 docs/.firebase
 docs/build
 docs/admin/adminkey.json
->>>>>>> 0.0.18
+docs/package-lock.json
