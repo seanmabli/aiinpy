@@ -1,8 +1,7 @@
 .spyproject
-testing/testsrc/__pycache__
 wandb
-.cpython-39.pyc
-.pyc
+aiinpy/__pycache__
+*.pyc
 !.vscode
 .vscode/*
 !.vscode/settings.json
@@ -10,3 +9,4 @@ wandb
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+.replit
