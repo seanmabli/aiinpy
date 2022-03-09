@@ -3,5 +3,11 @@ testing/testsrc/__pycache__
 wandb
 .cpython-39.pyc
 .pyc
-.vscode
+!.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
 .replit
