@@ -11,3 +11,9 @@ wandb
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 .replit
+
+docs/node_modules
+docs/.github
+docs/.firebase
+docs/build
+docs/admin/adminkey.json
