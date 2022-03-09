@@ -34,16 +34,16 @@ wandb.log({"Discriminator accuracy": dis_model.test(data=(DisDatain, DisDataout)
 for i in range(len(dis_model.model)):
   dis_model.model[i].learningrate = 0
 
-with alive_bar(10000) as bar:
-  for Generation in range(10000):
-    input = np.random.uniform(-0.5, 0.5, 100)
-    input = gen_model.forward(input)
-    input = np.average(input, axis=0)
-    out = dis_model.forward(input)
-    print(out)
-    gen_model_error = dis_model.backward(1 - out)
-    gen_model_error = np.array([gen_model_error] * 128)
-    gen_model.backward(gen_model_error)
+numofgen = 10000
+for gen in range(numofgen):
+  input = np.random.uniform(-0.5, 0.5, 100)
+  input = gen_model.forward(input)
+  input = np.average(input, axis=0)
+  out = dis_model.forward(input)
+  print(out)
+  gen_model_error = dis_model.backward(1 - out)
+  gen_model_error = np.array([gen_model_error] * 128)
+  gen_model.backward(gen_model_error)
 
-    wandb.log({"Generator Error": 1 - out})
-    bar()
+  wandb.log({"Generator Error": 1 - out})
+  sys.stdout.write('\r generation: ' + str(gen + 1) + '/' + str(numofgen))

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 #include <vector>
 #include <algorithm>
 
@@ -19,7 +20,7 @@ class nn {
       _weightsinit = weightsinit;
       _biasesinit = biasesinit;
       
-      vector <vector <double>> weights = 
+      // vector <vector <double>> weights = 
 
 
     }
