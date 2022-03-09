@@ -13,3 +13,10 @@ void printvectorint(const char label[], vector <int> input) {
     cout << input[i] << ' ';
   cout << "\n";
 }
+
+void printarraydouble(const char label[], double input[]) {
+  cout << label;
+  for (int i = 0; i < sizeof(input); i++)
+    cout << input[i] << ' ';
+  cout << "\n";
+}

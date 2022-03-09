@@ -19,7 +19,6 @@ class convmatrix:
     self.inshape = inshape
     
     self.filtershape = tuple([1]) + filtershape if len(filtershape) == 2 else filtershape
-    1
     
     if inshape is not None:
       self.outshape = tuple([filtershape[0], inshape[0] - filtershape[1] + 1, inshape[1] - filtershape[2] + 1])
@@ -40,11 +39,12 @@ class convmatrix:
   def forward(self, input):
     self.input = input.flatten()
     self.out = self.activation.forward(self.input @ self.filtermatrix)
+
     return self.out.reshape(self.outshape)
 
   def backward(self, outerror):
     outerror = outerror.flatten()
     outgradient = self.activation.backward(self.out) * outerror
-    inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
+    # inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
     self.filtermatrix += np.outer(self.input.T, outgradient) * self.learningrate
-    return inputerror
+    # return inputerror

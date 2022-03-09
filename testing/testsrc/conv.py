@@ -22,7 +22,7 @@ class conv:
       filtershape = tuple([1]) + filtershape
     self.filtershape = filtershape
     self.filter = np.random.uniform(-0.25, 0.25, self.filtershape)
-    # self.bias = np.zeros(self.filtershape[0])
+    self.bias = np.zeros(self.filtershape[0])
 
     if inshape is not None:
       if len(inshape) == 2:
@@ -59,7 +59,7 @@ class conv:
       for j in range(0, self.outshape[2], self.stride[1]):
         self.out[:, i, j] = np.sum(np.multiply(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], self.filter), axis=(1, 2))
 
-    # self.out += self.bias[:, np.newaxis, np.newaxis]
+    self.out += self.bias[:, np.newaxis, np.newaxis]
     self.out = self.activation.forward(self.out)
 
     return self.out
@@ -71,10 +71,10 @@ class conv:
 
     for i in range(0, self.outshape[1], self.stride[0]):
       for j in range(0, self.outshape[2], self.stride[1]):
-        self.filterΔ += self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * outGradient[:, i, j][:, np.newaxis, np.newaxis]
+        self.filterΔ += np.multiply(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], outGradient[:, i, j][:, np.newaxis, np.newaxis])
     
-    # self.bias += np.sum(outGradient, axis=(1, 2)) * self.learningrate
-    self.filter += self.filterΔ * self.learningrate
+    self.bias += np.multiply(np.sum(outGradient, axis=(1, 2)), self.learningrate)
+    self.filter += np.multiply(self.filterΔ, self.learningrate)
 
     # in Error
     rotfilter = np.rot90(np.rot90(self.filter))
