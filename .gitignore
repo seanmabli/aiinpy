@@ -1,7 +1,14 @@
 .spyproject
+<<<<<<< HEAD
 wandb
 aiinpy/__pycache__
 *.pyc
+=======
+testing/src/__pycache__
+wandb
+.cpython-39.pyc
+.pyc
+>>>>>>> 0.0.18
 !.vscode
 .vscode/*
 !.vscode/settings.json
@@ -9,4 +16,14 @@ aiinpy/__pycache__
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+<<<<<<< HEAD
 .replit
+=======
+.replit
+
+docs/node_modules
+docs/.github
+docs/.firebase
+docs/build
+docs/admin/adminkey.json
+>>>>>>> 0.0.18

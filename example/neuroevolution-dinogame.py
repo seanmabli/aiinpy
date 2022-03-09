@@ -1,5 +1,5 @@
-import aiinpy as ai
 import numpy as np
+import srcai
 
 PopulationSize = 1000
 

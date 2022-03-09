@@ -1,0 +1,16 @@
+For 0.0.18 (3-10-2021):
+- Complete documentation
+
+For 0.0.19 (4-1-2021):
+- Add transformer
+- Create General Adversarial Networks (GAN)
+
+Other:
+- Convert to C
+- Image Segmentation with conv
+- Acivation Layers
+- add GeLU activation
+- Transformer Learning From Internet
+- Train w/ Neural Evolution of Augmented Topologies
+- Add Deep Recurrent Neural Networks (DRNN)
+- Add Bidirectional Recurrent Neural Networks (BRNN)
