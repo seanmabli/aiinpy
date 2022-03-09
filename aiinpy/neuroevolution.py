@@ -1,5 +1,4 @@
 import numpy as np
-from alive_progress import alive_bar
 from copy import copy
 
 class neuroevolution:

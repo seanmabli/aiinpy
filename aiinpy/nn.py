@@ -1,5 +1,17 @@
 import numpy as np
-from .activation import *
+from .binarystep import binarystep
+from .gaussian import gaussian
+from .identity import identity
+from .leakyrelu import leakyrelu
+from .mish import mish
+from .relu import relu
+from .selu import selu
+from .sigmoid import sigmoid
+from .silu import silu
+from .softmax import softmax
+from .softplus import softplus
+from .stablesoftmax import stablesoftmax
+from .tanh import tanh
 
 class nn:
   def __init__(self, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0), inshape=None):
@@ -23,19 +35,13 @@ class nn:
 
   def forward(self, input):
     self.input = input.flatten()
-    self.out = self.weights.T @ self.input + self.biases
-    
-    self.out = self.activation.forward(self.out)
-
+    self.out = self.activation.forward(self.weights.T @ self.input + self.biases)
     return self.out.reshape(self.outshape)
 
-  def backward(self, outError):
-    outError = outError.flatten()
-    
-    outGradient = self.activation.backward(self.out) * outError
-      
-    inputError = self.weights @ outError
-      
-    self.biases += outGradient * self.learningrate
-    self.weights += np.outer(self.input.T, outGradient) * self.learningrate
-    return inputError.reshape(self.inshape)
+  def backward(self, outerror):
+    outerror = outerror.flatten()
+    outgradient = self.activation.backward(self.out) * outerror
+    inputerror = self.weights @ outerror
+    self.biases += outgradient * self.learningrate
+    self.weights += np.outer(self.input.T, outgradient) * self.learningrate
+    return inputerror.reshape(self.inshape)

@@ -1,5 +1,17 @@
 import numpy as np
-from .activation import *
+from .binarystep import binarystep
+from .gaussian import gaussian
+from .identity import identity
+from .leakyrelu import leakyrelu
+from .mish import mish
+from .relu import relu
+from .selu import selu
+from .sigmoid import sigmoid
+from .silu import silu
+from .softmax import softmax
+from .softplus import softplus
+from .stablesoftmax import stablesoftmax
+from .tanh import tanh
 
 class rnn:
   def __init__(self, outshape, Type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05, inshape=None):
@@ -7,12 +19,12 @@ class rnn:
     self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
     
     if inshape is not None:
-      self.weightsinToHid = np.random.uniform(-0.005, 0.005, (hidshape, inshape))
+      self.weightsinToHid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(inshape)))
 
-    self.weightsHidToHid = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightsHidToHid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(hidshape)))
     self.Hidbiases = np.zeros(hidshape)
 
-    self.weightsHidToout = np.random.uniform(-0.005, 0.005, (outshape, hidshape))
+    self.weightsHidToout = np.random.uniform(-0.005, 0.005, (np.prod(outshape), np.prod(hidshape)))
     self.outbiases = np.zeros(outshape)
 
   def __copy__(self):
@@ -20,7 +32,7 @@ class rnn:
 
   def modelinit(self, inshape):
     self.inshape = inshape
-    self.weightsinToHid = np.random.uniform(-0.005, 0.005, (hidshape, inshape))
+    self.weightsinToHid = np.random.uniform(-0.005, 0.005, (np.prod(self.hidshape), np.prod(inshape)))
     return self.outshape
 
   def forward(self, input):
@@ -29,7 +41,7 @@ class rnn:
     
     if self.Type == 'ManyToOne':
       for i in range(len(input)):
-        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i] + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
+        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
 
       self.out = self.outactivation.forward(self.weightsHidToout @ self.Hid[len(input), :] + self.outbiases)
     
@@ -37,7 +49,7 @@ class rnn:
       self.out = np.zeros((len(self.input), self.outshape))
 
       for i in range(len(input)):
-        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i] + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
+        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
         self.out[i, :] = self.outactivation.forward(self.weightsHidToout @ self.Hid[i + 1, :] + self.outbiases)
 
     return self.out

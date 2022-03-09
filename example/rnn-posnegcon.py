@@ -1,4 +1,4 @@
-import aiinpy as ai
+import testsrc as ai
 import numpy as np
 from data.posnegcon.VictorZhou import TrainingData, TestData
 from alive_progress import alive_bar

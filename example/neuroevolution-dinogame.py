@@ -1,5 +1,5 @@
-import aiinpy as ai
 import numpy as np
+import testsrc as ai
 
 PopulationSize = 1000
 

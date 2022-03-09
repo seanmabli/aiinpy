@@ -1,10 +1,11 @@
-import aiinpy as ai
+import testsrc as ai
 from alive_progress import alive_bar
 import numpy as np
+import wandb
 
 model = ai.lstm(inshape=1, outshape=1, outactivation=ai.identity(), learningrate=0.01)
 
-Data = np.genfromtxt('example\data\Timeseries\Airpassenger.csv', dtype=int)
+Data = np.genfromtxt('testing\data\Timeseries\Airpassenger.csv', dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
 
 TrainingData = Data[0 : 100, np.newaxis]
@@ -25,15 +26,15 @@ with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
 
     bar()
 
-  error = 0
+  Error = 0
   for Generation in range(NumOfTestGen):
     input = TestData[Generation : Generation + 5]
     out = model.forward(input)
 
-    outError = TestData[Generation + 1 : Generation + 6] - out
-    error += np.sum(outError)
+    outError = TestData[Generation + 1 : Generation + 6] - Out
+    Error += abs(TestData[Generation + 6] - Out[4])
     inError = model.backward(outError)
 
     bar()
   
-print(error / NumOfTestGen)
+print(Error / NumOfTestGen)
