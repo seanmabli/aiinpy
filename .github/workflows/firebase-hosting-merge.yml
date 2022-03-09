@@ -8,14 +8,17 @@ name: Deploy to Firebase Hosting on merge
       - main
 env:
   CI: false
+
+defaults:
+  run:
+    working-directory: ./docs
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Stuff
-        working-directory: ./docs
-        run: npm ci && npm run build
+      - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
