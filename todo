@@ -1,9 +1,9 @@
 For 0.0.18 (3-10-2021):
 - Complete documentation
-- Create General Adversarial Networks (GAN)
 
 For 0.0.19 (4-1-2021):
 - Add transformer
+- Create General Adversarial Networks (GAN)
 
 Other:
 - Convert to C
