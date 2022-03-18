@@ -1,4 +1,5 @@
-from setuptools import setup
+from setuptools
+setuptools.setup()
 
 setup(name='aiinpy',
       version='0.0.17',
