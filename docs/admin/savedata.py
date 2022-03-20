@@ -9,6 +9,7 @@ docs = db.collection('documentation').stream()
 
 for doc in docs:
     doc.reference.delete()
+
 versions = str(subprocess.Popen('pip index versions aiinpy', stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0])
 versions = versions[versions.find('Available versions') + 20: versions.find('0.0.11') + 6].replace(" ", "").split(",")
 
