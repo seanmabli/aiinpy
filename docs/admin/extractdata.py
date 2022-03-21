@@ -3,12 +3,12 @@ import numpy as np
 import inspect
 from importlib_metadata import version
 import json
-import firebase_admin
-from firebase_admin import firestore
+# import firebase_admin
+# from firebase_admin import firestore
 
-cred = firebase_admin.credentials.Certificate('adminkey.json')
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+# cred = firebase_admin.credentials.Certificate('adminkey.json')
+# firebase_admin.initialize_app(cred)
+# db = firestore.client()
 
 classes = np.array([], dtype=object)
 source = np.array([])
@@ -39,5 +39,9 @@ for i in range(len(classes)):
     model = np.append(model, 'aiinpy.' + classes[i].__name__ + source[i][source[i].find('__init__') + 8 : source[i].find('):') + 1])
   else:
     model = np.append(model, 'aiinpy.' + classes[i].__name__ + '()')
+
+docs = []
 for i in range(len(title)):
-  db.collection('documentation').add({'title' : title.tolist()[i], 'model' : model.tolist()[i], 'description' : description[i], 'url' : url.tolist()[i], 'sourcecode' : sourcecode.tolist()[i], 'function' : function.tolist()[i], 'version' : version('aiinpy')})
+  # db.collection('documentation').add({'title' : title.tolist()[i], 'model' : model.tolist()[i], 'description' : description[i], 'url' : url.tolist()[i], 'sourcecode' : sourcecode.tolist()[i], 'function' : function.tolist()[i], 'version' : version('aiinpy')})
+  docs.append({'title' : title.tolist()[i], 'model' : model.tolist()[i], 'description' : description[i], 'url' : url.tolist()[i], 'sourcecode' : sourcecode.tolist()[i], 'function' : function.tolist()[i], 'version' : version('aiinpy')})
+json.dump(docs, open('docs.json', "w"), indent=2)
