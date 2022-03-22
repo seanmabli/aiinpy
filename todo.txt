@@ -1,5 +1,10 @@
 For 0.0.18 (3-10-2021):
 - Complete documentation
+  - Create activation teplate
+  - Create function template
+  - Have firebase query
+  - Github action for deployment working
+  - Add info about each function in documentation
 
 For 0.0.19 (4-1-2021):
 - Add transformer
