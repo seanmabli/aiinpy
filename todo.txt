@@ -3,8 +3,8 @@ For 0.0.18 (3-10-2021):
   - Create activation teplate
   - Create function template
   - Have firebase query
-  - Github action for deployment working
   - Add info about each function in documentation
+  - Link to page (e.g. directly to https://aiinpy.org/0.0.17/leakyrelu)
 
 For 0.0.19 (4-1-2021):
 - Add transformer
