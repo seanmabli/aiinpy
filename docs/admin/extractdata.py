@@ -20,6 +20,7 @@ url = np.array([])
 function = np.array([])
 sourcecode = np.array([])
 description = np.array([])
+type = np.array([])
 
 for name, obj in inspect.getmembers(ai):
   if inspect.isclass(obj):
@@ -32,6 +33,7 @@ for i in range(len(classes)):
   function = np.append(function, classes[i].__name__ )
   sourcecode = np.append(sourcecode, 'https://github.com/seanmabli/aiinpy/blob/' + version('aiinpy') + '/aiinpy/' + classes[i].__name__ + '.py')
   description = np.append(description, '')
+  type = np.append(type, '')
 
   # model
   source = np.append(source, inspect.getsource(classes[i]))
@@ -41,4 +43,4 @@ for i in range(len(classes)):
     model = np.append(model, 'aiinpy.' + classes[i].__name__ + '()')
 
 for i in range(len(title)):
-  db.collection('documentation').add({'title' : title.tolist()[i], 'model' : model.tolist()[i], 'description' : description[i], 'url' : url.tolist()[i], 'sourcecode' : sourcecode.tolist()[i], 'function' : function.tolist()[i], 'version' : version('aiinpy')})
+  db.collection('documentation').add({'title' : title.tolist()[i], 'model' : model.tolist()[i], 'description' : description[i], 'url' : url.tolist()[i], 'sourcecode' : sourcecode.tolist()[i], 'type' : type.tolist()[i], 'function' : function.tolist()[i], 'version' : version('aiinpy')})
