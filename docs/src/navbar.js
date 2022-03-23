@@ -20,7 +20,7 @@ function Navbar() {
       setContent(data.docs.map((doc) => ({ ...doc.data(), id: doc.id})))
     };
     getContent();
-  }, [])  
+  }, [])
 
   const contentfilteredbyversion = content.filter(content => content.version === window.currentversion);
 
