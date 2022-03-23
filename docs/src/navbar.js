@@ -6,12 +6,10 @@ import { collection, getDocs } from 'firebase/firestore';
 
 function Navbar() {
   const [version, setVersion] = useState(window.currentversion);
-  
+
   function getversion(val) {
     setVersion(val.target.value);
-    if (window.versions.includes(val.target.value) === true) {
-      window.currentversion = val.target.value;
-    }
+    window.currentversion = val.target.value;
   }
 
   const [content, setContent] = useState([]);
@@ -31,9 +29,13 @@ function Navbar() {
       <div className="box">
         <Link to='/' className="p notext-decoration">aiinpy</Link> <br/>
       </div>
+
       <div class="inlinebox">
-        <label className="h1" >version:&nbsp;</label>
-        <input type="text" value={version} onChange={getversion} className="h1 lighter version"/>
+        <label className="h1" >version:&nbsp; 
+          <select className="h1 lighter version" value={version} onChange={getversion}>
+          {window.versions.map((option) => (<option>{option}</option>))}
+          </select>
+        </label>
       </div>
 
       {contentfilteredbyversion.map((item) => {
