@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
+import { Navigate } from 'react-router-dom';
 import { db } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import Navbar from './navbar';
@@ -7,7 +8,12 @@ import './index.css';
 
 function Function() {
   const { version, func } = useParams();
-  window.currentversion = version;
+  if (version in window.versions == true) {
+    window.currentversion = version;
+  } else {
+    console.log('nav');
+    <Navigate to={'/'} replace />
+  }
 
   const [content, setContent] = useState([]);
   const contentRef = collection(db, 'documentation')
