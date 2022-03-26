@@ -6,4 +6,11 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 for doc in db.collection('documentation').stream():
-  doc.update({'type' : 'test'})
+
+  inx = input(doc.to_dict()['title'] + ': ')
+  if inx == 'a':
+    out = 'activation'
+  elif inx == 'c':
+    out = 'computation'
+
+  db.collection('documentation').document(doc.id).update({'type' : out})

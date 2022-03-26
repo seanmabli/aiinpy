@@ -11,11 +11,7 @@ function About() {
   }
 
   return (
-    <div className="site">
-      <div className="about">
-        <Navbar />
-      </div>
-      <div className="function">
+      <div>
         <p className="p box">about</p>
         <p className="h1 box">aiinpy is an open source artificial intelligence package for the python programming language.  aiinpy can be used to build neural networks (nn), convolutional neural networks (cnn), recurrent neural networks (rnn), long term short term memory networks (lstm), and gated recurrent units (gru).  these networks can be trained with backpropagation as well as neuroevolution.</p>
         <div className="box">
@@ -27,7 +23,6 @@ function About() {
           <a href="https://github.com/seanmabli/aiinpy" className="h1 bold link">seanmabli/aiinpy</a> 
         </div>
       </div>
-    </div>
   );
 }
 
