@@ -1,15 +1,13 @@
 import Navbar from './navbar';
 import { useParams } from "react-router";
-import { Navigate, Link } from 'react-router-dom';
 import './index.css';
 
 function About() {
   const { version } = useParams();
-  if (version in window.versions == true) {
+
+  console.log('about.js');
+  if (window.versions.includes(version)) {
     window.currentversion = version;
-  } else {
-    console.log('nav');
-    <Link to={'/'} replace />
   }
 
   return (
