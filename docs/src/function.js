@@ -26,32 +26,31 @@ function Function() {
   const contentfilteredbyversion = contentfilteredbyfunc.filter(content => content.version === window.currentversion);
   const data = [
     {
-      x: 4000,
-      y: 2400,
+      y: 0,
     },
     {
-      x: 3000,
-      y: 1398,
+      y: 0.25,
     },
     {
-      x: 2000,
-      y: 9800,
+      y: 0.5,
     },
     {
-      x: 2780,
-      y: 3908,
+      y: 0.75,
     },
     {
-      x: 1890,
-      y: 4800,
+      y: 1,
     },
     {
-      x: 2390,
-      y: 3800,
+      y: 0.75,
     },
     {
-      x: 3490,
-      y: 4300,
+      y: 0.5,
+    },
+    {
+      y: 0.25,
+    },
+    {
+      y: 0,
     },
   ];
 
@@ -82,12 +81,11 @@ function Function() {
                 <p className="h1 bold">{item.model}<a href={item.sourcecode} className="h1 lighter link">&nbsp;[source]</a></p>
                 <p className="h1 lighter box">{item.description}</p> <br />
 
-                <LineChart width={500} height={300} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                <LineChart width={300} height={200} data={data} margin={{top: 5, right: 5, left: 5, bottom: 5}}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="x" />
+                  <XAxis allowDecimals={true} tickCount={5} domain={[-1, 1]} />
                   <YAxis dataKey="y" />
-                  <Line type="monotone" dataKey="x" stroke="#8884d8" activeDot={{ r: 8 }} />
-                  <Line type="monotone" dataKey="y" stroke="#82ca9d" />
+                  <Line type="monotone" dataKey="y" stroke="#838383" />
                 </LineChart>
               </div>
             ) 
