@@ -1,18 +1,17 @@
-import paramiko
+import paramiko, getpass
+import firebase_admin
+from firebase_admin import firestore
 import os
 
-password = input('password: ')
-os.system('clear')
-
-ssh_client=paramiko.SSHClient()
-ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh_client.connect(hostname='api.seanmabli.com',username='sean',password=password)
-stdin,stdout,stderr=ssh_client.exec_command('cd aiinpy/docs/admin ; ls')
-print(stdout.readlines())
-sftp_client = ssh_client.open_sftp()
-remote_file = sftp_client.open('aiinpy/docs/admin/additem.py')
 try:
-    for line in remote_file:
-        print(line)
-finally:
-    remote_file.close()
+    ssh_client=paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh_client.connect(hostname='api.seanmabli.com',username='sean',password=getpass.getpass('password: '))
+    open('adminkey.json', 'w').write(' '.join(ssh_client.open_sftp().open('aiinpy/docs/admin/adminkey.json').readlines()))
+    cred = firebase_admin.credentials.Certificate('adminkey.json')
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+except:
+    os.system('rm adminkey.json')
+else:
+    os.system('rm adminkey.json')
