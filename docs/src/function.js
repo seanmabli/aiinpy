@@ -26,31 +26,25 @@ function Function() {
   const contentfilteredbyversion = contentfilteredbyfunc.filter(content => content.version === window.currentversion);
   const data = [
     {
-      y: 0,
+      y: 2400,
     },
     {
-      y: 0.25,
+      y: 1398,
     },
     {
-      y: 0.5,
+      y: 9800,
     },
     {
-      y: 0.75,
+      y: 3908,
     },
     {
-      y: 1,
+      y: 4800,
     },
     {
-      y: 0.75,
+      y: 3800,
     },
     {
-      y: 0.5,
-    },
-    {
-      y: 0.25,
-    },
-    {
-      y: 0,
+      y: 4300,
     },
   ];
 
@@ -83,9 +77,9 @@ function Function() {
 
                 <LineChart width={300} height={200} data={data} margin={{top: 5, right: 5, left: 5, bottom: 5}}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis allowDecimals={true} tickCount={5} domain={[-1, 1]} />
+                  <XAxis />
                   <YAxis dataKey="y" />
-                  <Line type="monotone" dataKey="y" stroke="#838383" />
+                  <Line type="monotone" isAnimationActive={false} dot={false} dataKey='y' stroke="#838383" />
                 </LineChart>
               </div>
             ) 
