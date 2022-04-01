@@ -13,10 +13,9 @@ function Navbar() {
   }
 
   const [content, setContent] = useState([]);
-  const contentRef = collection(db, 'documentation')
   useEffect(() => {
     const getContent = async () => {
-      const data = await getDocs(contentRef);
+      const data = await getDocs(collection(db, 'documentation'));
       setContent(data.docs.map((doc) => ({ ...doc.data(), id: doc.id})))
     };
     getContent();

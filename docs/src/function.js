@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
 import { db } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import './index.css';
 
 function Function() {
@@ -13,10 +13,9 @@ function Function() {
   }
 
   const [content, setContent] = useState([]);
-  const contentRef = collection(db, 'documentation')
   useEffect(() => {
     const getContent = async () => {
-      const data = await getDocs(contentRef);
+      const data = await getDocs(collection(db, 'documentation'));
       setContent(data.docs.map((doc) => ({ ...doc.data(), id: doc.id})))
     };
     getContent();
@@ -26,24 +25,31 @@ function Function() {
   const contentfilteredbyversion = contentfilteredbyfunc.filter(content => content.version === window.currentversion);
   const data = [
     {
+      x: -1,
       y: 2400,
     },
     {
+      x: -0.5,
       y: 1398,
     },
     {
+      x: 0,
       y: 9800,
     },
     {
+      x: 0.25,
       y: 3908,
     },
     {
+      x: 0.5,
       y: 4800,
     },
     {
+      x: 0.75,
       y: 3800,
     },
     {
+      x: 1,
       y: 4300,
     },
   ];
@@ -74,13 +80,19 @@ function Function() {
                 <p className="p box">{item.function}</p>
                 <p className="h1 bold">{item.model}<a href={item.sourcecode} className="h1 lighter link">&nbsp;[source]</a></p>
                 <p className="h1 lighter box">{item.description}</p> <br />
+                
+                <div className="equation">
+                  <p className='h1 lighter'>equation placeholder</p>
+                </div>
 
-                <LineChart width={300} height={200} data={data} margin={{top: 5, right: 5, left: 5, bottom: 5}}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis />
-                  <YAxis dataKey="y" />
-                  <Line type="monotone" isAnimationActive={false} dot={false} dataKey='y' stroke="#838383" />
-                </LineChart>
+                <div className="graph">
+                  <LineChart className="center" width={300} height={200} data={data} margin={{top: 5, right: 5, left: 5, bottom: 5}}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="x" />
+                    <YAxis dataKey="y" />
+                    <Line type="monotone" isAnimationActive={false} dot={false} dataKey='y' stroke="#838383" />
+                  </LineChart>
+                </div>
               </div>
             ) 
           })}

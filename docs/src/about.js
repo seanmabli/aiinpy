@@ -1,4 +1,3 @@
-import Navbar from './navbar';
 import { useParams } from "react-router";
 import './index.css';
 

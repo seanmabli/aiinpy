@@ -76,6 +76,18 @@
   justify-content: space-between;
 }
 
+.equation {
+  float: left;
+  width: 50%;
+}
+.graph {
+  float: right;
+  width: 50%;
+}
+.center {
+  float: center;
+}
+
 @media screen and (max-width: 600px) {
   .about {
     display: none;
