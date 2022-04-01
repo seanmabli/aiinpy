@@ -6,4 +6,4 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 for doc in db.collection('documentation').stream():
-  db.collection('documentation').document(doc.id).update({'description' : 'this is a description placeholder because there is currently no description in place.  a discription in this feild will discribe the function.'})
+  doc.reference.update({'description' : 'this is a description placeholder because there is currently no description in place.  a discription in this feild will discribe the function.'})

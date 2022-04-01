@@ -8,4 +8,4 @@ db = firestore.client()
 itemname = input('item name: ')
 
 for doc in db.collection('documentation').stream():
-  db.collection('documentation').document(doc.id).update({itemname : firestore.DELETE_FIELD})
+  doc.reference.update({itemname : firestore.DELETE_FIELD})
