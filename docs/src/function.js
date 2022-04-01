@@ -23,36 +23,6 @@ function Function() {
 
   const contentfilteredbyfunc = content.filter(content => content.function === func);
   const contentfilteredbyversion = contentfilteredbyfunc.filter(content => content.version === window.currentversion);
-  const data = [
-    {
-      x: -1,
-      y: 2400,
-    },
-    {
-      x: -0.5,
-      y: 1398,
-    },
-    {
-      x: 0,
-      y: 9800,
-    },
-    {
-      x: 0.25,
-      y: 3908,
-    },
-    {
-      x: 0.5,
-      y: 4800,
-    },
-    {
-      x: 0.75,
-      y: 3800,
-    },
-    {
-      x: 1,
-      y: 4300,
-    },
-  ];
 
   if (contentfilteredbyversion[0] !== undefined) {
     if (contentfilteredbyversion[0]['type'] === 'computation') {
@@ -72,6 +42,15 @@ function Function() {
     }
 
     if (contentfilteredbyversion[0]['type'] === 'activation') {
+      const data = [];
+
+      for (let i = 0; i < contentfilteredbyversion[0]['graphx']['length']; i++) {
+        data.push({
+          x: contentfilteredbyversion[0]['graphx'][i],
+          y: contentfilteredbyversion[0]['graphy'][i],
+        });
+      }
+
       return (
         <div>
           {contentfilteredbyversion.map((item) => {
@@ -88,9 +67,9 @@ function Function() {
                 <div className="graph">
                   <LineChart className="center" width={300} height={200} data={data} margin={{top: 5, right: 5, left: 5, bottom: 5}}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="x" />
-                    <YAxis dataKey="y" />
-                    <Line type="monotone" isAnimationActive={false} dot={false} dataKey='y' stroke="#838383" />
+                    <XAxis dataKey='x' />
+                    <YAxis dataKey='y' />
+                    <Line type="monotone" isAnimationActive={false} dot={true} dataKey='y' stroke="#838383" />
                   </LineChart>
                 </div>
               </div>
