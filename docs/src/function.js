@@ -69,7 +69,7 @@ function Function() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey='x' />
                     <YAxis dataKey='y' />
-                    <Line type="monotone" isAnimationActive={false} dot={true} dataKey='y' stroke="#838383" />
+                    <Line type="monotone" isAnimationActive={false} dot={false} dataKey='y' stroke="#838383" />
                   </LineChart>
                 </div>
               </div>
