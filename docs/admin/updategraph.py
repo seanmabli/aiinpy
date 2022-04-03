@@ -19,6 +19,6 @@ for doc in db.collection('documentation').stream():
       print(doc.to_dict()['function'])
       doc.reference.update({'graphx': []})
       doc.reference.update({'graphy': []})
-  if doc.to_dict()['version'] != '0.0.17':
+  if doc.to_dict()['version'] != '0.0.17' or doc.to_dict()['function'] == ('stablesoftmax' or 'softmax'):
     doc.reference.update({'graphx': []})
     doc.reference.update({'graphy': []})
