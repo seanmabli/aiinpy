@@ -1,5 +1,5 @@
 import numpy as np
-import src
+import aiinpy
 import wandb
 from alive_progress import alive_bar
 

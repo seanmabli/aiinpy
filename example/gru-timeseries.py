@@ -1,11 +1,11 @@
-import src
+import aiinpy as ai
 from alive_progress import alive_bar
 import numpy as np
 import wandb
 
 model = ai.gru(inshape=1, outshape=1, outactivation=ai.identity(), learningrate=0.01)
 
-Data = np.genfromtxt('testing\data\Timeseries\Airpassenger.csv', dtype=int)
+Data = np.genfromtxt(r'data\timeseries\airpassenger.csv', dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
 
 TrainingData = Data[0 : 100, np.newaxis]

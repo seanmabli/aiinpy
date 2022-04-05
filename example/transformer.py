@@ -1,4 +1,4 @@
-import src as ai
+import aiinpy as ai
 import numpy as np
 
 def basicselfattention(input):

@@ -1,6 +1,6 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-import srcai
+import aiinpyai
 # import wandb
 
 # wandb.init(project='cnn-regular-vs-matrix')

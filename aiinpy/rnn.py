@@ -14,8 +14,8 @@ from .stablesoftmax import stablesoftmax
 from .tanh import tanh
 
 class rnn:
-  def __init__(self, outshape, Type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05, inshape=None):
-    self.learningrate, self.Type, self.outactivation = learningrate, Type, outactivation
+  def __init__(self, outshape, type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05, inshape=None):
+    self.learningrate, self.type, self.outactivation = learningrate, type, outactivation
     self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
     
     if inshape is not None:
@@ -28,7 +28,7 @@ class rnn:
     self.outbiases = np.zeros(outshape)
 
   def __copy__(self):
-    return type(self)(self.outshape, self.Type, self.outactivation, self.hidshape, self.learningrate, self.inshape)
+    return type(self)(self.outshape, self.type, self.outactivation, self.hidshape, self.learningrate, self.inshape)
 
   def modelinit(self, inshape):
     self.inshape = inshape
@@ -39,13 +39,13 @@ class rnn:
     self.input = input
     self.Hid = np.zeros((len(self.input) + 1, self.hidshape))
     
-    if self.Type == 'ManyToOne':
+    if self.type == 'ManyToOne':
       for i in range(len(input)):
         self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
 
       self.out = self.outactivation.forward(self.weightsHidToout @ self.Hid[len(input), :] + self.outbiases)
     
-    elif self.Type == 'ManyToMany':
+    elif self.type == 'ManyToMany':
       self.out = np.zeros((len(self.input), self.outshape))
 
       for i in range(len(input)):
@@ -59,7 +59,7 @@ class rnn:
     weightsHidToHidΔ = np.zeros(self.weightsHidToHid.shape)
     HidbiasesΔ = np.zeros(self.Hidbiases.shape)
 
-    if self.Type == 'ManyToOne':
+    if self.type == 'ManyToOne':
       outGradient = np.multiply(self.outactivation.backward(self.out), outError)
 
       weightsHidTooutΔ = np.outer(outGradient, self.Hid[len(self.input)].T)
@@ -76,7 +76,7 @@ class rnn:
 
         HidError = self.weightsHidToHid.T @ HidGradient
 
-    elif self.Type == 'ManyToMany':
+    elif self.type == 'ManyToMany':
       weightsHidTooutΔ = np.zeros(self.weightsHidToout.shape)
       outbiasesΔ = np.zeros(self.outbiases.shape)
 
