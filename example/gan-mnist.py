@@ -26,11 +26,7 @@ dismodel = ai.model((28, 28), 1, [
 # Train Discrimanator
 disrealtrain, _ = extract_training_samples('digits')
 disrealtest, _ = extract_test_samples('digits')
-<<<<<<< HEAD
-disrealtrain, disrealtest = disrealtrain[:10000] / 255, disrealtest[:10000] / 255
-=======
 disrealtrain, disrealtest = disrealtrain[:10000] / 255, disrealtest[:2000] / 255
->>>>>>> 5e47e4cf3767b893b2be3ba98c8459a376cb824c
 disfake = np.random.uniform(-0.5, 0.5, disrealtrain.shape)
 
 disintrain, disouttrain = np.vstack((disrealtrain, disfake)), np.hstack((np.ones(len(disrealtrain)), np.zeros(len(disfake))))
