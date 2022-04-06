@@ -1,7 +1,9 @@
 import firebase_admin
 from firebase_admin import firestore
+from getadminkey import getadminkey
 
-cred = firebase_admin.credentials.Certificate('adminkey.json')
+adminkey = getadminkey()
+cred = firebase_admin.credentials.Certificate(adminkey)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 

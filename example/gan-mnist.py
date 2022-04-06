@@ -1,10 +1,10 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import src as ai
-import wandb
+# import wandb
 from alive_progress import alive_bar
 
-wandb.init(project="gan-mnist")
+# wandb.init(project="gan-mnist")
 
 # gen -> generator
 # gen_model = ai.model(100, (28, 28), [
@@ -24,16 +24,17 @@ dismodel = ai.model((28, 28), 1, [
 ])
 
 # Train Discrimanator
-disrealtrain, _ = extract_training_samples('digits')[:5000]
-disrealtest, _ = extract_test_samples('digits')[:1000]
-disrealtrain, disrealtest = disrealtrain / 255, disrealtest / 255
+disrealtrain, _ = extract_training_samples('digits')
+disrealtest, _ = extract_test_samples('digits')
+disrealtrain, disrealtest = disrealtrain[:10000] / 255, disrealtest[:10000] / 255
 disfake = np.random.uniform(-0.5, 0.5, disrealtrain.shape)
 
 disintrain, disouttrain = np.vstack((disrealtrain, disfake)), np.hstack((np.ones(len(disrealtrain)), np.zeros(len(disfake))))
 disintest, disouttest = np.vstack((disrealtest, disfake)), np.hstack((np.ones(len(disrealtest)), np.zeros(len(disfake))))
 
 dismodel.train(data=(disintrain, disouttrain), numofgen=2000)
-wandb.log({"discriminator accuracy": dismodel.test(data=(disintest, disouttest))})
+print(dismodel.test(data=(disintest, disouttest)))
+# wandb.log({"discriminator accuracy": dismodel.test(data=(disintest, disouttest))})
 
 # Train Generator
 # for i in range(len(dis_model.model)):

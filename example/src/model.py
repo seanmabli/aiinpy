@@ -80,8 +80,7 @@ class model:
         input = self.model[i].forward(input)
 
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
- 
-      # sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
+      sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
       
     return testcorrect / NumOfData
 
