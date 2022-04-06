@@ -38,22 +38,17 @@ class model:
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     # Training
-    error = []
     print('')
     for gen in range(numofgen):
       random = np.random.randint(0, NumOfData)
       input = data[0][random]
       for i in range(len(self.model)):
         input = self.model[i].forward(input)
-        error.append(input)
 
-      outError = data[1][random] - input
-      # error.append(np.sum(abs(outError)))
+      outerror = data[1][random] - input
       for i in reversed(range(len(self.model))):
-        outError = self.model[i].backward(outError)
+        outerror = self.model[i].backward(outerror)
       sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
-    
-    return error
 
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
