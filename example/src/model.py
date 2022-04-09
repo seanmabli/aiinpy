@@ -38,7 +38,6 @@ class model:
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     # Training
-    print('')
     for gen in range(numofgen):
       random = np.random.randint(0, NumOfData)
       input = data[0][random]
@@ -48,7 +47,9 @@ class model:
       outerror = data[1][random] - input
       for i in reversed(range(len(self.model))):
         outerror = self.model[i].backward(outerror)
-      sys.stdout.write('\r training: ' + str(gen + 1) + '/' + str(numofgen))
+      sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
+    
+    print('')
 
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
@@ -68,14 +69,15 @@ class model:
 
     # Testing
     testcorrect = 0
-    print('')
-    for gen in range (NumOfData):
+    for gen in range(NumOfData):
       input = data[0][gen]
       for i in range(len(self.model)):
         input = self.model[i].forward(input)
 
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
-      sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
+      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData))
+
+    print('')
       
     return testcorrect / NumOfData
 
