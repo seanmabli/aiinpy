@@ -27,10 +27,9 @@ class conv:
     if inshape is not None:
       if len(inshape) == 2:
         inshape = tuple([self.filtershape[0]]) + inshape
-      if padding == True:
-        inshape = (inshape[0], inshape[1] + self.filtershape[1] - 1, inshape[2] + self.filtershape[2] - 1)
+      padding = (self.filtershape[1] - 1, self.filtershape[2] - 1) if padding == True else (0, 0)
       
-      self.outshape = tuple([filtershape[0], int((inshape[1] - filtershape[1] + 1) / self.stride[0]), int((inshape[2] - filtershape[2] + 1) / self.stride[1])])
+      self.outshape = tuple([filtershape[0], int((inshape[1] - filtershape[1] + padding[0] + 1) / self.stride[0]), int((inshape[2] - filtershape[2] + padding[1] + 1) / self.stride[1])])
       self.out = np.zeros(self.outshape)
 
   def __copy__(self):
