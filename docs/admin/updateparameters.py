@@ -9,5 +9,5 @@ db = firestore.client()
 
 for doc in db.collection('documentation').stream():
   if doc.to_dict()['type'] == 'activation':
-    doc.reference.update({'equation': 'y = x^2'})
-    doc.reference.update({'equationderivative': 'y = 2x'})
+    doc.reference.update({'parameters': 'placeholder'})
+    doc.reference.update({'examples': 'placeholder'})

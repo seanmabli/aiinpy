@@ -101,4 +101,12 @@
   .function {
     width: 100%;
   }
+
+  .equation {
+    width: 100%;
+  }
+
+  .graph {
+    width: 100%;
+  }
 }

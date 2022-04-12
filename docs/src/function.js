@@ -78,8 +78,12 @@ function Function() {
                     <Line type="monotone" isAnimationActive={false} dot={false} dataKey='y' stroke="#838383" />
                   </LineChart>
                 </div>
+
+
+                <p className="h1">parameters:<br/>{item.parameters}</p> <br />
+                <p className="h1">examples:<br/>{item.examples}</p>
               </div>
-            ) 
+            )
           })}
         </div>
       )
