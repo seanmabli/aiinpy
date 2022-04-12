@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { db } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import MathJax from 'react-mathjax';
 import './index.css';
 
 function Function() {
@@ -60,9 +61,14 @@ function Function() {
                 <p className="h1 bold">{item.model}<a href={item.sourcecode} className="h1 lighter link">&nbsp;[source]</a></p>
                 <p className="h1 lighter box">{item.description}</p> <br />
                 
-                <div className="equation">
-                  <p className='h1 lighter'>equation placeholder</p>
-                </div>
+                <MathJax.Provider>
+                  <div className="equation">
+                    <p className='h1'>{item.function}:</p>
+                    <MathJax.Node formula={item.equation} className='latex'/>
+                    <p className='h1'>{item.function} detivative:</p>
+                    <MathJax.Node formula={item.equationderivative} className='latex'/>
+                  </div>
+                </MathJax.Provider>
 
                 <div className="graph">
                   <LineChart className="center" width={300} height={200} data={data} margin={{top: 5, right: 5, left: 5, bottom: 5}}>

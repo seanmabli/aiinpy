@@ -80,14 +80,19 @@
   float: left;
   width: 50%;
 }
+
 .graph {
   float: right;
   width: 50%;
 }
+
 .center {
   float: center;
 }
 
+.latex {
+  color:#838383
+}
 @media screen and (max-width: 600px) {
   .about {
     display: none;

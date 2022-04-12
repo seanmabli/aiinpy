@@ -7,7 +7,7 @@ cred = firebase_admin.credentials.Certificate(adminkey)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-itemname = input('item name: ')
-
 for doc in db.collection('documentation').stream():
-  db.collection('documentation').document(doc.id).update({itemname : ''})
+  if doc.to_dict()['type'] == 'activation':
+    doc.reference.update({'equation': 'y = x^2'})
+    doc.reference.update({'equationderivative': 'y = 2x'})
