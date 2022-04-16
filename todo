@@ -1,3 +1,4 @@
 For 0.0.19 (4/30/2022):
   - Add GAN Functionality
   - Convert to C++
+  - Import weights and biases from pretrained network

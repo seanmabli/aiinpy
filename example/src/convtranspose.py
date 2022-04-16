@@ -18,8 +18,12 @@ class convtranspose:
     self.inshape, self.filtershape, self.learningrate, self.activation, self.padding, self.stride = inshape, filtershape, learningrate, activation, padding, stride
     if len(inshape) == 2:
       inshape = tuple([self.filtershape[0]]) + inshape
-    self.outshape = np.array([filtershape[0], ((inshape[1] + 1) * filtershape[1]) / stride[0], ((inshape[2] + 1) * filtershape[2]) / stride[1]], dtype=np.int)
+    padding = (self.filtershape[1] - 1, self.filtershape[2] - 1) if padding == True else (0, 0)
+    
+    self.oldoutshape = np.array([filtershape[0], ((inshape[1] + 1) * filtershape[1]) / stride[0], ((inshape[2] + 1) * filtershape[2]) / stride[1]], dtype=np.int)
+    self.outshape = np.array([filtershape[0], (inshape[1] - 1) * stride[0] + filtershape[1] - 2 * padding[0], (inshape[2] - 1) * stride[1] + filtershape[2] - 2 * padding[1]], dtype=np.int)
     self.out = np.zeros(self.outshape)
+    print(self.inshape, self.outshape, self.oldoutshape)
 
     self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
     self.bias = np.zeros(self.filtershape[0])
