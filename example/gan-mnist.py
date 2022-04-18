@@ -1,9 +1,9 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import src as ai
-import wandb
+# import wandb
 
-wandb.init(project="gan-mnist")
+# wandb.init(project="gan-mnist")
 
 # gen -> generator
 genmodel = ai.model(100, (28, 28), [
@@ -23,6 +23,7 @@ dismodel = ai.model((28, 28), 1, [
 ])
 
 # Train Discrimanator
+'''
 disrealtrain, _ = extract_training_samples('digits')
 disrealtest, _ = extract_test_samples('digits')
 disrealtrain, disrealtest = disrealtrain[:10000] / 255, disrealtest[:2000] / 255
@@ -35,6 +36,7 @@ print('train discrimanator')
 dismodel.train(data=(disintrain, disouttrain), numofgen=2000)
 # print(dismodel.test(data=(disintest, disouttest)))
 # wandb.log({"discriminator accuracy": dismodel.test(data=(disintest, disouttest))})
+'''
 
 # Train Generator
 for i in range(len(dismodel.model)):
@@ -44,6 +46,7 @@ numofgen = 10000
 for gen in range(numofgen):
   input = np.random.uniform(-0.5, 0.5, 100)
   input = genmodel.forward(input)
+  '''
   input = np.average(input, axis=0)
   out = dismodel.forward(input)
   print(out)
@@ -53,3 +56,4 @@ for gen in range(numofgen):
 
   wandb.log({"Generator Error": 1 - out})
   # sys.stdout.write('\r' + 'generation: ' + str(gen + 1) + '/' + str(numofgen))
+  '''
