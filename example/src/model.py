@@ -1,6 +1,5 @@
 import numpy as np
-import sys
-import time
+import sys, os, time, json, random, datetime
 
 class model:
   def __init__(self, inshape, outshape, model):
@@ -78,8 +77,9 @@ class model:
       sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData))
 
     print('')
-      
-    return testcorrect / NumOfData
+    
+    self.testaccuracy = testcorrect / NumOfData
+    return self.testaccuracy
 
   def use(self, indata):
     indata = np.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
@@ -96,3 +96,17 @@ class model:
         input = self.model[i].forward(input)
       outdata[gen] = input
     return outdata
+
+  def importcache():
+    return None
+
+  def exportcache(self, timetodeletecache=10):
+    runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz123456789', k=6))
+
+
+
+    if not os.path.isdir('aiinpy'):
+      os.mkdir('aiinpy')
+    os.mkdir('aiinpy/' + runname)
+    json.dump({'name' : runname, 'time' : str(datetime.datetime.now()), 'model' : '', 'test accuracy' : str(self.testaccuracy)}, open('aiinpy/' + runname + '/metadata.json', 'w'), indent=2)
+    return None
