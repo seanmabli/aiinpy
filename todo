@@ -3,3 +3,4 @@ For 0.0.19 (4/30/2022):
   - Convert to C++
   - Import weights and biases from pretrained network
   - When the user clicks out of the version dropdown it closes the dropdown
+  - Fix activation derivative problem

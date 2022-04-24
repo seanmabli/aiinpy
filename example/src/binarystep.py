@@ -10,3 +10,4 @@ class binarystep:
     
   def backward(self, input):
     return 1
+  # wikipedia says that if input == 0, then return undefined, but this is not the derivative ... the derivative is 0, check
