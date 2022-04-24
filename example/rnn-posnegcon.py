@@ -1,7 +1,6 @@
 import aiinpy as ai
 import numpy as np
 from data.posnegcon.VictorZhou import TrainingData, TestData
-from alive_progress import alive_bar
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
 model = ai.rnn(inshape=len(TrainingDataUniqueWords), outshape=2, type='ManyToOne', outactivation=ai.stablesoftmax(), learningrate=0.05)
