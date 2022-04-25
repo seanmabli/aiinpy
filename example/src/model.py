@@ -101,7 +101,7 @@ class model:
     return None
 
   def exportcache(self, timetodeletecache=10):
-    runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz123456789', k=6))
+    runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
 
 
 
