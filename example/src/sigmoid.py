@@ -5,4 +5,5 @@ class sigmoid:
     return 1 / (1 + np.exp(-input))
     
   def backward(self, input):
-    return input * (1 - input)
+    # return input * (1 - input) # this is when the input is already passed through the sigmoid function, the real derivative is below
+    return np.exp(-input) / np.square(1 + np.exp(-input))

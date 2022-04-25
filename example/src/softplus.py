@@ -1,3 +1,5 @@
+import numpy as np
+
 class softplus:
   def forward(self, input):
     return np.log(1 + np.exp(input))

@@ -1,8 +1,5 @@
 import src as ai
 import numpy as np
-# import wandb
-
-# wandb.init(project="nn-andor")
 
 # Create Dataset
 inTrainData = np.random.choice(([0, 1]), (2, 100))
@@ -12,14 +9,11 @@ for i in range(100):
 
 # NN model
 model = ai.model(inshape=2, outshape=2, model=[
-  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.01),
-  ai.nn(outshape=16, activation=ai.relu(), learningrate=0.01),
-  ai.nn(outshape=2, activation=ai.stablesoftmax(), learningrate=0.01)
-])
+  ai.nn(outshape=16, activation=ai.sigmoid(), learningrate=0.01),
+  ai.nn(outshape=16, activation=ai.sigmoid(), learningrate=0.01),
+  ai.nn(outshape=2, activation=ai.sigmoid(), learningrate=0.01)
+], wandbproject='nn-andor-sigmoid-test')
+# new
 
 model.train((inTrainData, outTrainData), 12000)
- #wandb.log({"test accuracy": model.test((inTrainData, outTrainData))})
-print(model.test((inTrainData, outTrainData)))
-print(np.around(model.use(inTrainData), 2))
-
-model.exportcache()
+model.test((inTrainData, outTrainData))

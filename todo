@@ -2,3 +2,6 @@ For 0.0.19 (4/30/2022):
   - Add GAN Functionality
   - Convert to C++
   - Import weights and biases from pretrained network
+  - When the user clicks out of the version dropdown it closes the dropdown
+  - Fix activation derivative problem, check if the nn.py fix worked by reaseach, if so update the other backprop functions
+  - Activation layers
