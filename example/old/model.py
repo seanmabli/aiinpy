@@ -1,19 +1,15 @@
 import numpy as np
-import sys, os, time, json, random, datetime
-import wandb
+import sys
+import time
 
 class model:
-  def __init__(self, inshape, outshape, model, wandbproject=None):
+  def __init__(self, inshape, outshape, model):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
     self.outshape = outshape if isinstance(outshape, tuple) else tuple([outshape])
     self.model = model
-    self.wandbproject = wandbproject
 
     for i in self.model:
       inshape = i.modelinit(inshape)
-    
-    if wandbproject is not None:
-      wandb.init(project=wandbproject)
 
   def forward(self, input):
     for i in range(len(self.model)):
@@ -41,38 +37,23 @@ class model:
       x.pop(data[1].shape.index(NumOfData))
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
-    trainerror = []
+    # Training
+    error = []
+    for gen in range(numofgen):
+      random = np.random.randint(0, NumOfData)
+      input = data[0][random]
+      for i in range(len(self.model)):
+        input = self.model[i].forward(input)
+        error.append(input)
 
-    # Training, with wandb
-    if self.wandbproject is not None:
-      for gen in range(numofgen):
-        random = np.random.randint(0, NumOfData)
-        input = data[0][random]
-        for i in range(len(self.model)):
-          input = self.model[i].forward(input)
-
-        outerror = data[1][random] - input
-        wandb.log({'train error': np.sum(abs(outerror))})
-        for i in reversed(range(len(self.model))):
-          outerror = self.model[i].backward(outerror)
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
-    else:
-      # Training, without wandb
-      for gen in range(numofgen):
-        random = np.random.randint(0, NumOfData)
-        input = data[0][random]
-        for i in range(len(self.model)):
-          input = self.model[i].forward(input)
-
-        outerror = data[1][random] - input
-        trainerror.append(np.sum(abs(outerror)))
-        for i in reversed(range(len(self.model))):
-          outerror = self.model[i].backward(outerror)
+      outError = data[1][random] - input
+      error.append(np.sum(abs(outError)))
+      for i in reversed(range(len(self.model))):
+        outError = self.model[i].backward(outError)
         sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
     
     print('')
-
-    return trainerror
+    return error
 
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
@@ -92,20 +73,17 @@ class model:
 
     # Testing
     testcorrect = 0
-    for gen in range(NumOfData):
+    print('')
+    for gen in range (NumOfData):
       input = data[0][gen]
       for i in range(len(self.model)):
         input = self.model[i].forward(input)
 
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
-      # sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData))
-
-    print('')
-    
-    self.testaccuracy = testcorrect / NumOfData
-    if self.wandbproject is not None:
-      wandb.log({'test accuracy': self.testaccuracy})
-    return self.testaccuracy
+ 
+      # sys.stdout.write('\r testing: ' + str(gen + 1) + '/' + str(NumOfData))
+      
+    return testcorrect / NumOfData
 
   def use(self, indata):
     indata = np.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
@@ -122,17 +100,3 @@ class model:
         input = self.model[i].forward(input)
       outdata[gen] = input
     return outdata
-
-  def importcache():
-    return None
-
-  def exportcache(self, timetodeletecache=10):
-    runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
-
-
-
-    if not os.path.isdir('aiinpy'):
-      os.mkdir('aiinpy')
-    os.mkdir('aiinpy/' + runname)
-    json.dump({'name' : runname, 'time' : str(datetime.datetime.now()), 'model' : '', 'test accuracy' : str(self.testaccuracy)}, open('aiinpy/' + runname + '/metadata.json', 'w'), indent=2)
-    return None
