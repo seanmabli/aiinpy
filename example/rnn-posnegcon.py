@@ -1,6 +1,9 @@
-import aiinpy as ai
+import src as ai
 import numpy as np
 from data.posnegcon.VictorZhou import TrainingData, TestData
+import sys, wandb
+
+wandb.init(project='rnn-posnegcon')
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
 model = ai.rnn(inshape=len(TrainingDataUniqueWords), outshape=2, type='ManyToOne', outactivation=ai.stablesoftmax(), learningrate=0.05)
@@ -8,38 +11,43 @@ model = ai.rnn(inshape=len(TrainingDataUniqueWords), outshape=2, type='ManyToOne
 NumOfTrainGen = 15000
 NumOfTestGen = len(list(TestData.items()))
 
-with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
-  for Generation in range(NumOfTrainGen):
-    items = list(TrainingData.items())
-    Random = np.random.randint(0, len(TrainingDataUniqueWords))
+for gen in range(NumOfTrainGen):
+  items = list(TrainingData.items())
+  Random = np.random.randint(0, len(TrainingDataUniqueWords))
 
-    inputSentenceSplit = list(items[Random][0].split(' '))
-    input = np.zeros((len(inputSentenceSplit), len(TrainingDataUniqueWords)))
-    for i in range(len(inputSentenceSplit)):
-      input[i, TrainingDataUniqueWords.index(inputSentenceSplit[i])] = 1
+  inputSentenceSplit = list(items[Random][0].split(' '))
+  input = np.zeros((len(inputSentenceSplit), len(TrainingDataUniqueWords)))
+  for i in range(len(inputSentenceSplit)):
+    input[i, TrainingDataUniqueWords.index(inputSentenceSplit[i])] = 1
 
-    output = model.forward(input)
+  output = model.forward(input)
 
-    Realoutput = np.zeros(output.shape)
-    Realoutput[(1 if items[Random][1] == True else 0)] = 1
+  Realoutput = np.zeros(output.shape)
+  Realoutput[(1 if items[Random][1] == True else 0)] = 1
 
-    NumberCorrect = int(np.argmax(output) == (1 if items[Random][1] == True else 0))
+  NumberCorrect = int(np.argmax(output) == (1 if items[Random][1] == True else 0))
 
-    outputError = Realoutput - output
-    model.backward(outputError)
-    bar()
+  outputError = Realoutput - output
+  wandb.log({'train error' : np.sum(abs(outputError))})
+  model.backward(outputError)
 
-  NumberCorrect = 0
-  for Generation in range(NumOfTestGen):
-    items = list(TestData.items())
+  sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(NumOfTrainGen))
 
-    inputSentenceSplit = list(items[Generation][0].split(' '))
-    input = np.zeros((len(inputSentenceSplit), len(TrainingDataUniqueWords)))
-    for i in range(len(inputSentenceSplit)):
-      input[i, TrainingDataUniqueWords.index(inputSentenceSplit[i])] = 1
+print('')
 
-    output = model.forward(input)
-    NumberCorrect += int(np.argmax(output) == (1 if items[Generation][1] == True else 0))
-    bar()
+NumberCorrect = 0
+for gen in range(NumOfTestGen):
+  items = list(TestData.items())
 
-print(NumberCorrect / NumOfTestGen)
+  inputSentenceSplit = list(items[gen][0].split(' '))
+  input = np.zeros((len(inputSentenceSplit), len(TrainingDataUniqueWords)))
+  for i in range(len(inputSentenceSplit)):
+    input[i, TrainingDataUniqueWords.index(inputSentenceSplit[i])] = 1
+
+  output = model.forward(input)
+  NumberCorrect += int(np.argmax(output) == (1 if items[gen][1] == True else 0))
+
+  sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfTestGen))
+
+wandb.log({'test accuracy' : NumberCorrect / NumOfTestGen})
+print('\n' + str(NumberCorrect / NumOfTestGen))
