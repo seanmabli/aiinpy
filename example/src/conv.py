@@ -59,14 +59,14 @@ class conv:
         self.out[:, i, j] = np.sum(np.multiply(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], self.filter), axis=(1, 2))
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
+    self.derivative = self.activation.backward(self.out) # now it applys the derivative to the output without the activation function
     self.out = self.activation.forward(self.out)
-
     return self.out
   
   def backward(self, outError):
     self.filterΔ = np.zeros(self.filtershape)
     
-    outGradient = self.activation.backward(self.out) * outError
+    outGradient = outError * self.derivative
 
     for i in range(0, self.outshape[1], self.stride[0]):
       for j in range(0, self.outshape[2], self.stride[1]):

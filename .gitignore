@@ -41,4 +41,6 @@ docs/.node_repl_history
 docs/*.tgz
 docs/.yarn-integrity
 docs/.env
+aiinpy.egg-info
+build
 .gitpod.yml
