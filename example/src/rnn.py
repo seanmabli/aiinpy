@@ -19,12 +19,12 @@ class rnn:
     self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
     
     if inshape is not None:
-      self.weightsinToHid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(inshape)))
+      self.weightsinTohid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(inshape)))
 
-    self.weightsHidToHid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(hidshape)))
-    self.Hidbiases = np.zeros(hidshape)
+    self.weightshidTohid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(hidshape)))
+    self.hidbiases = np.zeros(hidshape)
 
-    self.weightsHidToout = np.random.uniform(-0.005, 0.005, (np.prod(outshape), np.prod(hidshape)))
+    self.weightshidToout = np.random.uniform(-0.005, 0.005, (np.prod(outshape), np.prod(hidshape)))
     self.outbiases = np.zeros(outshape)
 
   def __copy__(self):
@@ -32,72 +32,78 @@ class rnn:
 
   def modelinit(self, inshape):
     self.inshape = inshape
-    self.weightsinToHid = np.random.uniform(-0.005, 0.005, (np.prod(self.hidshape), np.prod(inshape)))
+    self.weightsinTohid = np.random.uniform(-0.005, 0.005, (np.prod(self.hidshape), np.prod(inshape)))
     return self.outshape
 
   def forward(self, input):
     self.input = input
-    self.Hid = np.zeros((len(self.input) + 1, self.hidshape))
+    self.hid = np.zeros((len(self.input) + 1, self.hidshape))
+    self.hidderivative = np.zeros((len(self.input) + 1, self.hidshape))
     
     if self.type == 'ManyToOne':
       for i in range(len(input)):
-        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
+        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
 
-      self.out = self.outactivation.forward(self.weightsHidToout @ self.Hid[len(input), :] + self.outbiases)
+      self.out = self.outactivation.forward(self.weightshidToout @ self.hid[len(input), :] + self.outbiases)
+      self.outderivative = self.outactivation.backward(self.weightshidToout @ self.hid[len(input), :] + self.outbiases)
     
     elif self.type == 'ManyToMany':
       self.out = np.zeros((len(self.input), self.outshape))
+      self.outderivative = np.zeros((len(self.input), self.outshape))
 
       for i in range(len(input)):
-        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
-        self.out[i, :] = self.outactivation.forward(self.weightsHidToout @ self.Hid[i + 1, :] + self.outbiases)
+        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.out[i, :] = self.outactivation.forward(self.weightshidToout @ self.hid[i + 1, :] + self.outbiases)
+        self.outderivative[i, :] = self.outactivation.backward(self.weightshidToout @ self.hid[i + 1, :] + self.outbiases)
 
     return self.out
 
   def backward(self, outError):
-    weightsinToHidΔ = np.zeros(self.weightsinToHid.shape)
-    weightsHidToHidΔ = np.zeros(self.weightsHidToHid.shape)
-    HidbiasesΔ = np.zeros(self.Hidbiases.shape)
+    weightsinTohidΔ = np.zeros(self.weightsinTohid.shape)
+    weightshidTohidΔ = np.zeros(self.weightshidTohid.shape)
+    hidbiasesΔ = np.zeros(self.hidbiases.shape)
 
     if self.type == 'ManyToOne':
-      outGradient = np.multiply(self.outactivation.backward(self.out), outError)
+      outGradient = self.outderivative * outError
 
-      weightsHidTooutΔ = np.outer(outGradient, self.Hid[len(self.input)].T)
+      weightshidTooutΔ = np.outer(outGradient, self.hid[len(self.input)].T)
       outbiasesΔ = outGradient
 
-      HidError = self.weightsHidToout.T @ outError
+      hidError = self.weightshidToout.T @ outError
 
       for i in reversed(range(len(self.input))):
-        HidGradient = np.multiply(tanh().backward(self.Hid[i + 1]), HidError)
+        hidGradient = self.hidderivative[i + 1, :] * hidError
 
-        HidbiasesΔ += HidGradient
-        weightsHidToHidΔ += np.outer(HidGradient, self.Hid[i].T)
-        weightsinToHidΔ += np.outer(HidGradient, self.input[i].T)
+        hidbiasesΔ += hidGradient
+        weightshidTohidΔ += np.outer(hidGradient, self.hid[i].T)
+        weightsinTohidΔ += np.outer(hidGradient, self.input[i].T)
 
-        HidError = self.weightsHidToHid.T @ HidGradient
+        hidError = self.weightshidTohid.T @ hidGradient
 
     elif self.type == 'ManyToMany':
-      weightsHidTooutΔ = np.zeros(self.weightsHidToout.shape)
+      weightshidTooutΔ = np.zeros(self.weightshidToout.shape)
       outbiasesΔ = np.zeros(self.outbiases.shape)
 
-      HidError = self.weightsHidToout.T @ outError[len(self.input) - 1]
+      hidError = self.weightshidToout.T @ outError[len(self.input) - 1]
 
       for i in reversed(range(len(self.input))):
-        HidGradient = np.multiply(tanh().backward(self.Hid[i + 1]), HidError)
-        outGradient = np.multiply(self.outactivation.backward(self.out[i]), outError[i])
+        hidGradient = self.hidderivative[i + 1] * hidError
+        outGradient = self.outderivative[i] * outError[i]
 
-        weightsinToHidΔ += np.outer(HidGradient, self.input[i].T)
-        weightsHidToHidΔ += np.outer(HidGradient, self.Hid[i].T)
-        HidbiasesΔ += HidGradient
+        weightsinTohidΔ += np.outer(hidGradient, self.input[i].T)
+        weightshidTohidΔ += np.outer(hidGradient, self.hid[i].T)
+        hidbiasesΔ += hidGradient
 
-        weightsHidTooutΔ += np.outer(outGradient, self.Hid[i].T)
+        weightshidTooutΔ += np.outer(outGradient, self.hid[i].T)
         outbiasesΔ += outGradient
 
-        HidError = self.weightsHidToHid.T @ HidGradient + self.weightsHidToout.T @ outError[i]
+        hidError = self.weightshidTohid.T @ hidGradient + self.weightshidToout.T @ outError[i]
 
-    self.weightsinToHid += self.learningrate * np.clip(weightsinToHidΔ, -1, 1)
-    self.weightsHidToHid += self.learningrate * np.clip(weightsHidToHidΔ, -1, 1)
-    self.Hidbiases += self.learningrate * np.clip(HidbiasesΔ, -1, 1)
+    self.weightsinTohid += self.learningrate * np.clip(weightsinTohidΔ, -1, 1)
+    self.weightshidTohid += self.learningrate * np.clip(weightshidTohidΔ, -1, 1)
+    self.hidbiases += self.learningrate * np.clip(hidbiasesΔ, -1, 1)
 
-    self.weightsHidToout += self.learningrate * np.clip(weightsHidTooutΔ, -1, 1)
+    self.weightshidToout += self.learningrate * np.clip(weightshidTooutΔ, -1, 1)
     self.outbiases += self.learningrate * np.clip(outbiasesΔ, -1, 1)

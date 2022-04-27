@@ -3,7 +3,7 @@ import sys, os, time, json, random, datetime
 import wandb
 
 class model:
-  def __init__(self, inshape, outshape, model, wandbproject=None):
+  def __init__(self, inshape, outshape, model, wandbproject=None, usecache=False, cacheexpire=10):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
     self.outshape = outshape if isinstance(outshape, tuple) else tuple([outshape])
     self.model = model
@@ -14,6 +14,16 @@ class model:
     
     if wandbproject is not None:
       wandb.init(project=wandbproject)
+
+    if usecache and os.path.isdir('aiinpy'):
+      pass # add code for retreiving cache
+      
+    runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
+    if not os.path.isdir('aiinpy'):
+      os.mkdir('aiinpy')
+    os.mkdir('aiinpy/' + runname)
+    printmodel = [p.__repr__() for p in self.model]
+    json.dump({'name' : runname, 'time' : str(datetime.datetime.now()), 'model' : printmodel}, open('aiinpy/' + runname + '/metadata.json', 'w'), indent=2)
 
   def forward(self, input):
     for i in range(len(self.model)):
@@ -122,17 +132,3 @@ class model:
         input = self.model[i].forward(input)
       outdata[gen] = input
     return outdata
-
-  def importcache():
-    return None
-
-  def exportcache(self, timetodeletecache=10):
-    runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
-
-
-
-    if not os.path.isdir('aiinpy'):
-      os.mkdir('aiinpy')
-    os.mkdir('aiinpy/' + runname)
-    json.dump({'name' : runname, 'time' : str(datetime.datetime.now()), 'model' : '', 'test accuracy' : str(self.testaccuracy)}, open('aiinpy/' + runname + '/metadata.json', 'w'), indent=2)
-    return None

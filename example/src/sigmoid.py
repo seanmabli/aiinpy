@@ -1,6 +1,9 @@
 import numpy as np
 
 class sigmoid:
+  def __repr__(self):
+    return 'sigmoid()'
+
   def forward(self, input):
     return 1 / (1 + np.exp(-input))
     

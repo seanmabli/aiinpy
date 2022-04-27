@@ -15,10 +15,10 @@ class neuroevolution:
   def forwardmulti(self, input):
     out = np.zeros((self.PopulationSize, self.outshape))
     for i in range(self.PopulationSize):
-      Hid = input
+      hid = input
       for j in range(self.model.shape[1]):
-        Hid = self.model[i, j].forward(Hid)
-      out[i] = Hid
+        hid = self.model[i, j].forward(hid)
+      out[i] = hid
     return out
 
   def forwardsingle(self, input, Player):

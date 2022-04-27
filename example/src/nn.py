@@ -26,6 +26,9 @@ class nn:
   def __copy__(self):
     return type(self)(self.outshape, self.activation, self.learningrate, self.weightsinit, self.biasesinit, self.inshape)
 
+  def __repr__(self):
+    return 'nn(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', activation=' + str(self.activation.__repr__()) + ', learningrate=' + str(self.learningrate) + ', weightsinit=' + str(self.weightsinit) + ', biasesinit=' + str(self.biasesinit) + ')'
+
   def modelinit(self, inshape):
     self.inshape = inshape
 
