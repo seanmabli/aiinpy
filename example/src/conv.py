@@ -35,6 +35,9 @@ class conv:
   def __copy__(self):
     return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
 
+  def __repr__(self):
+    return 'conv(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', activation=' + str(self.activation) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
+
   def modelinit(self, inshape):
     self.inshape = inshape
     if len(inshape) == 2:

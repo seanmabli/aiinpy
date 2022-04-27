@@ -1,6 +1,9 @@
 import numpy as np
 
 class selu:
+  def __repr__(self):
+    return 'selu()'
+
   def forward(self, input):
     equation = np.vectorize(self.equationforselu, otypes=[float])
     return 1.0507 * equation(input)

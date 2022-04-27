@@ -37,6 +37,9 @@ class gru:
   def __copy__(self):
     return type(self)(self.outshape, self.outactivation, self.hidshape, self.learningrate, self.inshape)
 
+  def __repr__(self):
+    return 'gru(inshape=' + str(self.inshape) + ', hidshape=' + str(self.hidshape) + ', outshape=' + str(self.outshape) + ', outactivation=' + str(self.outactivation) + ', learningrate=' + str(self.learningrate) + ')'
+
   def modelinit(self, inshape):
     self.inshape = inshape
     self.weightsinToResetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))

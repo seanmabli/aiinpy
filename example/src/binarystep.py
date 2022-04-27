@@ -1,6 +1,9 @@
 import numpy as np
 
 class binarystep:
+  def __repr__(self):
+    return 'binarystep()'
+
   def forward(self, input):
     equation = np.vectorize(self.equationForbinaryStep, otypes=[float])
     return equation(input)

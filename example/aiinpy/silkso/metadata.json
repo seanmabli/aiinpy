@@ -1,9 +1,0 @@
-{
-  "name": "silkso",
-  "time": "2022-04-26 21:37:09.222187",
-  "model": [
-    "nn(inshape=(2,), outshape=16, activation=sigmoid(), learningrate=0.01, weightsinit=(-1, 1), biasesinit=(0, 0))",
-    "nn(inshape=16, outshape=16, activation=sigmoid(), learningrate=0.01, weightsinit=(-1, 1), biasesinit=(0, 0))",
-    "nn(inshape=16, outshape=2, activation=sigmoid(), learningrate=0.01, weightsinit=(-1, 1), biasesinit=(0, 0))"
-  ]
-}

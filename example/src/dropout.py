@@ -7,6 +7,9 @@ class dropout:
   def __copy__(self):
     return type(self)(self.dropoutrate)
 
+  def __repr__(self):
+    return 'dropout(dropoutrate=' + str(self.dropoutrate) + ')'
+
   def modelinit(self, inshape):
     return inshape
 

@@ -30,6 +30,9 @@ class rnn:
   def __copy__(self):
     return type(self)(self.outshape, self.type, self.outactivation, self.hidshape, self.learningrate, self.inshape)
 
+  def __repr__(self):
+    return 'relu(inshape=' + str(self.inshape) + ', hidshape=' + str(self.hidshape) + ', outshape=' + str(self.outshape) + ', type=' + str(self.type) + ', outactivation=' + str(self.outactivation) + ', learningrate=' + str(self.learningrate) + ')'
+
   def modelinit(self, inshape):
     self.inshape = inshape
     self.weightsinTohid = np.random.uniform(-0.005, 0.005, (np.prod(self.hidshape), np.prod(inshape)))

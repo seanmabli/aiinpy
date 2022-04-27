@@ -6,6 +6,9 @@ class prelu:
     self.forwardequationvectorized = np.vectorize(self.forwardequation, otypes=[float])
     self.backwardequationvectorized = np.vectorize(self.backwardequation, otypes=[float])
 
+  def __repr__(self):
+    return 'prelu(' + str(self.alpha) + ')'
+
   def forward(self, input):
     return self.forwardequationvectorized(input)
 

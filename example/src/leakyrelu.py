@@ -4,6 +4,9 @@ class leakyrelu:
   def __init__(self, alpha=0.01):
     self.alpha = alpha
 
+  def __repr__(self):
+    return 'leakyrelu(' + str(self.alpha) + ')'
+
   def forward(self, input):
     return np.maximum(self.alpha * input, input)
 

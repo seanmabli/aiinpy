@@ -27,6 +27,9 @@ class convtranspose:
     self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
     self.bias = np.zeros(self.filtershape[0])
 
+  def __repr__(self):
+    return 'convtranspose(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', activation=' + str(self.activation) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
+
   def modelinit(self, inshape):
     return self.outshape
 

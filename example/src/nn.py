@@ -30,6 +30,8 @@ class nn:
     return 'nn(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', activation=' + str(self.activation.__repr__()) + ', learningrate=' + str(self.learningrate) + ', weightsinit=' + str(self.weightsinit) + ', biasesinit=' + str(self.biasesinit) + ')'
 
   def modelinit(self, inshape):
+    if type(inshape) == tuple and len(inshape) == 1:
+      inshape = inshape[0]
     self.inshape = inshape
 
     self.weights = np.random.uniform(self.weightsinit[0], self.weightsinit[1], (np.prod(inshape), np.prod(self.outshape)))

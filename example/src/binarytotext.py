@@ -1,4 +1,7 @@
 class binarytotext:
+  def __repr__(self):
+    return 'binarytotext()'
+
   def forward(input):
     out = ''
     for i in range(len(input)):

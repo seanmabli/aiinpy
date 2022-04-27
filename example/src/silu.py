@@ -1,6 +1,9 @@
 import numpy as np
 
 class silu:
+  def __repr__(self):
+    return 'silu()'
+
   def forward(self, input):
     return input / (1 + np.exp(-input))
     

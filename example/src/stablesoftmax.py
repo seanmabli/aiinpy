@@ -1,6 +1,9 @@
 import numpy as np
 
 class stablesoftmax:
+  def __repr__(self):
+    return 'stablesoftmax()'
+
   def forward(self, input):
     return np.exp(input - np.max(input)) / np.sum(np.exp(input - np.max(input)))
 

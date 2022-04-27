@@ -1,6 +1,9 @@
 import numpy as np
 
 class softmax:
+  def __repr__(self):
+    return 'softmax()'
+
   def forward(self, input):
     return (input - np.max(input)) / np.sum(input - np.max(input))
 

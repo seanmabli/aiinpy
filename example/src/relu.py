@@ -1,6 +1,9 @@
 import numpy as np
 
 class relu:
+  def __repr__(self):
+    return 'relu()'
+
   def forward(self, input):
     output = np.maximum(0, input)
     return output

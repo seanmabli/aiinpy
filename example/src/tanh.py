@@ -1,6 +1,9 @@
 import numpy as np
 
 class tanh:
+  def __repr__(self):
+    return 'tanh()'
+
   # def forwardone(self, input):
   #   return (np.exp(input) - np.exp(-input)) / (np.exp(input) + np.exp(-input))
 
