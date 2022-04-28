@@ -1,9 +1,0 @@
-{
-  "name": "yzjifs",
-  "time": "2022-04-26 22:26:54.429249",
-  "model": [
-    "conv(inshape=(28, 28), outshape=(4, 26, 26), filtershape=(4, 3, 3), learningrate=0.01, activation=relu(), padding=False, stride=(1, 1))",
-    "pool(inshape=(4, 26, 26), outshape=(4, 13, 13), stride=(2, 2), filtershape=(2, 2), opperation=Max)",
-    "nn(inshape=(4, 13, 13), outshape=10, activation=stablesoftmax(), learningrate=0.1, weightsinit=(0, 0), biasesinit=(0, 0))"
-  ]
-}
