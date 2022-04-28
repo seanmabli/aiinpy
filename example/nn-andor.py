@@ -12,7 +12,7 @@ model = ai.model(inshape=2, outshape=2, model=[
   ai.nn(outshape=16, activation=ai.sigmoid(), learningrate=0.01),
   ai.nn(outshape=16, activation=ai.sigmoid(), learningrate=0.01),
   ai.nn(outshape=2, activation=ai.sigmoid(), learningrate=0.01)
-], usecache=True)
+], usebestcache=True)
 
 model.train((inTrainData, outTrainData), 12000)
-# model.test((inTrainData, outTrainData))
+model.test((inTrainData, outTrainData))

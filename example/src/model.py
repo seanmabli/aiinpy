@@ -1,9 +1,10 @@
 import numpy as np
-import sys, os, time, json, random, datetime, pickle
+import sys, os, time, json, random, datetime
+import _pickle as pickle
 import wandb
 
 class model:
-  def __init__(self, inshape, outshape, model, wandbproject=None, usecache=False, cacheexpire=10):
+  def __init__(self, inshape, outshape, model, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
     self.outshape = outshape if isinstance(outshape, tuple) else tuple([outshape])
     self.model = model
@@ -18,7 +19,7 @@ class model:
     printmodel = [p.__repr__() for p in self.model]
 
     lowesterror = float('inf')
-    if usecache and os.path.isdir('aiinpy'):
+    if usebestcache and os.path.isdir('aiinpy'):
       for run in [x[0] + '/metadata.json' for x in os.walk('aiinpy')][1:]:
         info = json.load(open(run, 'r'))
         if printmodel == info['model'] and info['cacheexpire'] > 0:
@@ -30,11 +31,7 @@ class model:
             if info['trainerror'] < lowesterror:
               bestcache = info['file']
               lowesterror = info['trainerror']
-      while True:
-        try:
-          self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
-        except EOFError:
-          break
+      self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
       
     self.time = datetime.datetime.now()
     self.runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
@@ -107,8 +104,8 @@ class model:
     
     print('')
 
-    pickle.dump(self.model, open('aiinpy/' + self.longrunname + '/model.pickle', 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
-    pickle.dump(trainerror, open('aiinpy/' + self.longrunname + '/trainerror.pickle', 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+    pickle.dump(self.model, open('aiinpy/' + self.longrunname + '/model.pickle', 'wb'))
+    pickle.dump(trainerror, open('aiinpy/' + self.longrunname + '/trainerror.pickle', 'wb'))
 
     if numofgen * 0.01 > 5:
       simptrainerror = sum(trainerror[- int(numofgen * 0.01) :]) / int(numofgen * 0.01)
