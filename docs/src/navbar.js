@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { db } from "./firebase";
 import "./index.css";
@@ -6,7 +6,6 @@ import { collection, getDocs } from "firebase/firestore";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-
   const toggling = () => setIsOpen(!isOpen);
 
   const onOptionClicked = (value) => () => {
@@ -27,16 +26,31 @@ export default function Navbar() {
     (content) => content.version === window.currentversion
   );
 
+
+  const wrapperRef = useRef(null);
+  
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wrapperRef]);
+
   return (
     <div>
       <div className="box">
-        <Link to={"/"+window.currentversion} className="p notext-decoration">
+        <Link to={"/" + window.currentversion} className="p notext-decoration">
           aiinpy
         </Link>
         <br />
       </div>
 
-      <div className="dropdowncontainer" onClick={toggling}>
+      <div className="dropdowncontainer" onClick={toggling} ref={wrapperRef}>
         <div className="h1">version:&nbsp;{window.currentversion}</div>
         {isOpen && (
           <div className="dropdownlistcontainer">
