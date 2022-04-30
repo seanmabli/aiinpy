@@ -44,18 +44,20 @@ class convtranspose:
         self.out[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]] += self.input[:, i, j][:, np.newaxis, np.newaxis] * self.Filter
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
-    self.out = self.activation.forward(self.out)
 
     if self.padding:
       paddingdifference = tuple(map(lambda i, j: i - j, self.fakeoutshape, self.outshape))
       self.out = self.out[:, int(paddingdifference[1] / 2) : self.fakeoutshape[1] - int(paddingdifference[1] / 2), int(paddingdifference[2] / 2) : self.fakeoutshape[2] - int(paddingdifference[2] / 2)]
 
+    self.derivative = self.activation.backward(self.out)
+    self.out = self.activation.forward(self.out)
+    
     return self.out
 
   def backward(self, outError):
     FilterΔ = np.zeros(self.filtershape)
 
-    outGradient = self.activation.backward(self.out) * outError
+    outGradient = self.derivative * outError
     outGradient = np.pad(outGradient, 1, mode='constant')[1 : self.filtershape[0] + 1, :, :]
 
     for i in range(0, self.inshape[1]):

@@ -78,6 +78,7 @@
 .latex {
   color: #838383;
 }
+
 @media screen and (max-width: 600px) {
   .about {
     display: none;

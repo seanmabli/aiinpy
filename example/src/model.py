@@ -24,13 +24,16 @@ class model:
         info = json.load(open(run, 'r'))
         if printmodel == info['model'] and info['cacheexpire'] > 0:
           try:
-            if info['testerror'] < lowesterror:
-              bestcache = info['file']
-              lowesterror = info['testerror']
+            try:
+              if info['testerror'] < lowesterror:
+                bestcache = info['file']
+                lowesterror = info['testerror']
+            except:
+              if info['trainerror'] < lowesterror:
+                bestcache = info['file']
+                lowesterror = info['trainerror']
           except:
-            if info['trainerror'] < lowesterror:
-              bestcache = info['file']
-              lowesterror = info['trainerror']
+            pass
       self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
       
     self.time = datetime.datetime.now()

@@ -15,6 +15,7 @@ docs/.github
 docs/.firebase
 docs/build
 docs/admin/adminkey.json
+docs/admin/gptprams.py
 docs/logs
 docs/*.log
 docs/npm-debug.log*
