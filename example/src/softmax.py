@@ -5,7 +5,7 @@ class softmax:
     return 'softmax()'
 
   def forward(self, input):
-    return (input - np.max(input)) / np.sum(input - np.max(input))
+    return np.exp(input) / np.sum(np.exp(input))
 
   def backward(self, input):
     equation = np.vectorize(self.equationforderivative, otypes=[float])

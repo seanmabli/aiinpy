@@ -1,12 +1,12 @@
-import src as ai
+from rnntest import rnn
 import numpy as np
 from data.posnegcon.VictorZhou import TrainingData, TestData
 import sys, wandb
 
-wandb.init(project='rnn-posnegcon')
+wandb.init(project='rnn-posnegcon', config={'version' : 'newc'})
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
-model = ai.rnn(inshape=len(TrainingDataUniqueWords), outshape=2, type='ManyToOne', outactivation=ai.stablesoftmax(), learningrate=0.05)
+model = rnn(inshape=len(TrainingDataUniqueWords), outshape=2, type='ManyToOne', learningrate=0.05)
 
 NumOfTrainGen = 15000
 NumOfTestGen = len(list(TestData.items()))
