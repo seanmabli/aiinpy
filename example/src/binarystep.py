@@ -12,5 +12,5 @@ class binarystep:
     return 0 if (input < 0) else 1
     
   def backward(self, input):
-    return 1
-  # wikipedia says that if input == 0, then return undefined, but this is not the derivative ... the derivative is 0, check
+    return 0
+    # if input == 0 return undefined, this was removed because it would return an error 
