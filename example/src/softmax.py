@@ -8,7 +8,7 @@ class softmax:
     return np.exp(input) / np.sum(np.exp(input))
 
   def backward(self, input):
-    forward = np.exp(input - np.max(input)) / np.sum(np.exp(input - np.max(input)))
+    forward = np.exp(input) / np.sum(np.exp(input))
     out = np.zeros((len(input), len(input)))
     for i in range(len(input)):
       for j in range(len(input)):
