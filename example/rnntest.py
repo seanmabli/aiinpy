@@ -12,11 +12,11 @@ class stablesoftmax:
     return np.exp(input - np.max(input)) / np.sum(np.exp(input - np.max(input)))
 
   def backward(self, input):
-    equation = np.vectorize(self.equationforderivative, otypes=[float])
-    return equation(input, np.sum(np.exp(input)))
-    
-  def equationforderivative(self, input, SumExpOfinput):
-    return (np.exp(input) * (SumExpOfinput - np.exp(input))) / (SumExpOfinput) ** 2
+    out = np.zeros((len(input), len(input)))
+    for i in range(len(input)):
+      for j in range(len(input)):
+        out[i, j] = input[i] * (1 if i == j else 0 - input[j])
+    return out
 
 class rnn:
   def __init__(self, outshape, type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05, inshape=None):
@@ -65,8 +65,8 @@ class rnn:
     HidbiasesΔ = np.zeros(self.Hidbiases.shape)
 
     if self.type == 'ManyToOne':
-      outGradient = np.multiply(self.outactivation.backward(self.out), outError)
-
+      derivative = self.outactivation.backward(self.out)
+      outGradient = derivative * outError if np.ndim(derivative) == 1 else derivative @ outError
       weightsHidTooutΔ = np.outer(outGradient, self.Hid[len(self.input)].T)
       outbiasesΔ = outGradient
 

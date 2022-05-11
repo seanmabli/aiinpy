@@ -69,7 +69,7 @@ class rnn:
     hidbiasesΔ = np.zeros(self.hidbiases.shape)
 
     if self.type == 'ManyToOne':
-      outGradient = self.outderivative * outError
+      outGradient = self.outderivative * outError if np.ndim(self.outderivative) == 1 else self.outderivative @ outError
 
       weightshidTooutΔ = np.outer(outGradient, self.hid[len(self.input)].T)
       outbiasesΔ = outGradient

@@ -3,7 +3,7 @@ import numpy as np
 from data.posnegcon.VictorZhou import TrainingData, TestData
 import sys, wandb
 
-wandb.init(project='rnn-posnegcon', config={'version' : 'newc'})
+wandb.init(project='rnn-posnegcon', config={'version' : 'testb'})
 
 TrainingDataUniqueWords = list(set([w for Sentence in TrainingData.keys() for w in Sentence.split(' ')]))
 model = rnn(inshape=len(TrainingDataUniqueWords), outshape=2, type='ManyToOne', learningrate=0.05)
@@ -31,9 +31,9 @@ for gen in range(NumOfTrainGen):
   wandb.log({'train error' : np.sum(abs(outputError))})
   model.backward(outputError)
 
-  sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(NumOfTrainGen))
+  # sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(NumOfTrainGen))
 
-print('')
+# print('')
 
 NumberCorrect = 0
 for gen in range(NumOfTestGen):
@@ -47,7 +47,7 @@ for gen in range(NumOfTestGen):
   output = model.forward(input)
   NumberCorrect += int(np.argmax(output) == (1 if items[gen][1] == True else 0))
 
-  sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfTestGen))
+  # sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfTestGen))
 
 wandb.log({'test accuracy' : NumberCorrect / NumOfTestGen})
-print('\n' + str(NumberCorrect / NumOfTestGen))
+# print('\n' + str(NumberCorrect / NumOfTestGen))
