@@ -37,9 +37,6 @@ class gru:
   def __copy__(self):
     return type(self)(self.outshape, self.outactivation, self.hidshape, self.learningrate, self.inshape)
 
-  def __repr__(self):
-    return 'gru(inshape=' + str(self.inshape) + ', hidshape=' + str(self.hidshape) + ', outshape=' + str(self.outshape) + ', outactivation=' + str(self.outactivation) + ', learningrate=' + str(self.learningrate) + ')'
-
   def modelinit(self, inshape):
     self.inshape = inshape
     self.weightsinToResetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
@@ -53,29 +50,19 @@ class gru:
 
     self.hid = np.zeros((self.cellSize + 1, self.hidshape))
     self.out = np.zeros((self.cellSize, self.outshape))
-    self.outderivative = np.zeros((self.cellSize, self.outshape))
   
     self.ResetGate = np.zeros((self.cellSize, self.hidshape))
     self.UpdateGate = np.zeros((self.cellSize, self.hidshape))
     self.hidGate = np.zeros((self.cellSize, self.hidshape))
 
-    self.resetgatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.updategatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.hidgatederivative = np.zeros((self.cellSize, self.hidshape))
-
-
     for i in range(self.cellSize):
       self.ResetGate[i, :] = sigmoid().forward(self.weightsinToResetGate.T @ self.input[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
-      self.resetgatederivative[i, :] = sigmoid().backward(self.weightsinToResetGate.T @ self.input[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
       self.UpdateGate[i, :] = sigmoid().forward(self.weightsinToUpdateGate.T @ self.input[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
-      self.updategatederivative[i, :] = sigmoid().backward(self.weightsinToUpdateGate.T @ self.input[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
       self.hidGate[i, :] = tanh().forward(self.weightsinTohidGate.T @ self.input[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
-      self.hidgatederivative[i, :] = tanh().backward(self.weightsinTohidGate.T @ self.input[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
-
+  
       self.hid[i + 1, :] = (1 - self.UpdateGate[i, :]) * self.hid[i, :] + self.UpdateGate[i, :] * self.hidGate[i, :]
       self.out[i, :] = self.outactivation.forward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
-      self.outderivative[i, :] = self.outactivation.backward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
-    
+
     return self.out
 
   def backward(self, outError):
@@ -98,7 +85,7 @@ class gru:
     outbiasΔ = np.zeros(self.outbias.shape)
 
     for i in reversed(range(self.cellSize)):
-      outGradient = self.outderivative[i, :] * outError[i, :]
+      outGradient = self.outactivation.backward(self.out[i, :]) * outError[i, :]
 
       hidError += self.weightshidToout @ outError[i, :]
 
@@ -109,9 +96,9 @@ class gru:
       hidError += (self.weightshidTohidGate.T @ hidGateError) * self.ResetGate[i, :] + self.weightshidToResetGate.T @ ResetGateError + self.weightshidToUpdateGate.T @ UpdateGateError
       inError[i, :] = self.weightsinToResetGate @ ResetGateError + self.weightsinToUpdateGate @ UpdateGateError + self.weightsinTohidGate @ hidGateError
 
-      ResetGateGradient = self.resetgatederivative[i, :] * ResetGateError
-      UpdateGateGradient = self.updategatederivative[i, :] * UpdateGateError
-      hidGateGradient = self.hidgatederivative[i, :] * hidGateError
+      ResetGateGradient = sigmoid().backward(self.ResetGate[i, :]) * ResetGateError
+      UpdateGateGradient = sigmoid().backward(self.UpdateGate[i, :]) * UpdateGateError
+      hidGateGradient = tanh().backward(self.hidGate[i, :]) * hidGateError
 
       weightsinToResetGateΔ += np.outer(self.input[i, :].T, ResetGateGradient)
       weightsinToUpdateGateΔ += np.outer(self.input[i, :].T, UpdateGateGradient)

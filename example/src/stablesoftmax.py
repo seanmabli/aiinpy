@@ -30,5 +30,5 @@ class stablesoftmax:
   def oldbackward(self, input):
     return (np.exp(input) * (np.sum(np.exp(input)) - np.exp(input))) / np.sum(np.exp(input)) ** 2
 
-x = np.random.rand(10, 10)
-print(stablesoftmax().newbackwardtwo(x))
+# x = np.random.rand(10, 10)
+# print(stablesoftmax().newbackwardtwo(x))
