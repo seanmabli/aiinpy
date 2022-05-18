@@ -2,5 +2,5 @@ For 0.0.19 (4/30/2022):
   - Add GAN Functionality
   - Convert to C++
   - Fix activation derivative problem, check if the nn.py fix worked by reaseach, if so update the other backprop functions
-    - To update: convmatrix, convtranspose, lstm
+    - To update: convmatrix, convtranspose
   - Activation layers
