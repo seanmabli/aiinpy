@@ -2,7 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .site {
@@ -61,31 +61,22 @@
   text-decoration: none;
 }
 
-.version {
-  border-width: 0;
-  outline: none !important;
-}
-
-.socialicon {
-  width: 10px;
-  height: 10px;
-  object-fit: cover;
-}
-.inlinebox {
-  display: flex;
-  justify-content: space-between;
-}
-
 .equation {
   float: left;
   width: 50%;
 }
+
 .graph {
   float: right;
   width: 50%;
 }
+
 .center {
   float: center;
+}
+
+.latex {
+  color: #838383;
 }
 
 @media screen and (max-width: 600px) {
@@ -96,4 +87,41 @@
   .function {
     width: 100%;
   }
+
+  .equation {
+    width: 100%;
+  }
+
+  .graph {
+    width: 100%;
+  }
+}
+
+.dropdowncontainer {
+  margin: 0 auto;
+}
+
+.dropdownlistcontainer {
+  position: absolute;
+  z-index: 100;
+  padding-left: 57.61px;
+}
+
+.dropdownlist {
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown {
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  background-color: white;
+  font-size: 16px;
+  color: #838383;
+  list-style-type: none;
+}
+
+.dropdown:hover {
+  background-color: rgb(228, 228, 228);
 }

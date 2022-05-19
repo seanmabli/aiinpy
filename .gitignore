@@ -15,6 +15,7 @@ docs/.github
 docs/.firebase
 docs/build
 docs/admin/adminkey.json
+docs/admin/gptprams.py
 docs/logs
 docs/*.log
 docs/npm-debug.log*
@@ -41,3 +42,7 @@ docs/.node_repl_history
 docs/*.tgz
 docs/.yarn-integrity
 docs/.env
+aiinpy.egg-info
+build
+.gitpod.yml
+example/aiinpy

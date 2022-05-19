@@ -1,10 +1,12 @@
-import aiinpy as ai
-from alive_progress import alive_bar
+import src as ai
 import numpy as np
+import wandb
+
+wandb.init(project='rnn-timeseries', config={'version' : 'new-a'})
 
 model = ai.rnn(inshape=1, outshape=1, type='ManyToMany', outactivation=ai.identity(), learningrate=0.01)
 
-Data = np.genfromtxt(r'data\timeseries\airpassenger.csv', dtype=int)
+Data = np.genfromtxt(r"data/timeseries/airpassenger.csv", dtype=int)
 Data = (Data - min(Data)) / (max(Data) - min(Data)).astype(float)
 
 TrainingData = Data[0 : 100, np.newaxis]
@@ -13,27 +15,23 @@ TestData = Data[100 :, np.newaxis]
 NumOfTrainGen = 15000
 NumOfTestGen = len(TestData) - 5
 
-with alive_bar(NumOfTrainGen + NumOfTestGen) as bar:
-  for Generation in range(NumOfTrainGen):
-    Random = np.random.randint(0, len(TrainingData) - 5)
+for Generation in range(NumOfTrainGen):
+  Random = np.random.randint(0, len(TrainingData) - 5)
 
-    input = TrainingData[Random : Random + 5]
-    Out = model.forward(input)
+  input = TrainingData[Random : Random + 5]
+  Out = model.forward(input)
 
-    OutError = TrainingData[Random + 1 : Random + 6] - Out
-    inError = model.backward(OutError)
+  OutError = TrainingData[Random + 1 : Random + 6] - Out
+  inError = model.backward(OutError)
 
-    bar()
+error = 0
+for Generation in range(NumOfTestGen):
+  input = TestData[Generation : Generation + 5]
+  Out = model.forward(input)
 
-  error = 0
-  for Generation in range(NumOfTestGen):
-    input = TestData[Generation : Generation + 5]
-    Out = model.forward(input)
+  OutError = TestData[Generation + 1 : Generation + 6] - Out
+  error += np.sum(OutError)
+  inError = model.backward(OutError)
 
-    OutError = TestData[Generation + 1 : Generation + 6] - Out
-    error += np.sum(OutError)
-    inError = model.backward(OutError)
-
-    bar()
-
-  print(error / NumOfTestGen)
+print(error / NumOfTestGen)
+wandb.log({"test accuracy" : error / NumOfTestGen})
