@@ -34,7 +34,10 @@ class model:
                 lowesterror = info['trainerror']
           except:
             pass
-      self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
+      try:
+        self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
+      except Exception:
+        print('no cache available')
       
     self.time = datetime.datetime.now()
     self.runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))

@@ -2,5 +2,7 @@ For 0.0.19 (4/30/2022):
   - Add GAN Functionality
   - Convert to C++
   - Fix activation derivative problem, check if the nn.py fix worked by reaseach, if so update the other backprop functions
-    - To update: convmatrix, convtranspose
+    - To update: convmatrix
   - Activation layers
+  - Detect error and send to database
+  - convtranspose error where it doesn't apply padding if odd numpy (try running gan-mnist.py and conv-transpose-test.py for examples of this problem)

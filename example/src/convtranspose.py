@@ -15,9 +15,10 @@ from .tanh import tanh
 
 class convtranspose:
   def __init__(self, inshape, filtershape, learningrate, activation, padding=False, stride=(1, 1)):
+    filtershape = tuple([1]) + filtershape if len(filtershape) == 2 else filtershape
     self.inshape, self.filtershape, self.learningrate, self.activation, self.padding, self.stride = inshape, filtershape, learningrate, activation, padding, stride
     if len(inshape) == 2:
-      inshape = tuple([self.filtershape[0]]) + inshape
+      self.inshape = inshape = tuple([self.filtershape[0]]) + inshape
     fakepadding = (0 if stride[0] > filtershape[1] else filtershape[1] - stride[0], 0 if stride[1] > filtershape[2] else filtershape[2] - stride[1])
     padding = (0 if padding == True or stride[0] > filtershape[1] else filtershape[1] - stride[0], 0 if padding == True or stride[1] > filtershape[2] else filtershape[2] - stride[1])
 
@@ -45,9 +46,12 @@ class convtranspose:
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
 
+    print(self.out.shape)
     if self.padding:
       paddingdifference = tuple(map(lambda i, j: i - j, self.fakeoutshape, self.outshape))
+      print(paddingdifference)
       self.out = self.out[:, int(paddingdifference[1] / 2) : self.fakeoutshape[1] - int(paddingdifference[1] / 2), int(paddingdifference[2] / 2) : self.fakeoutshape[2] - int(paddingdifference[2] / 2)]
+    print(self.out.shape)
 
     self.derivative = self.activation.backward(self.out)
     self.out = self.activation.forward(self.out)
