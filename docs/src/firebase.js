@@ -5,6 +5,7 @@ import { getFirestore } from "@firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyAeVOKLeGPek386fDsyZ7lC9zQ_9JlnaIc",
   authDomain: "aiinpy.firebaseapp.com",
+  databaseURL: "https://aiinpy-default-rtdb.firebaseio.com",
   projectId: "aiinpy",
   storageBucket: "aiinpy.appspot.com",
   messagingSenderId: "612510022256",
