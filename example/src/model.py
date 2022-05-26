@@ -2,6 +2,7 @@ import numpy as np
 import sys, os, time, json, random, datetime
 import _pickle as pickle
 import wandb
+'''
 import pyrebase
 
 firebase = pyrebase.initialize_app({
@@ -18,10 +19,11 @@ def error(func):
         func(*args, **kwargs)
       except Exception as e:
         metadata = open([x[0] + '/metadata.json' for x in os.walk('aiinpy')][1], 'r').read()
-        db.child("errors").push({"error" : str(e), 'metadata' : metadata})
+        # db.child("errors").push({"error" : str(e), 'metadata' : metadata})
     return inner
 
 @error
+'''
 class model:
   def __init__(self, inshape, outshape, model, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])

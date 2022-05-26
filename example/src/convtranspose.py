@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from .binarystep import binarystep
 from .gaussian import gaussian
 from .identity import identity
@@ -46,12 +47,9 @@ class convtranspose:
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
 
-    print(self.out.shape)
     if self.padding:
       paddingdifference = tuple(map(lambda i, j: i - j, self.fakeoutshape, self.outshape))
-      print(paddingdifference)
-      self.out = self.out[:, int(paddingdifference[1] / 2) : self.fakeoutshape[1] - int(paddingdifference[1] / 2), int(paddingdifference[2] / 2) : self.fakeoutshape[2] - int(paddingdifference[2] / 2)]
-    print(self.out.shape)
+      self.out = self.out[:, math.floor(paddingdifference[1] / 2) : self.fakeoutshape[1] - math.ceil(paddingdifference[1] / 2), math.floor(paddingdifference[2] / 2) : self.fakeoutshape[2] - math.ceil(paddingdifference[2] / 2)]
 
     self.derivative = self.activation.backward(self.out)
     self.out = self.activation.forward(self.out)

@@ -32,9 +32,9 @@ disfaketrain, disfaketest = np.random.uniform(-0.5, 0.5, disrealtrain.shape), np
 disintrain, disouttrain = np.vstack((disrealtrain, disrealtrain)), np.hstack((np.ones(len(disrealtrain)), np.zeros(len(disrealtrain))))
 disintest, disouttest = np.vstack((disrealtest, disfaketest)), np.hstack((np.ones(len(disrealtest)), np.zeros(len(disfaketest))))
 
-# print('train discrimanator')
+print('train discrimanator')
 # dismodel.train(data=(disintrain, disouttrain), numofgen=2000)
-# print(dismodel.test(data=(disintest, disouttest)))
+print(dismodel.test(data=(disintest, disouttest)))
 # wandb.log({"discriminator accuracy": dismodel.test(data=(disintest, disouttest))})
 
 # Train Generator
