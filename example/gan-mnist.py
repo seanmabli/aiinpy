@@ -1,10 +1,10 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import src as ai
-import wandb
+# import wandb
 import sys
 
-wandb.init(project="gan-mnist")
+# wandb.init(project="gan-mnist")
 
 # gen -> generator
 genmodel = ai.model(inshape=100, outshape=(28, 28), model=[
@@ -52,5 +52,5 @@ for gen in range(numofgen):
   genmodelerror = np.array([genmodelerror] * 128)
   genmodel.backward(genmodelerror)
 
-  wandb.log({"Generator Error": 1 - out})
+  # wandb.log({"Generator Error": 1 - out})
   sys.stdout.write('\r' + 'generation: ' + str(gen + 1) + '/' + str(numofgen))

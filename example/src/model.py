@@ -2,7 +2,26 @@ import numpy as np
 import sys, os, time, json, random, datetime
 import _pickle as pickle
 import wandb
+import pyrebase
 
+firebase = pyrebase.initialize_app({
+  "apiKey" : "AIzaSyAeVOKLeGPek386fDsyZ7lC9zQ_9JlnaIc",
+  "authDomain" : "aiinpy.firebaseapp.com",
+  "databaseURL": "https://aiinpy-default-rtdb.firebaseio.com/",
+  "storageBucket" : "aiinpy.appspot.com"
+})
+db = firebase.database()
+
+def error(func):
+    def inner(*args, **kwargs):
+      try:
+        func(*args, **kwargs)
+      except Exception as e:
+        metadata = open([x[0] + '/metadata.json' for x in os.walk('aiinpy')][1], 'r').read()
+        db.child("errors").push({"error" : str(e), 'metadata' : metadata})
+    return inner
+
+@error
 class model:
   def __init__(self, inshape, outshape, model, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
@@ -34,11 +53,12 @@ class model:
                 lowesterror = info['trainerror']
           except:
             pass
-      try:
-        self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
-      except Exception:
-        print('no cache available')
-      
+
+      # try:
+      self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
+      # except:
+      #   print('no cache available')
+
     self.time = datetime.datetime.now()
     self.runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
     self.longrunname = self.time.strftime('%m%d%Y%H%M%S') + '-' + self.runname
