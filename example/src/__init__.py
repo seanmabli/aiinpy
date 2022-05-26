@@ -1,3 +1,4 @@
+from .average import average
 from .binarystep import binarystep
 from .binarytotext import binarytotext
 from .conv import conv

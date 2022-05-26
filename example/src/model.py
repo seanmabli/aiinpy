@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 import sys, os, time, json, random, datetime
 import _pickle as pickle
@@ -25,25 +26,36 @@ def error(func):
 @error
 '''
 class model:
-  def __init__(self, inshape, outshape, model, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
+  def __init__(self, inshape, outshape, _model, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
     self.outshape = outshape if isinstance(outshape, tuple) else tuple([outshape])
-    self.model = model
+    self._model = _model
     self.wandbproject = wandbproject
 
-    for i in self.model:
-      inshape = i.modelinit(inshape)
+    i = 0
+    while i < len(self._model):
+      if isinstance(self._model[i], model):
+        c = self._model[i]
+        for j, newlayer in enumerate(self._model[i]._model):
+          self._model.insert(i + j, newlayer)
+        self._model.remove(c)
+        i = -1
+      i += 1
+
+    for layer in self._model:
+      inshape = layer.modelinit(inshape)
+      print(inshape)
     
     if wandbproject is not None:
       wandb.init(project=wandbproject)
 
-    printmodel = [p.__repr__() for p in self.model]
+    print_model = [p.__repr__() for p in self._model]
 
     lowesterror = float('inf')
     if usebestcache and os.path.isdir('aiinpy'):
       for run in [x[0] + '/metadata.json' for x in os.walk('aiinpy')][1:]:
         info = json.load(open(run, 'r'))
-        if printmodel == info['model'] and info['cacheexpire'] > 0:
+        if print_model == info['_model'] and info['cacheexpire'] > 0:
           try:
             try:
               if info['testerror'] < lowesterror:
@@ -57,7 +69,7 @@ class model:
             pass
 
       # try:
-      self.model = pickle.load(open('aiinpy/' + bestcache + '/model.pickle', 'rb'))
+      self._model = pickle.load(open('aiinpy/' + bestcache + '/_model.pickle', 'rb'))
       # except:
       #   print('no cache available')
 
@@ -72,16 +84,16 @@ class model:
         info['cacheexpire'] -= 1 if info['cacheexpire'] > 0 else 0
         json.dump(info, open(run, 'w'), indent=2)
     os.mkdir('aiinpy/' + self.longrunname)
-    json.dump({'name' : self.runname, 'file' : self.longrunname, 'time' : str(self.time), 'model' : printmodel, 'cacheexpire' : cacheexpire}, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
+    json.dump({'name' : self.runname, 'file' : self.longrunname, 'time' : str(self.time), '_model' : print_model, 'cacheexpire' : cacheexpire}, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
 
   def forward(self, input):
-    for i in range(len(self.model)):
-      input = self.model[i].forward(input)
+    for i in range(len(self._model)):
+      input = self._model[i].forward(input)
     return input
 
   def backward(self, outError):
-    for i in reversed(range(len(self.model))):
-      outError = self.model[i].backward(outError)
+    for i in reversed(range(len(self._model))):
+      outError = self._model[i].backward(outError)
     return outError
 
   def train(self, data, numofgen):
@@ -107,32 +119,32 @@ class model:
       for gen in range(numofgen):
         random = np.random.randint(0, NumOfData)
         input = data[0][random]
-        for i in range(len(self.model)):
-          input = self.model[i].forward(input)
+        for i in range(len(self._model)):
+          input = self._model[i].forward(input)
 
         outerror = data[1][random] - input
         wandb.log({'train error': np.sum(abs(outerror))})
         trainerror.append(np.sum(abs(outerror)))
-        for i in reversed(range(len(self.model))):
-          outerror = self.model[i].backward(outerror)
+        for i in reversed(range(len(self._model))):
+          outerror = self._model[i].backward(outerror)
         sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
     else:
       # Training, without wandb
       for gen in range(numofgen):
         random = np.random.randint(0, NumOfData)
         input = data[0][random]
-        for i in range(len(self.model)):
-          input = self.model[i].forward(input)
+        for i in range(len(self._model)):
+          input = self._model[i].forward(input)
 
         outerror = data[1][random] - input
         trainerror.append(np.sum(abs(outerror)))
-        for i in reversed(range(len(self.model))):
-          outerror = self.model[i].backward(outerror)
+        for i in reversed(range(len(self._model))):
+          outerror = self._model[i].backward(outerror)
         sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
     
     print('')
 
-    pickle.dump(self.model, open('aiinpy/' + self.longrunname + '/model.pickle', 'wb'))
+    pickle.dump(self._model, open('aiinpy/' + self.longrunname + '/_model.pickle', 'wb'))
     pickle.dump(trainerror, open('aiinpy/' + self.longrunname + '/trainerror.pickle', 'wb'))
 
     if numofgen * 0.01 > 5:
@@ -168,8 +180,8 @@ class model:
     testcorrect = 0
     for gen in range(NumOfData):
       input = data[0][gen]
-      for i in range(len(self.model)):
-        input = self.model[i].forward(input)
+      for i in range(len(self._model)):
+        input = self._model[i].forward(input)
 
       testerror.append(np.sum(abs(data[1][gen] - input)))
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
@@ -199,7 +211,7 @@ class model:
     outdata = np.zeros(indata.shape)
     for gen in range (NumOfData):
       input = indata[gen]
-      for i in range(len(self.model)):
-        input = self.model[i].forward(input)
+      for i in range(len(self._model)):
+        input = self._model[i].forward(input)
       outdata[gen] = input
     return outdata

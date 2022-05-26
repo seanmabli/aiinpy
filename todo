@@ -3,3 +3,4 @@ For 0.0.19 (4/30/2022):
   - Convert to C++
   - Activation layers
   - Detect error and send to database
+  - Combine two models into one (e.g. gan-mnist)
