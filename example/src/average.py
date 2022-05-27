@@ -7,12 +7,12 @@ class average:
   def __repr__(self):
     return 'average()'
 
-  def modelinit(inshape):
+  def modelinit(self, inshape):
     self.inshape = inshape
-    print(inshape, inshape[:axis] + inshape[axis:])
-
+    return inshape[:self.axis] + inshape[self.axis + 1:]
+    
   def forward(self, input):
     return np.average(input, axis=self.axis)
 
   def backward(self, input):
-    return np.array([input] * inshape[self.axis])
+    return np.array([input] * self.inshape[self.axis])
