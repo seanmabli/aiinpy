@@ -113,6 +113,7 @@ class model:
 
     trainerror = []
     avgtime = []
+    trainstarttime = time.time()
 
     # Training, with wandb
     if self.wandbproject is not None:
@@ -129,9 +130,8 @@ class model:
         for i in reversed(range(len(self.layers))):
           outerror = self.layers[i].backward(outerror)
         avgtime.append(time.time() - starttime)
-        if len(avgtime) > 100:
-          avgtime.remove(avgtime[0])
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min')
+        speed = round(6000 / sum(avgtime[-100:]))
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
     else:
       # Training, without wandb
       for gen in range(numofgen):
@@ -146,10 +146,10 @@ class model:
         for i in reversed(range(len(self.layers))):
           outerror = self.layers[i].backward(outerror)
         avgtime.append(time.time() - starttime)
-        if len(avgtime) > 100:
-          avgtime.remove(avgtime[0])
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min')
-    
+        speed = round(6000 / sum(avgtime[-100:]))
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
+
+    sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed' + str(' ' * 50))
     print('')
 
     pickle.dump(self.layers, open('aiinpy/' + self.longrunname + '/layers.pickle', 'wb'))
@@ -183,18 +183,26 @@ class model:
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     testerror = []
+    avgtime = []
+    trainstarttime = time.time()
 
     # Testing
     testcorrect = 0
     for gen in range(NumOfData):
+      starttime = time.time()
+
       input = data[0][gen]
       for i in range(len(self.layers)):
         input = self.layers[i].forward(input)
 
       testerror.append(np.sum(abs(data[1][gen] - input)))
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
-      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData))
 
+      avgtime.append(time.time() - starttime)
+      speed = round(6000 / sum(avgtime[-100:]))
+      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (NumOfData - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
+
+    sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed' + str(' ' * 50))
     print('')
     
     testaccuracy = testcorrect / NumOfData

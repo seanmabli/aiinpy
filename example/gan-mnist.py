@@ -1,11 +1,11 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import src as ai
-import wandb
+# import wandb
 import sys
 from matplotlib import pyplot as plt
 
-wandb.init(project="gan-mnist")
+# wandb.init(project="gan-mnist")
 
 # gen -> generator
 genmodel = ai.model(inshape=100, outshape=(28, 28), layers=[
@@ -47,7 +47,7 @@ print('train discrimanator')
 for layer in dismodel.layers:
   layer.learningrate = 0
 
-numofgen = 2500
+numofgen = 100000
 for gen in range(numofgen):
   input = np.random.uniform(-0.5, 0.5, 100)
   out = genmodel.forward(input)
@@ -55,5 +55,5 @@ for gen in range(numofgen):
   error = dismodel.backward(1 - out)
   genmodel.backward(error)
 
-  wandb.log({"gen error": 1 - out})
+  # wandb.log({"gen error": 1 - out})
   sys.stdout.write('\r' + 'generation: ' + str(gen + 1) + '/' + str(numofgen))

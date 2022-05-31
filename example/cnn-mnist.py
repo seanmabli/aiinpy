@@ -21,5 +21,5 @@ model = ai.model((28, 28), 10, [
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
 ])
 
-model.train((inTrainData, outTrainDataReal), 5000)
+model.train((inTrainData, outTrainDataReal), 500)
 model.test((inTestData, outTestDataReal))
