@@ -112,10 +112,12 @@ class model:
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     trainerror = []
+    avgtime = []
 
     # Training, with wandb
     if self.wandbproject is not None:
       for gen in range(numofgen):
+        starttime = time.time()
         random = np.random.randint(0, NumOfData)
         input = data[0][random]
         for i in range(len(self.layers)):
@@ -126,10 +128,14 @@ class model:
         trainerror.append(np.sum(abs(outerror)))
         for i in reversed(range(len(self.layers))):
           outerror = self.layers[i].backward(outerror)
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
+        avgtime.append(time.time() - starttime)
+        if len(avgtime) > 100:
+          avgtime.remove(avgtime[0])
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min')
     else:
       # Training, without wandb
       for gen in range(numofgen):
+        starttime = time.time()
         random = np.random.randint(0, NumOfData)
         input = data[0][random]
         for i in range(len(self.layers)):
@@ -139,7 +145,10 @@ class model:
         trainerror.append(np.sum(abs(outerror)))
         for i in reversed(range(len(self.layers))):
           outerror = self.layers[i].backward(outerror)
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
+        avgtime.append(time.time() - starttime)
+        if len(avgtime) > 100:
+          avgtime.remove(avgtime[0])
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min')
     
     print('')
 
