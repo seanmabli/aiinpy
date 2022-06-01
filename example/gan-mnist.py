@@ -1,11 +1,11 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import src as ai
-# import wandb
-import sys
+import wandb
+import sys, time
 from matplotlib import pyplot as plt
 
-# wandb.init(project="gan-mnist")
+wandb.init(project="gan-mnist")
 
 # gen -> generator
 genmodel = ai.model(inshape=100, outshape=(28, 28), layers=[
@@ -23,7 +23,7 @@ dismodel = ai.model(inshape=(28, 28), outshape=1, layers=[
   ai.conv(filtershape=(64, 3, 3), learningrate=0.0002, activation=ai.leakyrelu(0.2), padding=True, stride=(2, 2)),
   ai.dropout(0.4),
   ai.nn(outshape=1, activation=ai.sigmoid(), learningrate=0.0002)
-], usebestcache=True)
+], usebestcache=False)
 
 # combomodel = ai.model(inshape=100, outshape=1, layers=[
 #   genmodel,
@@ -40,20 +40,32 @@ disintrain, disouttrain = np.vstack((disrealtrain, disrealtrain)), np.hstack((np
 disintest, disouttest = np.vstack((disrealtest, disfaketest)), np.hstack((np.ones(len(disrealtest)), np.zeros(len(disfaketest))))
 
 print('train discrimanator')
-# dismodel.train(data=(disintrain, disouttrain), numofgen=2000)
-# print('discrimanator accuracy:', dismodel.test(data=(disintest, disouttest)))
-# wandb.log({"discriminator accuracy": dismodel.test(data=(disintest, disouttest))})
+dismodel.train(data=(disintrain, disouttrain), numofgen=2000)
+print('discrimanator accuracy:', dismodel.test(data=(disintest, disouttest)))
+wandb.log({"discriminator accuracy": dismodel.test(data=(disintest, disouttest))})
 
 for layer in dismodel.layers:
   layer.learningrate = 0
 
 numofgen = 100000
+avgtime = []
+trainstarttime = time.time()
+
 for gen in range(numofgen):
+  starttime = time.time()
   input = np.random.uniform(-0.5, 0.5, 100)
   out = genmodel.forward(input)
   out = dismodel.forward(out)
   error = dismodel.backward(1 - out)
   genmodel.backward(error)
 
-  # wandb.log({"gen error": 1 - out})
-  sys.stdout.write('\r' + 'generation: ' + str(gen + 1) + '/' + str(numofgen))
+  wandb.log({"gen error": 1 - out})
+  avgtime.append(time.time() - starttime)
+  speed = round(6000 / sum(avgtime[-100:]))
+  sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
+
+  if gen % 1000 == 0:
+    for _ in range(3):
+      input = np.random.uniform(-0.5, 0.5, 100)
+      out = genmodel.forward(input)
+      wandb.log({"outimage": wandb.Image(out)})
