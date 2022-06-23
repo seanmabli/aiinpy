@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 
 double *sigmoid(double *x)
@@ -11,13 +9,11 @@ double *sigmoid(double *x)
   return x;
 }
 
-int main()
+double *sigmoidderivative(double *x)
 {
-  double input[4] = {1, 2, 3, 4};
-  double *output = sigmoid(input);
-
   for (int i = 0; i < 4; i++)
   {
-    printf("%f\n", output[i]);
+    x[i] = exp(-x[i]) / pow(1 + exp(-x[i]), 2);
   }
+  return x;
 }
