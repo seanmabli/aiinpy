@@ -8,7 +8,7 @@ class stablesoftmax:
     a = np.exp(input - np.max(input))
     return a / np.sum(a)
 
-  def backward(self, input):
+  def newbackward(self, input): # use this
     forward = np.exp(input - np.max(input)) / np.sum(np.exp(input - np.max(input)))
     out = np.zeros((len(input), len(input)))
     for i in range(len(input)):
@@ -27,7 +27,7 @@ class stablesoftmax:
     temp2 = np.einsum('ij,ik->ijk',s,s)
     return temp1-temp2
 
-  def oldbackward(self, input):
+  def backward(self, input):
     return (np.exp(input) * (np.sum(np.exp(input)) - np.exp(input))) / np.sum(np.exp(input)) ** 2
 
 # x = np.random.rand(10, 10)

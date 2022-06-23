@@ -19,6 +19,7 @@ for Generation in range(NumOfTrainGen):
   Random = np.random.randint(0, len(TrainingData) - 5)
 
   input = TrainingData[Random : Random + 5]
+  print(input.shape)
   Out = model.forward(input)
 
   OutError = TrainingData[Random + 1 : Random + 6] - Out

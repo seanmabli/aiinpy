@@ -1,21 +1,21 @@
-#import <math.h>
+#include <math.h>
 
-double *tanh(double *x)
+double *tanh(double *x, int n)
 {
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < n; i++)
   {
     x[i] = tanh(x[i]);
   }
   return x;
 }
 
-double *tanhderivative(double *x)
+double *tanhderivative(double *x, int n)
 {
   int a;
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < n; i++)
   {
-    a = np.exp(2 * x[i]);
-    x[i] = (4 * x[i]) / np.square(x[i] + 1);
+    a = exp(2 * x[i]);
+    x[i] = (4 * x[i]) / pow(x[i] + 1, 2);
   }
   return x;
 }
