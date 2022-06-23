@@ -1,4 +1,10 @@
 {
   "C_Cpp.dimInactiveRegions": false,
-  "C_Cpp.errorSquiggles": "Disabled"
+  "C_Cpp.errorSquiggles": "Disabled",
+  "files.associations": {
+    "random": "c",
+    "stdlib.h": "c",
+    "time.h": "c",
+    "cmath": "c"
+  }
 }
