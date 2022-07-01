@@ -46,3 +46,4 @@ aiinpy.egg-info
 build
 .gitpod.yml
 example/aiinpy
+*.exe

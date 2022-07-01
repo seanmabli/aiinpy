@@ -5,6 +5,7 @@
     "random": "c",
     "stdlib.h": "c",
     "time.h": "c",
-    "cmath": "c"
+    "cmath": "c",
+    "stdio.h": "c"
   }
 }
