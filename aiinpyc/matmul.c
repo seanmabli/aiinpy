@@ -54,23 +54,37 @@ int main()
       copy[j]++;
     }
   }
-
+  int similar;
   for (int k = 0; k < uniquesize; k++)
   {
     if (copy[k] > 2)
     {
       copy[k] -= 2;
+      similar = unique[k];
     }
   }
 
-  int c[unique[0], unique[1]];
+  double c[unique[0]][unique[1]];
 
   for (int i = 0; i < unique[0]; i++)
   {
     for (int j = 0; j < unique[1]; j++)
     {
-      c[i, j] = a[i, j] + b[i, j];
+      c[i][j] = 0;
+      for (int k = 0; k < similar; k++)
+      {
+        c[i][j] += a.data[i * similar + k] * b.data[k * unique[1] + j];
+      }
     }
+  }
+
+  for (int i = 0; i < unique[0]; i++)
+  {
+    for (int j = 0; j < unique[1]; j++)
+    {
+      printf("%f ", c[i][j]);
+    }
+    printf("\n");
   }
 
   free(concatshape);
