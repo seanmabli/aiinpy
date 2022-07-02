@@ -6,6 +6,12 @@
     "stdlib.h": "c",
     "time.h": "c",
     "cmath": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "xstring": "c",
+    "xutility": "c",
+    "array": "c",
+    "initializer_list": "c",
+    "type_traits": "c",
+    "vector": "c"
   }
 }
