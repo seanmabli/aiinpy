@@ -12,6 +12,11 @@
     "array": "c",
     "initializer_list": "c",
     "type_traits": "c",
-    "vector": "c"
+    "vector": "c",
+    "algorithm": "c",
+    "memory": "c",
+    "xiosbase": "c",
+    "xlocale": "c",
+    "stdbool.h": "c"
   }
 }
