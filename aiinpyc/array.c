@@ -4,10 +4,19 @@ typedef struct
   double *data;
 } array;
 
+array arrayrandom(array *a)
+{
+  srand(time(NULL));
+  
+  for (int i = 0; i < a->shape[0] * a->shape[1]; i++)
+  {
+    a->data[i] = (double)rand() / (double)RAND_MAX;
+  }
+}
+
 int arraysum(array *a)
 {
   int sum = 0;
-  printf("%ld\n", sizeof(a->shape));
   for (int i = 0; i < a->shape[0]; i++)
   {
     sum += a->data[i];

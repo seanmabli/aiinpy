@@ -29,22 +29,24 @@ int main()
   nn model[3] = {layer1, layer2, layer3};
 
   // train
-  for (int gen = 0; gen < 12000; gen++)
+  //for (int gen = 0; gen < 12000; gen++)
+  //{
+  // generate input
+  array in = {(int[]){2}, (double[]){rand() & 1, rand() & 1}};
+  if (arraysum(&in) == 1)
   {
-    // generate input
-    array in = {(int[]){2}, (double[]){rand() & 1, rand() & 1}};
-    if (arraysum(&in) == 1)
-    {
-      array out = {(int[]){2}, (double[]){1, 0}};
-    }
-    else
-    {
-      array out = {(int[]){2}, (double[]){0, 1}};
-    }
-
-    // forward
-
+    array out = {(int[]){2}, (double[]){1, 0}};
   }
+  else
+  {
+    array out = {(int[]){2}, (double[]){0, 1}};
+  }
+
+  forward(&in, model, 3);
+
+  // forward
+
+  //}
 
   /*
   // matmul example:
