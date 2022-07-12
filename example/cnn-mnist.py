@@ -22,4 +22,4 @@ model = ai.model((28, 28), 10, [
 ])
 
 model.train((inTrainData, outTrainDataReal), 500)
-model.test((inTestData, outTestDataReal))
+print(model.test((inTestData, outTestDataReal)))
