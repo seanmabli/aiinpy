@@ -2,6 +2,7 @@ from .average import average
 from .binarystep import binarystep
 from .binarytotext import binarytotext
 from .conv import conv
+from .convcopy import convcopy
 from .convmatrix import convmatrix
 from .convtranspose import convtranspose
 from .dropout import dropout

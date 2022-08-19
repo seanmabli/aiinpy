@@ -77,6 +77,7 @@ function Function() {
                     &nbsp;[source]
                   </a>
                 </p>
+                <br />
                 <p className="h1 lighter box">{item.description}</p> <br />
                 <MathJax.Provider>
                   <div className="equation">
@@ -120,6 +121,12 @@ function Function() {
                   <br />
                   {item.examples}
                 </p>
+                <pre>
+                  <code>
+                    import aiinpy as ai
+                    x = [-1, -0.2, 0.5, 2, 100]
+                  </code>
+                </pre>
               </div>
             );
           })}
