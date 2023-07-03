@@ -17,11 +17,20 @@ for i in range(1000):
   outTestDataReal[i, outTestData[i]] = 1
 
 # CNN model
+'''
 model = ai.model((3, 32, 32), 10, [
-  ai.conv(inshape=(3, 32, 32), filtershape=(3, 3, 3), learningrate=0.01, activation=ai.relu()),
+  ai.convcopy(inshape=(3, 32, 32), numoffilters=16, filtershape=(3, 3, 3), learningrate=0.01, activation=ai.relu()),
   ai.pool(stride=(2, 2), filtershape=(2, 2), opperation='Max'),
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
-])
+], "cnn-cifar10")
 
-model.train((inTrainData, outTrainDataReal), 3000)
+print(model)
+
+model.train((inTrainData, outTrainDataReal), 500)
 print(model.test((inTestData, outTestDataReal)))
+'''
+
+a = ai.convcopy(inshape=(3, 32, 32), numoffilters=16, filtershape=(3, 3, 3), learningrate=0.01, activation=ai.relu())
+x = np.random.rand(3, 32, 32)
+y = a.forward(x)
+print(y.shape)

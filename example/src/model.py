@@ -79,11 +79,22 @@ class model:
       os.mkdir('aiinpy')
     else:
       for run in [x[0] + '/metadata.json' for x in os.walk('aiinpy')][1:]:
-        info = json.load(open(run, 'r'))
-        info['cacheexpire'] -= 1 if info['cacheexpire'] > 0 else 0
-        json.dump(info, open(run, 'w'), indent=2)
+        try:
+          info = json.load(open(run, 'r'))
+          info['cacheexpire'] -= 1 if info['cacheexpire'] > 0 else 0
+          json.dump(info, open(run, 'w'), indent=2)
+        except:
+          if input('cache', run, 'is corrupted, do you want to delete it (y/n)? ').lower() == 'y':
+            os.remove(run)
+            os.remove(run.replace('metadata.json', 'layers.pickle'))
+            os.remove(run.replace('metadata.json', 'trainerror.pickle'))
+            os.remove(run.replace('metadata.json', 'testerror.pickle'))
+          quit()
     os.mkdir('aiinpy/' + self.longrunname)
     json.dump({'name' : self.runname, 'file' : self.longrunname, 'time' : str(self.time), 'layers' : printlayers, 'cacheexpire' : cacheexpire}, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
+
+  def __repr__(self):
+    return "\n".join([p.__repr__() for p in self.layers])
 
   def forward(self, input):
     for i in range(len(self.layers)):
