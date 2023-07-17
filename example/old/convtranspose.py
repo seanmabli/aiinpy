@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from .binarystep import binarystep
 from .gaussian import gaussian
 from .identity import identity
@@ -15,14 +16,21 @@ from .tanh import tanh
 
 class convtranspose:
   def __init__(self, inshape, filtershape, learningrate, activation, padding=False, stride=(1, 1)):
+    filtershape = tuple([1]) + filtershape if len(filtershape) == 2 else filtershape
     self.inshape, self.filtershape, self.learningrate, self.activation, self.padding, self.stride = inshape, filtershape, learningrate, activation, padding, stride
     if len(inshape) == 2:
-      inshape = tuple([self.filtershape[0]]) + inshape
-    self.outshape = np.array([filtershape[0], ((inshape[1] + 1) * filtershape[1]) / stride[0], ((inshape[2] + 1) * filtershape[2]) / stride[1]], dtype=np.int)
-    self.out = np.zeros(self.outshape)
+      self.inshape = inshape = tuple([self.filtershape[0]]) + inshape
+    fakepadding = (0 if stride[0] > filtershape[1] else filtershape[1] - stride[0], 0 if stride[1] > filtershape[2] else filtershape[2] - stride[1])
+    padding = (0 if padding == True or stride[0] > filtershape[1] else filtershape[1] - stride[0], 0 if padding == True or stride[1] > filtershape[2] else filtershape[2] - stride[1])
+
+    self.fakeoutshape = (filtershape[0], inshape[1] * stride[0] + fakepadding[0], inshape[2] * stride[1] + fakepadding[1])
+    self.outshape = (filtershape[0], inshape[1] * stride[0] + padding[0], inshape[2] * stride[1] + padding[1])
 
     self.Filter = np.random.uniform(-0.25, 0.25, (self.filtershape))
     self.bias = np.zeros(self.filtershape[0])
+
+  def __repr__(self):
+    return 'convtranspose(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', activation=' + str(self.activation) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
 
   def modelinit(self, inshape):
     return self.outshape
@@ -32,23 +40,26 @@ class convtranspose:
     if(input.ndim == 2):
       self.input = np.stack(([self.input] * self.filtershape[0]))
 
-    self.out = np.zeros(self.outshape)
+    self.out = np.zeros(self.fakeoutshape)
     for i in range(0, self.inshape[1]):
       for j in range(0, self.inshape[2]):
         self.out[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]] += self.input[:, i, j][:, np.newaxis, np.newaxis] * self.Filter
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
+
+    if self.padding:
+      paddingdifference = tuple(map(lambda i, j: i - j, self.fakeoutshape, self.outshape))
+      self.out = self.out[:, math.floor(paddingdifference[1] / 2) : self.fakeoutshape[1] - math.ceil(paddingdifference[1] / 2), math.floor(paddingdifference[2] / 2) : self.fakeoutshape[2] - math.ceil(paddingdifference[2] / 2)]
+
+    self.derivative = self.activation.backward(self.out)
     self.out = self.activation.forward(self.out)
-
-    if self.padding == True:
-      self.out = self.out[:, 1 : self.outshape[1] - 1, 1 : self.outshape[2] - 1]
-
+    
     return self.out
 
   def backward(self, outError):
     FilterΔ = np.zeros(self.filtershape)
 
-    outGradient = self.activation.backward(self.out) * outError
+    outGradient = self.derivative * outError
     outGradient = np.pad(outGradient, 1, mode='constant')[1 : self.filtershape[0] + 1, :, :]
 
     for i in range(0, self.inshape[1]):

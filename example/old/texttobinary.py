@@ -1,4 +1,7 @@
 class texttobinary:
+  def __repr__(self):
+    return 'texttobinary()'
+
   def forward(input):
     Dec = list(bytearray(input, "utf8"))
     out = [''] * len(input)

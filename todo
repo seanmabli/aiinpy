@@ -1,7 +1,5 @@
-For 0.0.19 (4/30/2022):
-  - Add GAN Functionality
-  - Convert to C++
-  - Activation layers
-  - Detect error and send to database
-  - Save idividual cache in combo model
-  - Cache for each run (not each model)
+for 0.1.0:
+ - autograd
+ - gan
+ - activation layers
+ - epoch system

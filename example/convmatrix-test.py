@@ -1,9 +1,6 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
-import aiinpyai
-# import wandb
-
-# wandb.init(project='cnn-regular-vs-matrix')
+import src as ai
 
 # Create Dataset
 inTrainData, outTrainData = extract_training_samples('digits')
@@ -30,9 +27,9 @@ modelb = ai.model((28, 28), 10, [
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
 ])
 
-modelb.model[0].filter = modela.model[0].filter
-modelb.model[2].weights = modela.model[2].weights
-modelb.model[2].biases = modela.model[2].biases
+modelb.layers[0].filter = modela.layers[0].filter
+modelb.layers[2].weights = modela.layers[2].weights
+modelb.layers[2].biases = modela.layers[2].biases
 
 a = modela.train((inTrainData, outTrainDataReal), 10)
 b = modelb.train((inTrainData, outTrainDataReal), 10)
@@ -47,12 +44,3 @@ for j in range(len(a)):
 
 print(x)
 print(u)
-
-# print(modela.test((inTestData, outTestDataReal)))
-
-# for j in range(5):
-#   print(np.sum(a[j] == b[j]) / np.prod(a[j].shape))
-
-# print(modela.test((inTestData, outTestDataReal)), modelb.test((inTestData, outTestDataReal)))
-
-# wandb.log({'matrix' : modela.test((inTestData, outTestDataReal)), 'regular' : modelb.test((inTestData, outTestDataReal))})

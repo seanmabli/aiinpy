@@ -26,7 +26,12 @@ class nn:
   def __copy__(self):
     return type(self)(self.outshape, self.activation, self.learningrate, self.weightsinit, self.biasesinit, self.inshape)
 
+  def __repr__(self):
+    return 'nn(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', activation=' + str(self.activation.__repr__()) + ', learningrate=' + str(self.learningrate) + ', weightsinit=' + str(self.weightsinit) + ', biasesinit=' + str(self.biasesinit) + ')'
+
   def modelinit(self, inshape):
+    if type(inshape) == tuple and len(inshape) == 1:
+      inshape = inshape[0]
     self.inshape = inshape
 
     self.weights = np.random.uniform(self.weightsinit[0], self.weightsinit[1], (np.prod(inshape), np.prod(self.outshape)))
@@ -35,12 +40,14 @@ class nn:
 
   def forward(self, input):
     self.input = input.flatten()
-    self.out = self.activation.forward(self.weights.T @ self.input + self.biases)
+    out = self.weights.T @ self.input + self.biases
+    self.out = self.activation.forward(out)
+    self.derivative = self.activation.backward(out) # now it applys the derivative to the output without the activation function, check if this is right
     return self.out.reshape(self.outshape)
 
   def backward(self, outerror):
     outerror = outerror.flatten()
-    outgradient = self.activation.backward(self.out) * outerror
+    outgradient = self.derivative * outerror if np.ndim(self.derivative) == 1 else self.derivative @ outerror
     inputerror = self.weights @ outerror
     self.biases += outgradient * self.learningrate
     self.weights += np.outer(self.input.T, outgradient) * self.learningrate

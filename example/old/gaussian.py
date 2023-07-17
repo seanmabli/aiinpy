@@ -1,6 +1,9 @@
 import numpy as np
 
 class gaussian:
+  def __repr__(self):
+    return 'gaussian()'
+
   def forward(self, input):
     return np.exp(-np.square(input))
     

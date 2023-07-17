@@ -15,7 +15,7 @@ input = np.arange(50) / 100
 notgiven = np.vectorize(f)(np.arange(50, 100) / 100)
 output = np.vectorize(f)(input)
 
-model.train((input, output), 1000000)
+model.train((input, output), 10000)
 
 testin = np.array([x for x in range(0, 100)]) / 100
 line = model.use(testin)

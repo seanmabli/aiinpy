@@ -1,12 +1,16 @@
 import numpy as np
 
 class softmax:
+  def __repr__(self):
+    return 'softmax()'
+
   def forward(self, input):
-    return (input - np.max(input)) / np.sum(input - np.max(input))
+    return np.exp(input) / np.sum(np.exp(input))
 
   def backward(self, input):
-    equation = np.vectorize(self.equationforderivative, otypes=[float])
-    return equation(input, np.sum(np.exp(input)))
-
-  def equationforderivative(self, input, SumExpOfinput):
-    return (np.exp(input) * (SumExpOfinput - np.exp(input))) / (SumExpOfinput) ** 2
+    forward = np.exp(input) / np.sum(np.exp(input))
+    out = np.zeros((len(input), len(input)))
+    for i in range(len(input)):
+      for j in range(len(input)):
+        out[i, j] = forward[i] * (1 if i == j else 0 - forward[j])
+    return out

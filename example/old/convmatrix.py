@@ -33,18 +33,26 @@ class convmatrix:
             x[i : i + self.filtershape[1], j : j + self.filtershape[2]] = self.filter[f]
             self.filtermatrix[:, f * self.outshape[1] * self.outshape[2] + i * self.outshape[2] + j] = x.flatten()
 
+  def __copy__(self):
+    return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
+  
+  def __repr__(self):
+    return 'convmatrix(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', activation=' + str(self.activation) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
+
   def modelinit(self, inshape):
     return self.outshape
 
   def forward(self, input):
     self.input = input.flatten()
-    self.out = self.activation.forward(self.input @ self.filtermatrix)
+    out = self.input @ self.filtermatrix
+    self.out = self.activation.forward(out)
+    self.derivative = self.activation.backward(out)
 
     return self.out.reshape(self.outshape)
 
   def backward(self, outerror):
     outerror = outerror.flatten()
-    outgradient = self.activation.backward(self.out) * outerror
+    outgradient = self.derivative * outerror
     # inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
     self.filtermatrix += np.outer(self.input.T, outgradient) * self.learningrate
     # return inputerror

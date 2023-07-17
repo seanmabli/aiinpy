@@ -1,4 +1,4 @@
-import src as ai
+import aiinpy as ai
 import numpy as np
 
 # Create Dataset
@@ -12,7 +12,7 @@ model = ai.model(inshape=2, outshape=2, model=[
   ai.nn(outshape=16, activation=ai.sigmoid(), learningrate=0.01),
   ai.nn(outshape=16, activation=ai.sigmoid(), learningrate=0.01),
   ai.nn(outshape=2, activation=ai.sigmoid(), learningrate=0.01)
-], usebestcache=True)
+])
 
 model.train((inTrainData, outTrainData), 12000)
 model.test((inTrainData, outTrainData))

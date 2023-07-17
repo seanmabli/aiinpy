@@ -1,0 +1,39 @@
+import numpy as np
+
+class nn:
+  def __init__(self, outshape, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0), inshape=None):
+    self.weightsinit, self.biasesinit = weightsinit, biasesinit
+    self.learningrate = learningrate
+    self.inshape = inshape
+    if inshape is not None:
+      self.weights = np.random.uniform(weightsinit[0], weightsinit[1], (np.prod(inshape), np.prod(outshape)))
+      self.biases = np.random.uniform(biasesinit[0], biasesinit[1], np.prod(outshape))
+    self.outshape = outshape
+    
+  def __copy__(self):
+    return type(self)(self.outshape, self.learningrate, self.weightsinit, self.biasesinit, self.inshape)
+
+  def __repr__(self):
+    return 'nn(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', learningrate=' + str(self.learningrate) + ', weightsinit=' + str(self.weightsinit) + ', biasesinit=' + str(self.biasesinit) + ')'
+
+  def modelinit(self, inshape):
+    if type(inshape) == tuple and len(inshape) == 1:
+      inshape = inshape[0]
+    self.inshape = inshape
+
+    self.weights = np.random.uniform(self.weightsinit[0], self.weightsinit[1], (np.prod(inshape), np.prod(self.outshape)))
+    self.biases = np.random.uniform(self.biasesinit[0], self.biasesinit[1], np.prod(self.outshape))
+    return self.outshape
+
+  def forward(self, input):
+    self.input = input.flatten()
+    out = self.weights.T @ self.input + self.biases
+    return out.reshape(self.outshape)
+
+  def backward(self, outerror):
+    outerror = outerror.flatten()
+    outgradient = self.derivative * outerror if np.ndim(self.derivative) == 1 else self.derivative @ outerror
+    inputerror = self.weights @ outerror
+    self.biases += outgradient * self.learningrate
+    self.weights += np.outer(self.input.T, outgradient) * self.learningrate
+    return inputerror.reshape(self.inshape)

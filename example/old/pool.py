@@ -21,6 +21,9 @@ class pool:
   def __copy__(self):
     return type(self)(self.stride, self.filtershape, self.opperation, self.inshape)
 
+  def __repr__(self):
+    return 'pool(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', stride=' + str(self.stride) + ', filtershape=' + str(self.filtershape) + ', opperation=' + self.opperation + ')'
+
   def modelinit(self, inshape):
     self.inshape = inshape
     if len(inshape) == 2:
