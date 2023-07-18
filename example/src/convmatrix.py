@@ -1,8 +1,21 @@
 import numpy as np
+from .binarystep import binarystep
+from .gaussian import gaussian
+from .identity import identity
+from .leakyrelu import leakyrelu
+from .mish import mish
+from .relu import relu
+from .selu import selu
+from .sigmoid import sigmoid
+from .silu import silu
+from .softmax import softmax
+from .softplus import softplus
+from .stablesoftmax import stablesoftmax
+from .tanh import tanh
 
 class convmatrix:
-  def __init__(self, filtershape, learningrate, padding=False, stride=(1, 1), inshape=None):
-    self.learningrate, self.padding, self.stride = learningrate, padding, stride
+  def __init__(self, filtershape, learningrate, activation=identity(), padding=False, stride=(1, 1), inshape=None):
+    self.learningrate, self.activation, self.padding, self.stride = learningrate, activation, padding, stride
     self.inshape = inshape
     
     self.filtershape = tuple([1]) + filtershape if len(filtershape) == 2 else filtershape
@@ -21,10 +34,10 @@ class convmatrix:
             self.filtermatrix[:, f * self.outshape[1] * self.outshape[2] + i * self.outshape[2] + j] = x.flatten()
 
   def __copy__(self):
-    return type(self)(self.filtershape, self.learningrate, self.padding, self.stride, self.inshape)
+    return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
   
   def __repr__(self):
-    return 'convmatrix(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
+    return 'convmatrix(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', activation=' + str(self.activation) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
 
   def modelinit(self, inshape):
     return self.outshape
@@ -32,6 +45,9 @@ class convmatrix:
   def forward(self, input):
     self.input = input.flatten()
     out = self.input @ self.filtermatrix
+    self.out = self.activation.forward(out)
+    self.derivative = self.activation.backward(out)
+
     return self.out.reshape(self.outshape)
 
   def backward(self, outerror):

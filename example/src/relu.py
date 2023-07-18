@@ -4,9 +4,6 @@ class relu:
   def __repr__(self):
     return 'relu()'
 
-  def modelinit(self, inshape):
-    return inshape
-
   def forward(self, input):
     output = np.maximum(0, input)
     return output

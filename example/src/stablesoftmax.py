@@ -4,9 +4,6 @@ class stablesoftmax:
   def __repr__(self):
     return 'stablesoftmax()'
 
-  def modelinit(self, inshape):
-    return inshape
-
   def forward(self, input):
     a = np.exp(input - np.max(input))
     return a / np.sum(a)

@@ -1,32 +1,30 @@
+from .binarystep import binarystep
+from .binarytotext import binarytotext
+from .conv import conv
+from .convmatrix import convmatrix
+from .convtranspose import convtranspose
+from .dropout import dropout
+from .elu import elu
+from .gaussian import gaussian
+from .gru import gru
+from .identity import identity
+from .leakyrelu import leakyrelu
+from .lstm import lstm
+from .mean import mean
+from .mish import mish
 from .model import model
-# from .neat import neat
 from .neuroevolution import neuroevolution
+from .nn import nn
+from .pool import pool
+from .prelu import prelu
+from .relu import relu
+from .rnn import rnn
+from .selu import selu
+from .sigmoid import sigmoid
+from .silu import silu
+from .softmax import softmax
+from .softplus import softplus
+from .stablesoftmax import stablesoftmax
+from .tanh import tanh
 from .tensor import tensor
-
-from .nonstatic.convcopy import convcopy
-# from .nonstatic.convmatrix import convmatrix
-# from .nonstatic.convtranspose import convtranspose
-# from .nonstatic.gru import gru
-# from .nonstatic.lstm import lstm
-from .nonstatic.nn import nn
-from .nonstatic.pool import pool
- #from .nonstatic.rnn import rnn
-
-# from .static.average import average
-# from .static.binarystep import binarystep
-# from .static.binarytotext import binarytotext
-# from .static.dropout import dropout
-# from .static.elu import elu
-# from .static.identity import identity
-# from .static.gaussian import gaussian
-# from .static.leakyrelu import leakyrelu
-# from .static.prelu import prelu
-from .static.relu import relu
-# rom .static.selu import selu
-# from .static.sigmoid import sigmoid
-# from .static.silu import silu
-# from .static.softmax import softmax
-# from .static.softplus import softplus
-from .static.stablesoftmax import stablesoftmax
-# from .static.tanh import tanh
-# from .static.texttobinary import texttobinary
+from .texttobinary import texttobinary

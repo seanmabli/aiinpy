@@ -18,7 +18,7 @@ for i in range(1000):
 model = ai.model((28, 28), 10, [
   ai.convcopy(numoffilters=4, filtershape=(3, 3), learningrate=0.01),
   ai.relu(),
-  ai.pool(stride=(2, 2), filtershape=(2, 2), opperation='Max'),
+  ai.pool(stride=(2, 2), filtershape=(2, 2), operation='max'),
   ai.nn(outshape=10, learningrate=0.1, weightsinit=(0, 0)),
   ai.stablesoftmax()
 ])

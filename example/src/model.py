@@ -3,28 +3,7 @@ import numpy as np
 import sys, os, time, json, random, datetime
 import _pickle as pickle
 import wandb
-'''
-import pyrebase
 
-firebase = pyrebase.initialize_app({
-  "apiKey" : "AIzaSyAeVOKLeGPek386fDsyZ7lC9zQ_9JlnaIc",
-  "authDomain" : "aiinpy.firebaseapp.com",
-  "databaseURL": "https://aiinpy-default-rtdb.firebaseio.com/",
-  "storageBucket" : "aiinpy.appspot.com"
-})
-db = firebase.database()
-
-def error(func):
-    def inner(*args, **kwargs):
-      try:
-        func(*args, **kwargs)
-      except Exception as e:
-        metadata = open([x[0] + '/metadata.json' for x in os.walk('aiinpy')][1], 'r').read()
-        # db.child("errors").push({"error" : str(e), 'metadata' : metadata})
-    return inner
-
-@error
-'''
 class model:
   def __init__(self, inshape, outshape, layers, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
@@ -127,7 +106,7 @@ class model:
     trainstarttime = time.time()
 
     # Training, with wandb
-    if self.wandbproject is not None:
+    if self.wandbproject != None:
       for gen in range(numofgen):
         starttime = time.time()
         random = np.random.randint(0, NumOfData)
@@ -142,7 +121,11 @@ class model:
           outerror = self.layers[i].backward(outerror)
         avgtime.append(time.time() - starttime)
         speed = round(6000 / sum(avgtime[-100:]))
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
+        remaining = round(60 * (numofgen - gen) / speed)
+        remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+        elapsed = round(time.time() - trainstarttime)
+        elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
     else:
       # Training, without wandb
       for gen in range(numofgen):
@@ -158,9 +141,13 @@ class model:
           outerror = self.layers[i].backward(outerror)
         avgtime.append(time.time() - starttime)
         speed = round(6000 / sum(avgtime[-100:]))
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
+        remaining = round(60 * (numofgen - gen) / speed)
+        remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+        elapsed = round(time.time() - trainstarttime)
+        elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
 
-    sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed' + str(' ' * 50))
+    sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed')
     print('')
 
     pickle.dump(self.layers, open('aiinpy/' + self.longrunname + '/layers.pickle', 'wb'))
@@ -211,9 +198,13 @@ class model:
 
       avgtime.append(time.time() - starttime)
       speed = round(6000 / sum(avgtime[-100:]))
-      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (NumOfData - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
+      remaining = round(60 * (NumOfData - gen) / speed)
+      remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+      elapsed = round(time.time() - trainstarttime)
+      elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
 
-    sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed' + str(' ' * 50))
+    sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed')
     print('')
     
     testaccuracy = testcorrect / NumOfData
