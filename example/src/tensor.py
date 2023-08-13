@@ -34,6 +34,7 @@ class tensor:
 	def ones(self, shape): return tensor(np.ones(shape))
 	def random(self, shape): return tensor(np.random.random(shape))
 	def uniform(self, low, high, shape): return tensor(np.random.uniform(low, high, shape))
+	def random_binomial(self, shape, p): return tensor(np.random.binomial(1, p, shape))
 	def full(self, value, shape): return tensor(np.full(shape, value))
 
 	def __repr__(self): return 'tensor(' + str(self.data) + ')'
@@ -46,8 +47,16 @@ class tensor:
 	def __ne__(self, other) -> bool: return self.data.all() != other.data.all() if type(other) == tensor else self.data.all() != other
 	def mean(self, axis=None): return np.mean(self.data, axis=axis)
 	def sum(self, axis=None): return np.sum(self.data, axis=axis)
+	def max(self, axis=None): return np.max(self.data, axis=axis)
+	def min(self, axis=None): return np.min(self.data, axis=axis)
 
+	def vectorize(self, function): return tensor(np.vectorize(function)(self.data))
+	def where(self, condition, x, y): return tensor(np.where(condition, x, y))
+
+	'''
 	def autograd(self, input):
-		if self.ops[0] == 'init': return tensor(input)
-		if self.ops[0] == 'add': return self.autograd(tensor(self, ops=self.ops[1])) + self.autograd(tensor(self, ops=self.ops[2]))
+		if self.ops[0] == 'init': return tensor(input\)
+		elif self.ops[0] == 'add': return self.autograd(tensor(self, ops=self.ops[1])) + self.autograd(tensor(self, ops=self.ops[2]))
+		else: print(self.ops[0])
 		# if self.ops[0] == 'mul': return self.autograd(tensor(self, ops=self.ops[1])) * self.ops[3] + self.ops[3] * self.autograd(tensor(self, ops=self.ops[2]))
+	'''

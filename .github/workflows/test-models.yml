@@ -1,0 +1,13 @@
+name: Test Models
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare
+        uses: actions/checkout@v3
+        run: |
+          cd examples
+      - name: Run cnn-mnist.py
+        run: |
+          python3 cnn-mnist.py
