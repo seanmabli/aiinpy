@@ -88,8 +88,8 @@ class model:
   def train(self, data, numofgen):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
     data = list(data) if type(data) == tuple else data
-    data[0] = tensor.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
-    data[1] = tensor.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
+    data[0] = data[0].reshape((data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
+    data[1] = data[1].reshape((data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
 
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:

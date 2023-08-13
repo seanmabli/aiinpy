@@ -18,10 +18,10 @@ for i in range(1000):
 
 # cnn model
 model = ai.model((3, 32, 32), 10, [
-  ai.convcopy(inshape=(3, 32, 32), numoffilters=16, filtershape=(3, 3, 3), learningrate=0.01, activation=ai.relu()),
-  ai.pool(stride=(2, 2), filtershape=(2, 2), opperation='Max'),
+  ai.conv(inshape=(3, 32, 32), numoffilters=16, filtershape=(3, 3, 3), learningrate=0.01, activation=ai.relu()),
+  ai.pool(stride=(2, 2), filtershape=(2, 2), operation='max'),
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
-], "cnn-cifar10")
+])
 
 print(model)
 

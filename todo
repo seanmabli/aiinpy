@@ -1,6 +1,6 @@
 for 0.1.0:
  - autograd
+    - activation layers
  - gan
- - activation layers
  - epoch system
  - rnn, lstm, gru not in main package (be able to construct them using the model framework)

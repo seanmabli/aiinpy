@@ -33,8 +33,8 @@ class rnn:
     
     if self.type == 'ManyToOne':
       for i in range(len(input)):
-        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
-        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].reshape(tensor.prod(input[i].shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].reshape(tensor.prod(input[i].shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
 
       self.out = self.outactivation.forward(self.weightshidToout @ self.hid[len(input), :] + self.outbiases)
       self.outderivative = self.outactivation.backward(self.weightshidToout @ self.hid[len(input), :] + self.outbiases)
@@ -57,7 +57,7 @@ class rnn:
     hidbiasesΔ = tensor.zeros(self.hidbiases.shape)
 
     if self.type == 'ManyToOne':
-      outGradient = self.outderivative * outError if tensor.ndim(self.outderivative) == 1 else self.outderivative @ outError
+      outGradient = self.outderivative * outError if len(self.outderivative.shape) == 1 else self.outderivative @ outError
 
       weightshidTooutΔ = tensor.outer(outGradient, self.hid[len(self.input)].T)
       outbiasesΔ = outGradient
