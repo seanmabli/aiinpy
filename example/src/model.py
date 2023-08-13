@@ -63,7 +63,7 @@ class model:
           info['cacheexpire'] -= 1 if info['cacheexpire'] > 0 else 0
           json.dump(info, open(run, 'w'), indent=2)
         except:
-          if input('cache', run, 'is corrupted, do you want to delete it (y/n)? ').lower() == 'y':
+          if input(f'cache {run} is corrupted, do you want to delete it (y/n)? ').lower() == 'y':
             os.remove(run)
             os.remove(run.replace('metadata.json', 'layers.pickle'))
             os.remove(run.replace('metadata.json', 'trainerror.pickle'))
@@ -150,6 +150,8 @@ class model:
     sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed')
     print('')
 
+    # NOTE: Error bc tensor ops has high recursive depth
+    '''
     pickle.dump(self.layers, open('aiinpy/' + self.longrunname + '/layers.pickle', 'wb'))
     pickle.dump(trainerror, open('aiinpy/' + self.longrunname + '/trainerror.pickle', 'wb'))
 
@@ -161,6 +163,7 @@ class model:
     info = json.load(open('aiinpy/' + self.longrunname + '/metadata.json', 'r'))
     info.update({'trainerror' : simptrainerror})
     json.dump(info, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
+    '''
 
     return trainerror
 
@@ -194,7 +197,7 @@ class model:
         input = self.layers[i].forward(input)
 
       testerror.append(tensor.sum(abs(data[1][gen] - input)))
-      testcorrect += 1 if tensor.argmax(input) == tensor.argmax(data[1][gen]) else 0
+      testcorrect += 1 if tensor.index(input, tensor.max(input)) == tensor.index(input, tensor.max(data[1][gen])) else 0
 
       avgtime.append(time.time() - starttime)
       speed = round(6000 / sum(avgtime[-100:]))
@@ -211,10 +214,11 @@ class model:
 
     if self.wandbproject is not None:
       wandb.log({'test accuracy': testaccuracy})
-
+    '''
     info = json.load(open('aiinpy/' + self.longrunname + '/metadata.json', 'r'))
     info.update({'testerror' : sum(testerror) / NumOfData, 'testaccuracy' : testaccuracy})
     json.dump(info, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
+    '''
 
     return testaccuracy
 

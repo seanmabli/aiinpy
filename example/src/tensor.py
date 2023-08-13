@@ -69,10 +69,11 @@ class tensor:
 	def multiply(tensors, axis=None): return tensor(np.multiply.reduce(list(map(lambda i: i.data, tensors)), axis=axis))
 	def outer(a, b): return tensor(np.outer(tensor.toTensor(a).data, tensor.toTensor(b).data))
 	def inner(a, b): return tensor(np.inner(tensor.toTensor(a).data, tensor.toTensor(b).data))
-	def transpose(other): other = tensor.toTensor(other); return tensor(other.data.T, ops=['tbd'])
+	def transpose(other, axes=None): other = tensor.toTensor(other); return tensor(np.transpose(other.data, axes), ops=['tbd'])
 	def repeat(other, repeats, axis=None): other = tensor.toTensor(other); return tensor(np.repeat(other.data, repeats, axis=axis))
 	def rot90(other, repeats): other = tensor.toTensor(other); return tensor(np.rot90(other.data, repeats), ops=['tbd'])
 	def pad(other, pad_width, mode='constant', constant_values=0): other = tensor.toTensor(other); return tensor(np.pad(other.data, pad_width, mode=mode, constant_values=constant_values), ops=['tbd'])
+	def index(other, value): other = tensor.toTensor(other); return np.where(other.data == value)
 
 	'''
 	def autograd(self, input):
