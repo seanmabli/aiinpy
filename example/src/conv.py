@@ -1,4 +1,3 @@
-import numpy as np
 from .tensor import tensor
 from .static_ops import identity
 
@@ -17,7 +16,7 @@ class conv:
       padding = (self.filtershape[1] - 1, self.filtershape[2] - 1) if padding == True else (0, 0)
       
       self.outshape = tuple([filtershape[0], int((inshape[1] - filtershape[1] + padding[0] + 1) / self.stride[0]), int((inshape[2] - filtershape[2] + padding[1] + 1) / self.stride[1])])
-      self.out = np.zeros(self.outshape)
+      self.out = tensor.zeros(self.outshape)
 
   def __copy__(self):
     return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
@@ -33,51 +32,51 @@ class conv:
       inshape = (inshape[0], inshape[1] + self.filtershape[1] - 1, inshape[2] + self.filtershape[2] - 1)
 
     self.outshape = tuple([self.numoffilters, int((inshape[1] - self.filtershape[1] + 1) / self.stride[0]), int((inshape[2] - self.filtershape[2] + 1) / self.stride[1])])
-    self.out = np.zeros(self.outshape)
+    self.out = tensor.zeros(self.outshape)
 
     return self.outshape
 
-  def forward(self, input):
-    self.input = input
-    if(input.ndim == 2):
-      self.input = np.stack(([self.input] * self.filtershape[0]))
+  def forward(self, itensorut):
+    self.itensorut = itensorut
+    if(itensorut.ndim == 2):
+      self.itensorut = tensor.stack(([self.itensorut] * self.filtershape[0]))
     if (self.padding == True):
-      self.input = np.pad(self.input, int((len(self.filter[0]) - 1) / 2), mode='constant')[1 : self.filtershape[0] + 1]
+      self.itensorut = tensor.pad(self.itensorut, int((len(self.filter[0]) - 1) / 2), mode='constant')[1 : self.filtershape[0] + 1]
 
     for i in range(0, self.outshape[1], self.stride[0]):
       for j in range(0, self.outshape[2], self.stride[1]):
-        self.out[:, i, j] = np.sum(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * self.filter, axis=(1, 2))
+        self.out[:, i, j] = tensor.sum(self.itensorut[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * self.filter, axis=(1, 2))
 
-    self.out += self.bias[:, np.newaxis, np.newaxis]
+    self.out += self.bias[:, tensor.newaxis, tensor.newaxis]
     self.derivative = self.activation.backward(self.out)
     self.out = self.activation.forward(self.out)
     return self.out
   
   def backward(self, outError):
-    filterΔ = np.zeros(self.filtershape)
+    filterΔ = tensor.zeros(self.filtershape)
     
     outGradient = outError * self.derivative
 
     for i in range(0, self.outshape[1], self.stride[0]):
       for j in range(0, self.outshape[2], self.stride[1]):
-        filterΔ += self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * outGradient[:, i, j][:, np.newaxis, np.newaxis]
+        filterΔ += self.itensorut[:, i : i + self.filtershape[1], j : j + self.filtershape[2]] * outGradient[:, i, j][:, tensor.newaxis, tensor.newaxis]
     
-    self.bias += np.sum(outGradient, axis=(1, 2)) * self.learningrate
+    self.bias += tensor.sum(outGradient, axis=(1, 2)) * self.learningrate
     self.filter += filterΔ * self.learningrate
 
     # in Error
-    rotfilter = np.rot90(self.filter, 2)
-    PaddedError = np.pad(outError, self.filtershape[1] - 1, mode='constant')[self.filtershape[1] - 1 : self.filtershape[0] + self.filtershape[1] - 1, :, :]
+    rotfilter = tensor.rot90(self.filter, 2)
+    PaddedError = tensor.pad(outError, self.filtershape[1] - 1, mode='constant')[self.filtershape[1] - 1 : self.filtershape[0] + self.filtershape[1] - 1, :, :]
     
-    self.inError = np.zeros(self.inshape)
-    if np.ndim(self.inError) == 3:
+    self.inError = tensor.zeros(self.inshape)
+    if tensor.ndim(self.inError) == 3:
       for i in range(int(self.inshape[1] / self.stride[0])):
         for j in range(int(self.inshape[2] / self.stride[1])):
-         self.inError[:, i * self.stride[0], j * self.stride[1]] = np.sum(rotfilter * PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]], axis=(1, 2))
+         self.inError[:, i * self.stride[0], j * self.stride[1]] = tensor.sum(rotfilter * PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]], axis=(1, 2))
        
-    elif np.ndim(self.inError) == 2:
+    elif tensor.ndim(self.inError) == 2:
       for i in range(int(self.inshape[0] / self.stride[0])):
         for j in range(int(self.inshape[1] / self.stride[1])):
-         self.inError[i * self.stride[0], j * self.stride[1]] = np.sum(rotfilter * PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]])
+         self.inError[i * self.stride[0], j * self.stride[1]] = tensor.sum(rotfilter * PaddedError[:, i:i + self.filtershape[1], j:j + self.filtershape[2]])
 
     return self.inError

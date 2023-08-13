@@ -4,12 +4,11 @@ from .convmatrix import convmatrix
 from .convtranspose import convtranspose
 from .gru import gru
 from .lstm import lstm
-from .mish import mish
 from .model import model
 from .neuroevolution import neuroevolution
 from .nn import nn
 from .pool import pool
 from .rnn import rnn
-from .static_ops import static_ops
+from .static_ops import *
 from .tensor import tensor
 from .texttobinary import texttobinary

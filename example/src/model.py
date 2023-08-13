@@ -1,8 +1,8 @@
 from __future__ import annotations
-import numpy as np
 import sys, os, time, json, random, datetime
 import _pickle as pickle
 import wandb
+from .tensor import tensor
 
 class model:
   def __init__(self, inshape, outshape, layers, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
@@ -88,18 +88,18 @@ class model:
   def train(self, data, numofgen):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
     data = list(data) if type(data) == tuple else data
-    data[0] = np.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
-    data[1] = np.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
+    data[0] = tensor.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
+    data[1] = tensor.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
 
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:
       x = list(range(0, len(data[0].shape)))
       x.pop(data[0].shape.index(NumOfData))
-      data[0] = np.transpose(data[0], tuple([data[0].shape.index(NumOfData)]) + tuple(x))
+      data[0] = tensor.transpose(data[0], tuple([data[0].shape.index(NumOfData)]) + tuple(x))
     if data[1].shape.index(NumOfData) != 0:
       x = list(range(0, len(data[1].shape)))
       x.pop(data[1].shape.index(NumOfData))
-      data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
+      data[1] = tensor.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     trainerror = []
     avgtime = []
@@ -109,14 +109,14 @@ class model:
     if self.wandbproject != None:
       for gen in range(numofgen):
         starttime = time.time()
-        random = np.random.randint(0, NumOfData)
+        random = int(tensor.uniform() * NumOfData)
         input = data[0][random]
         for i in range(len(self.layers)):
           input = self.layers[i].forward(input)
 
         outerror = data[1][random] - input
-        wandb.log({'train error': np.sum(abs(outerror))})
-        trainerror.append(np.sum(abs(outerror)))
+        wandb.log({'train error': tensor.sum(abs(outerror))})
+        trainerror.append(tensor.sum(abs(outerror)))
         for i in reversed(range(len(self.layers))):
           outerror = self.layers[i].backward(outerror)
         avgtime.append(time.time() - starttime)
@@ -130,13 +130,13 @@ class model:
       # Training, without wandb
       for gen in range(numofgen):
         starttime = time.time()
-        random = np.random.randint(0, NumOfData)
+        random = int(tensor.uniform() * NumOfData)
         input = data[0][random]
         for i in range(len(self.layers)):
           input = self.layers[i].forward(input)
 
         outerror = data[1][random] - input
-        trainerror.append(np.sum(abs(outerror)))
+        trainerror.append(tensor.sum(abs(outerror)))
         for i in reversed(range(len(self.layers))):
           outerror = self.layers[i].backward(outerror)
         avgtime.append(time.time() - starttime)
@@ -167,18 +167,18 @@ class model:
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
     data = list(data) if type(data) == tuple else data
-    data[0] = np.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
-    data[1] = np.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
+    data[0] = tensor.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
+    data[1] = tensor.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
 
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:
       x = list(range(0, len(data[0].shape)))
       x.pop(data[0].shape.index(NumOfData))
-      data[0] = np.transpose(data[0], tuple([data[0].shape.index(NumOfData)]) + tuple(x))
+      data[0] = tensor.transpose(data[0], tuple([data[0].shape.index(NumOfData)]) + tuple(x))
     if data[1].shape.index(NumOfData) != 0:
       x = list(range(0, len(data[1].shape)))
       x.pop(data[1].shape.index(NumOfData))
-      data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
+      data[1] = tensor.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     testerror = []
     avgtime = []
@@ -193,8 +193,8 @@ class model:
       for i in range(len(self.layers)):
         input = self.layers[i].forward(input)
 
-      testerror.append(np.sum(abs(data[1][gen] - input)))
-      testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
+      testerror.append(tensor.sum(abs(data[1][gen] - input)))
+      testcorrect += 1 if tensor.argmax(input) == tensor.argmax(data[1][gen]) else 0
 
       avgtime.append(time.time() - starttime)
       speed = round(6000 / sum(avgtime[-100:]))
@@ -219,14 +219,14 @@ class model:
     return testaccuracy
 
   def use(self, indata):
-    indata = np.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
+    indata = tensor.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
     NumOfData = (set(self.inshape) ^ set(indata.shape)).pop()
     if indata.shape.index(NumOfData) != 0:
       x = list(range(0, len(indata.shape)))
       x.pop(indata.shape.index(NumOfData))
-      indata = np.transpose(indata, tuple([indata.shape.index(NumOfData)]) + tuple(x))
+      indata = tensor.transpose(indata, tuple([indata.shape.index(NumOfData)]) + tuple(x))
 
-    outdata = np.zeros(indata.shape)
+    outdata = tensor.zeros(indata.shape)
     for gen in range (NumOfData):
       input = indata[gen]
       for i in range(len(self.layers)):

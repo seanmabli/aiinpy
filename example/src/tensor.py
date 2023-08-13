@@ -7,35 +7,34 @@ class tensor:
 		self.ops = ['init', [], self.data] if ops == [] else ops
 		self.shape = self.data.shape
 
-	def toTensor(self, other): return tensor(other) if type(other) != tensor else other
+	def toTensor(other): return tensor(other) if type(other) != tensor else other
 
-	def __add__(self, other): other = self.toTensor(other); return tensor(self.data + other.data, ops=['add', self.ops, other.ops, self.data + other.data])
-	def __mul__(self, other): other = self.toTensor(other); return tensor(self.data * other.data, ops=['mul', self.ops, other.ops, self.data * other.data])
-	def __sub__(self, other): other = self.toTensor(other); return tensor(self.data - other.data, ops=['add', self.ops, ['mul', other.ops, ['init', [], tensor(-1)]], self.data - other.data])
-	def __truediv__(self, other): other = self.toTensor(other); return tensor(self.data / other.data, ops=['mul', self.ops, ['pow', other.ops, ['init', [], tensor(-1)]], self.data / other.data])
-	def __pow__(self, other): other = self.toTensor(other); return tensor(self.data ** other.data, ops=['pow', self.ops, other.ops, self.data ** other.data])
-	def __mod__(self, other): other = self.toTensor(other); return tensor(self.data % other.data, ops=['mod', self.ops, other.ops, self.data % other.data])
-	def __matmul__(self, other): other = self.toTensor(other); return tensor(self.data @ other.data, ops=['matmul', self.ops, other.ops, self.data @ other.data])
+	def __add__(self, other): other = tensor.toTensor(other); return tensor(self.data + other.data, ops=['add', self.ops, other.ops, self.data + other.data])
+	def __mul__(self, other): other = tensor.toTensor(other); return tensor(self.data * other.data, ops=['mul', self.ops, other.ops, self.data * other.data])
+	def __sub__(self, other): other = tensor.toTensor(other); return tensor(self.data - other.data, ops=['add', self.ops, ['mul', other.ops, ['init', [], tensor(-1)]], self.data - other.data])
+	def __truediv__(self, other): other = tensor.toTensor(other); return tensor(self.data / other.data, ops=['mul', self.ops, ['pow', other.ops, ['init', [], tensor(-1)]], self.data / other.data])
+	def __pow__(self, other): other = tensor.toTensor(other); return tensor(self.data ** other.data, ops=['pow', self.ops, other.ops, self.data ** other.data])
+	def __mod__(self, other): other = tensor.toTensor(other); return tensor(self.data % other.data, ops=['mod', self.ops, other.ops, self.data % other.data])
+	def __matmul__(self, other): other = tensor.toTensor(other); return tensor(self.data @ other.data, ops=['matmul', self.ops, other.ops, self.data @ other.data])
 	def __neg__(self): return tensor(-self.data, ops=['mul', self.ops, ['init', tensor(-1), self.dtype], -self.data])
 	def __abs__(self): return tensor(abs(self.data), ops=['abs', self.ops, abs(self.data)])
 
-	def __radd__(self, other): return self + other
-	def __rmul__(self, other): return self * other
-	def __rsub__(self, other): return self - other
-	def __rtruediv__(self, other): return self / other
-	def __rpow__(self, other): return self ** other
-	def __rmod__(self, other): return self % other
-	def __rmatmul__(self, other): return self @ other
+	def __radd__(self, other): return self + tensor.toTensor(other)
+	def __rmul__(self, other): return self * tensor.toTensor(other)
+	def __rsub__(self, other): return self - tensor.toTensor(other)
+	def __rtruediv__(self, other): return self / tensor.toTensor(other)
+	def __rpow__(self, other): return self ** tensor.toTensor(other)
+	def __rmod__(self, other): return self % tensor.toTensor(other)
+	def __rmatmul__(self, other): return self @ tensor.toTensor(other)
 
 	def reshape(self, shape, other=None): return tensor(other.data.reshape(shape), ops=['reshape', other.ops, shape]) if other != None else tensor(self.data.reshape(shape), ops=['reshape', self.ops, shape])
-	def exp(self, other=None): return tensor(np.exp(other.data), ops=['pow', other.ops, ['init', tensor(np.e), other.dtype]]) if other != None else tensor(np.exp(self.data), ops=['pow', self.ops, ['init', tensor(np.e), self.dtype]])
 
-	def zeros(self, shape): return tensor(np.zeros(shape))
-	def ones(self, shape): return tensor(np.ones(shape))
-	def random(self, shape): return tensor(np.random.random(shape))
-	def uniform(self, low, high, shape): return tensor(np.random.uniform(low, high, shape))
-	def random_binomial(self, shape, p): return tensor(np.random.binomial(1, p, shape))
-	def full(self, value, shape): return tensor(np.full(shape, value))
+	def zeros(shape): return tensor(np.zeros(shape))
+	def ones(shape): return tensor(np.ones(shape))
+	def random(shape): return tensor(np.random.random(shape))
+	def uniform(low=0, high=1, shape=1): return tensor(np.random.uniform(low, high, shape))
+	def random_binomial(shape, p): return tensor(np.random.binomial(1, p, shape))
+	def full(value, shape): return tensor(np.full(shape, value))
 
 	def __repr__(self): return 'tensor(' + str(self.data) + ')'
 	def __getitem__(self, key): return self.data[key]
@@ -45,13 +44,24 @@ class tensor:
 	def __copy__(self): return tensor(self.data.copy())
 	def __eq__(self, other) -> bool: return self.data.all() == other.data.all() if type(other) == tensor else self.data.all() == other
 	def __ne__(self, other) -> bool: return self.data.all() != other.data.all() if type(other) == tensor else self.data.all() != other
-	def mean(self, axis=None): return np.mean(self.data, axis=axis)
-	def sum(self, axis=None): return np.sum(self.data, axis=axis)
+	def mean(self, axis=None): return tensor(np.mean(self.data, axis=axis))
+	def sum(self, axis=None): return tensor(np.sum(self.data, axis=axis))
 	def max(self, axis=None): return np.max(self.data, axis=axis)
 	def min(self, axis=None): return np.min(self.data, axis=axis)
 
-	def vectorize(self, function): return tensor(np.vectorize(function)(self.data))
-	def where(self, condition, x, y): return tensor(np.where(condition, x, y))
+	def maximum(a, b): return np.maximum(tensor.toTensor(a).data, tensor.toTensor(b).data)
+	def minimum(a, b): return np.minimum(tensor.toTensor(a).data, tensor.toTensor(b).data)
+
+	def exp(other): other = tensor.toTensor(other); return tensor(np.exp(other.data), ops=['pow', other.ops, ['init', tensor(np.e), other.dtype]])
+	def floor(other): other = tensor.toTensor(other); return tensor(np.floor(other.data), ops=['mod', other.ops, ['init', tensor(1), other.dtype]])
+	def prod(other): other = tensor.toTensor(other); return np.prod(other.data)
+
+	def vectorize(function): return np.vectorize(function)
+	def where(condition, x, y): return tensor(np.where(condition, x, y))
+
+	def __int__(self): return int(self.data)
+	def __float__(self): return float(self.data)
+	def __bool__(self): return bool(self.data)
 
 	'''
 	def autograd(self, input):

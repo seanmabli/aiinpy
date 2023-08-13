@@ -1,4 +1,4 @@
-import numpy as np
+from .tensor import tensor
 from .static_ops import identity
 
 class lstm:

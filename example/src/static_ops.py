@@ -1,11 +1,11 @@
-from tensor import tensor
+from .tensor import tensor
 
 class binarystep:
   def __repr__(self):
     return 'binarystep()'
 
   def forward(self, input):
-    equation = tensor.vectorize(self.equationForbinaryStep, otypes=[float])
+    equation = tensor.vectorize(self.equationForbinaryStep)
     return equation(input)
 
   def equationForbinaryStep(self, input):
@@ -69,7 +69,7 @@ class leakyrelu:
     return 'leakyrelu(' + str(self.alpha) + ')'
 
   def forward(self, input):
-    return tensor.max(self.alpha * input, input)
+    return tensor.maximum(self.alpha * input, input)
 
   def backward(self, input):
     equation = tensor.vectorize(self.equationforderivative)
@@ -134,8 +134,8 @@ class mish:
 class prelu:
   def __init__(self, alpha):
     self.alpha = alpha
-    self.forwardequationvectorized = tensor.vectorize(self.forwardequation, otypes=[float])
-    self.backwardequationvectorized = tensor.vectorize(self.backwardequation, otypes=[float])
+    self.forwardequationvectorized = tensor.vectorize(self.forwardequation)
+    self.backwardequationvectorized = tensor.vectorize(self.backwardequation)
 
   def __repr__(self):
     return 'prelu(' + str(self.alpha) + ')'
@@ -161,7 +161,7 @@ class relu:
     return output
 
   def backward(self, input):
-    equation = tensor.vectorize(self.equationforderivative, otypes=[float])
+    equation = tensor.vectorize(self.equationforderivative)
     return equation(input)
     
   def equationforderivative(self, input):
@@ -172,14 +172,14 @@ class selu:
     return 'selu()'
 
   def forward(self, input):
-    equation = tensor.vectorize(self.equationforselu, otypes=[float])
+    equation = tensor.vectorize(self.equationforselu)
     return 1.0507 * equation(input)
 
   def equationforselu(self, input):
     return 1.67326 * (tensor.exp(input) - 1) if (input < 0) else input
 
   def backward(self, input):
-    equation = tensor.vectorize(self.equationforderivative, otypes=[float])
+    equation = tensor.vectorize(self.equationforderivative)
     return 1.0507 * equation(input)
 
   def equationforderivative(self, input):
@@ -300,14 +300,14 @@ class tanh:
 
 # forward
 # import timeit
-# print(timeit.timeit('(tensor.exp(2 * tensor.random.uniform(-1, 1, (100, 100))) - 1) / (tensor.exp(2 * tensor.random.uniform(-1, 1, (100, 100))) + 1)', setup='import numpy as np', number=10000))
-# print(timeit.timeit('(tensor.exp(tensor.random.uniform(-1, 1, (100, 100))) - tensor.exp(-tensor.random.uniform(-1, 1, (100, 100)))) / (tensor.exp(tensor.random.uniform(-1, 1, (100, 100))) + tensor.exp(-tensor.random.uniform(-1, 1, (100, 100))))', setup='import numpy as np', number=10000))
-# print(timeit.timeit('a = tensor.exp(tensor.random.uniform(-1, 1, (100, 100))); (a - 1 / a) / (a + 1 / a)', setup='import numpy as np', number=10000))
-# print(timeit.timeit('a = tensor.exp(2 * tensor.random.uniform(-1, 1, (100, 100))); (a - 1) / (a + 1)', setup='import numpy as np', number=10000))
+# print(timeit.timeit('(tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))) - 1) / (tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))) + 1)', setup='import numpy as np', number=10000))
+# print(timeit.timeit('(tensor.exp(tensor.uniform(-1, 1, (100, 100))) - tensor.exp(-tensor.uniform(-1, 1, (100, 100)))) / (tensor.exp(tensor.uniform(-1, 1, (100, 100))) + tensor.exp(-tensor.uniform(-1, 1, (100, 100))))', setup='import numpy as np', number=10000))
+# print(timeit.timeit('a = tensor.exp(tensor.uniform(-1, 1, (100, 100))); (a - 1 / a) / (a + 1 / a)', setup='import numpy as np', number=10000))
+# print(timeit.timeit('a = tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))); (a - 1) / (a + 1)', setup='import numpy as np', number=10000))
 
 # backward
 # import timeit
-# print(timeit.timeit('(4 * tensor.exp(2 * tensor.random.uniform(-1, 1, (100, 100)))) / tensor.square(tensor.exp(2 * tensor.random.uniform(-1, 1, (100, 100))) + 1)', setup='import numpy as np', number=10000)) # 2.7722288
-# print(timeit.timeit('4 / tensor.square(tensor.exp(tensor.random.uniform(-1, 1, (100, 100))) + tensor.exp(-tensor.random.uniform(-1, 1, (100, 100))))', setup='import numpy as np', number=10000)) # 2.6440156000000004
-# print(timeit.timeit('a = tensor.exp(2 * tensor.random.uniform(-1, 1, (100, 100))); (4 * a) / tensor.square(a + 1)', setup='import numpy as np', number=10000)) # 1.4674546
-# print(timeit.timeit('a = tensor.exp(tensor.random.uniform(-1, 1, (100, 100))); 4 / tensor.square(a ** 2 + 1 / a)', setup='import numpy as np', number=10000)) # 1.567536
+# print(timeit.timeit('(4 * tensor.exp(2 * tensor.uniform(-1, 1, (100, 100)))) / tensor.square(tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))) + 1)', setup='import numpy as np', number=10000)) # 2.7722288
+# print(timeit.timeit('4 / tensor.square(tensor.exp(tensor.uniform(-1, 1, (100, 100))) + tensor.exp(-tensor.uniform(-1, 1, (100, 100))))', setup='import numpy as np', number=10000)) # 2.6440156000000004
+# print(timeit.timeit('a = tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))); (4 * a) / tensor.square(a + 1)', setup='import numpy as np', number=10000)) # 1.4674546
+# print(timeit.timeit('a = tensor.exp(tensor.uniform(-1, 1, (100, 100))); 4 / tensor.square(a ** 2 + 1 / a)', setup='import numpy as np', number=10000)) # 1.567536

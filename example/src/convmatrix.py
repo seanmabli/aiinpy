@@ -1,4 +1,3 @@
-import numpy as np
 from .static_ops import identity
 
 class convmatrix:
@@ -9,15 +8,15 @@ class convmatrix:
     self.filtershape = tuple([1]) + filtershape if len(filtershape) == 2 else filtershape
     
     if inshape is not None:
-      self.outshape = tuple([filtershape[0], inshape[0] - filtershape[1] + 1, inshape[1] - filtershape[2] + 1])
+      self.outshape = tuple([filtershape[0], inshape[0] - ßfiltershape[1] + 1, inshape[1] - filtershape[2] + 1])
 
-      self.filtermatrix = np.zeros((np.prod(inshape), np.prod(self.outshape)))
-      self.filter = np.random.uniform(-0.25, 0.25, self.filtershape)
+      self.filtermatrix = tensor.zeros((tensor.prod(inshape), tensor.prod(self.outshape)))
+      self.filter = tensor.uniform(-0.25, 0.25, self.filtershape)
 
       for f in range(self.outshape[0]):
         for i in range(self.outshape[1]):
           for j in range(self.outshape[2]):
-            x = np.zeros(inshape)
+            x = tensor.zeros(inshape)
             x[i : i + self.filtershape[1], j : j + self.filtershape[2]] = self.filter[f]
             self.filtermatrix[:, f * self.outshape[1] * self.outshape[2] + i * self.outshape[2] + j] = x.flatten()
 
@@ -30,9 +29,9 @@ class convmatrix:
   def modelinit(self, inshape):
     return self.outshape
 
-  def forward(self, input):
-    self.input = input.flatten()
-    out = self.input @ self.filtermatrix
+  def forward(self, itensorut):
+    self.itensorut = itensorut.flatten()
+    out = self.itensorut @ self.filtermatrix
     self.out = self.activation.forward(out)
     self.derivative = self.activation.backward(out)
 
@@ -41,6 +40,6 @@ class convmatrix:
   def backward(self, outerror):
     outerror = outerror.flatten()
     outgradient = self.derivative * outerror
-    # inputerror = np.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
-    self.filtermatrix += np.outer(self.input.T, outgradient) * self.learningrate
-    # return inputerror
+    # itensoruterror = tensor.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
+    self.filtermatrix += tensor.outer(self.itensorut.T, outgradient) * self.learningrate
+    # return itensoruterror

@@ -1,4 +1,4 @@
-import numpy as np
+from .tensor import tensor
 from .static_ops import identity
 
 class nn:
@@ -7,8 +7,8 @@ class nn:
     self.activation, self.learningrate = activation, learningrate
     self.inshape = inshape
     if inshape is not None:
-      self.weights = np.random.uniform(weightsinit[0], weightsinit[1], (np.prod(inshape), np.prod(outshape)))
-      self.biases = np.random.uniform(biasesinit[0], biasesinit[1], np.prod(outshape))
+      self.weights = tensor.uniform(weightsinit[0], weightsinit[1], (tensor.prod(inshape), tensor.prod(outshape)))
+      self.biases = tensor.uniform(biasesinit[0], biasesinit[1], tensor.prod(outshape))
     self.outshape = outshape
     
   def __copy__(self):
@@ -22,8 +22,8 @@ class nn:
       inshape = inshape[0]
     self.inshape = inshape
 
-    self.weights = np.random.uniform(self.weightsinit[0], self.weightsinit[1], (np.prod(inshape), np.prod(self.outshape)))
-    self.biases = np.random.uniform(self.biasesinit[0], self.biasesinit[1], np.prod(self.outshape))
+    self.weights = tensor.uniform(self.weightsinit[0], self.weightsinit[1], (tensor.prod(inshape), tensor.prod(self.outshape)))
+    self.biases = tensor.uniform(self.biasesinit[0], self.biasesinit[1], tensor.prod(self.outshape))
     return self.outshape
 
   def forward(self, input):
@@ -35,8 +35,8 @@ class nn:
 
   def backward(self, outerror):
     outerror = outerror.flatten()
-    outgradient = self.derivative * outerror if np.ndim(self.derivative) == 1 else self.derivative @ outerror
+    outgradient = self.derivative * outerror if tensor.ndim(self.derivative) == 1 else self.derivative @ outerror
     inputerror = self.weights @ outerror
     self.biases += outgradient * self.learningrate
-    self.weights += np.outer(self.input.T, outgradient) * self.learningrate
+    self.weights += tensor.outer(self.input.T, outgradient) * self.learningrate
     return inputerror.reshape(self.inshape)

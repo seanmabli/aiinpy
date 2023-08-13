@@ -1,6 +1,0 @@
-cnn-mnist.py
-lstm-timeseries.py
-gru-timeseries.py
-nn-andor.py
-nn-nonlinearity.py
-rnn-posnegcon.py

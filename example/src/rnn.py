@@ -1,4 +1,4 @@
-import numpy as np
+from .tensor import tensor
 from .static_ops import tanh, stablesoftmax
 
 class rnn:
@@ -7,13 +7,13 @@ class rnn:
     self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
     
     if inshape is not None:
-      self.weightsinTohid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(inshape)))
+      self.weightsinTohid = tensor.uniform(-0.005, 0.005, (tensor.prod(hidshape), tensor.prod(inshape)))
 
-    self.weightshidTohid = np.random.uniform(-0.005, 0.005, (np.prod(hidshape), np.prod(hidshape)))
-    self.hidbiases = np.zeros(hidshape)
+    self.weightshidTohid = tensor.uniform(-0.005, 0.005, (tensor.prod(hidshape), tensor.prod(hidshape)))
+    self.hidbiases = tensor.zeros(hidshape)
 
-    self.weightshidToout = np.random.uniform(-0.005, 0.005, (np.prod(outshape), np.prod(hidshape)))
-    self.outbiases = np.zeros(outshape)
+    self.weightshidToout = tensor.uniform(-0.005, 0.005, (tensor.prod(outshape), tensor.prod(hidshape)))
+    self.outbiases = tensor.zeros(outshape)
 
   def __copy__(self):
     return type(self)(self.outshape, self.type, self.outactivation, self.hidshape, self.learningrate, self.inshape)
@@ -23,13 +23,13 @@ class rnn:
 
   def modelinit(self, inshape):
     self.inshape = inshape
-    self.weightsinTohid = np.random.uniform(-0.005, 0.005, (np.prod(self.hidshape), np.prod(inshape)))
+    self.weightsinTohid = tensor.uniform(-0.005, 0.005, (tensor.prod(self.hidshape), tensor.prod(inshape)))
     return self.outshape
 
   def forward(self, input):
     self.input = input
-    self.hid = np.zeros((len(self.input) + 1, self.hidshape))
-    self.hidderivative = np.zeros((len(self.input) + 1, self.hidshape))
+    self.hid = tensor.zeros((len(self.input) + 1, self.hidshape))
+    self.hidderivative = tensor.zeros((len(self.input) + 1, self.hidshape))
     
     if self.type == 'ManyToOne':
       for i in range(len(input)):
@@ -40,8 +40,8 @@ class rnn:
       self.outderivative = self.outactivation.backward(self.weightshidToout @ self.hid[len(input), :] + self.outbiases)
     
     elif self.type == 'ManyToMany':
-      self.out = np.zeros((len(self.input), self.outshape))
-      self.outderivative = np.zeros((len(self.input), self.outshape))
+      self.out = tensor.zeros((len(self.input), self.outshape))
+      self.outderivative = tensor.zeros((len(self.input), self.outshape))
 
       for i in range(len(input)):
         self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
@@ -52,14 +52,14 @@ class rnn:
     return self.out
 
   def backward(self, outError):
-    weightsinTohidΔ = np.zeros(self.weightsinTohid.shape)
-    weightshidTohidΔ = np.zeros(self.weightshidTohid.shape)
-    hidbiasesΔ = np.zeros(self.hidbiases.shape)
+    weightsinTohidΔ = tensor.zeros(self.weightsinTohid.shape)
+    weightshidTohidΔ = tensor.zeros(self.weightshidTohid.shape)
+    hidbiasesΔ = tensor.zeros(self.hidbiases.shape)
 
     if self.type == 'ManyToOne':
-      outGradient = self.outderivative * outError if np.ndim(self.outderivative) == 1 else self.outderivative @ outError
+      outGradient = self.outderivative * outError if tensor.ndim(self.outderivative) == 1 else self.outderivative @ outError
 
-      weightshidTooutΔ = np.outer(outGradient, self.hid[len(self.input)].T)
+      weightshidTooutΔ = tensor.outer(outGradient, self.hid[len(self.input)].T)
       outbiasesΔ = outGradient
 
       hidError = self.weightshidToout.T @ outError
@@ -68,14 +68,14 @@ class rnn:
         hidGradient = self.hidderivative[i + 1, :] * hidError
 
         hidbiasesΔ += hidGradient
-        weightshidTohidΔ += np.outer(hidGradient, self.hid[i].T)
-        weightsinTohidΔ += np.outer(hidGradient, self.input[i].T)
+        weightshidTohidΔ += tensor.outer(hidGradient, self.hid[i].T)
+        weightsinTohidΔ += tensor.outer(hidGradient, self.input[i].T)
 
         hidError = self.weightshidTohid.T @ hidGradient
 
     elif self.type == 'ManyToMany':
-      weightshidTooutΔ = np.zeros(self.weightshidToout.shape)
-      outbiasesΔ = np.zeros(self.outbiases.shape)
+      weightshidTooutΔ = tensor.zeros(self.weightshidToout.shape)
+      outbiasesΔ = tensor.zeros(self.outbiases.shape)
 
       hidError = self.weightshidToout.T @ outError[len(self.input) - 1]
 
@@ -83,18 +83,18 @@ class rnn:
         hidGradient = self.hidderivative[i + 1] * hidError
         outGradient = self.outderivative[i] * outError[i]
 
-        weightsinTohidΔ += np.outer(hidGradient, self.input[i].T)
-        weightshidTohidΔ += np.outer(hidGradient, self.hid[i].T)
+        weightsinTohidΔ += tensor.outer(hidGradient, self.input[i].T)
+        weightshidTohidΔ += tensor.outer(hidGradient, self.hid[i].T)
         hidbiasesΔ += hidGradient
 
-        weightshidTooutΔ += np.outer(outGradient, self.hid[i].T)
+        weightshidTooutΔ += tensor.outer(outGradient, self.hid[i].T)
         outbiasesΔ += outGradient
 
         hidError = self.weightshidTohid.T @ hidGradient + self.weightshidToout.T @ outError[i]
 
-    self.weightsinTohid += self.learningrate * np.clip(weightsinTohidΔ, -1, 1)
-    self.weightshidTohid += self.learningrate * np.clip(weightshidTohidΔ, -1, 1)
-    self.hidbiases += self.learningrate * np.clip(hidbiasesΔ, -1, 1)
+    self.weightsinTohid += self.learningrate * tensor.clip(weightsinTohidΔ, -1, 1)
+    self.weightshidTohid += self.learningrate * tensor.clip(weightshidTohidΔ, -1, 1)
+    self.hidbiases += self.learningrate * tensor.clip(hidbiasesΔ, -1, 1)
 
-    self.weightshidToout += self.learningrate * np.clip(weightshidTooutΔ, -1, 1)
-    self.outbiases += self.learningrate * np.clip(outbiasesΔ, -1, 1)
+    self.weightshidToout += self.learningrate * tensor.clip(weightshidTooutΔ, -1, 1)
+    self.outbiases += self.learningrate * tensor.clip(outbiasesΔ, -1, 1)
