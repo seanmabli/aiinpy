@@ -2,7 +2,6 @@ import src as ai
 import numpy as np
 import wandb
 
-wandb.init(project='lstm-timeseries', config={'version' : 'new-a'})
 
 model = ai.lstm(inshape=1, outshape=1, outactivation=ai.identity(), learningrate=0.01)
 
@@ -34,4 +33,3 @@ for Generation in range(NumOfTestGen):
   inError = model.backward(OutError)
 
 print(error / NumOfTestGen)
-wandb.log({"test accuracy" : error / NumOfTestGen})

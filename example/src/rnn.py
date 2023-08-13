@@ -44,8 +44,8 @@ class rnn:
       self.outderivative = tensor.zeros((len(self.input), self.outshape))
 
       for i in range(len(input)):
-        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
-        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].reshape(tensor.prod(input[i].shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].reshape(tensor.prod(input[i].shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
         self.out[i, :] = self.outactivation.forward(self.weightshidToout @ self.hid[i + 1, :] + self.outbiases)
         self.outderivative[i, :] = self.outactivation.backward(self.weightshidToout @ self.hid[i + 1, :] + self.outbiases)
 
@@ -62,7 +62,7 @@ class rnn:
       weightshidTooutΔ = tensor.outer(outGradient, self.hid[len(self.input)].T)
       outbiasesΔ = outGradient
 
-      hidError = self.weightshidToout.T @ outError
+      hidError = tensor.transpose(self.weightshidToout) @ outError
 
       for i in reversed(range(len(self.input))):
         hidGradient = self.hidderivative[i + 1, :] * hidError
@@ -71,13 +71,13 @@ class rnn:
         weightshidTohidΔ += tensor.outer(hidGradient, self.hid[i].T)
         weightsinTohidΔ += tensor.outer(hidGradient, self.input[i].T)
 
-        hidError = self.weightshidTohid.T @ hidGradient
+        hidError = tensor.transpose(self.weightshidTohid) @ hidGradient
 
     elif self.type == 'ManyToMany':
       weightshidTooutΔ = tensor.zeros(self.weightshidToout.shape)
       outbiasesΔ = tensor.zeros(self.outbiases.shape)
 
-      hidError = self.weightshidToout.T @ outError[len(self.input) - 1]
+      hidError = tensor.transpose(self.weightshidToout) @ outError[len(self.input) - 1]
 
       for i in reversed(range(len(self.input))):
         hidGradient = self.hidderivative[i + 1] * hidError
@@ -90,7 +90,7 @@ class rnn:
         weightshidTooutΔ += tensor.outer(outGradient, self.hid[i].T)
         outbiasesΔ += outGradient
 
-        hidError = self.weightshidTohid.T @ hidGradient + self.weightshidToout.T @ outError[i]
+        hidError = tensor.transpose(self.weightshidTohid) @ hidGradient + tensor.transpose(self.weightshidToout) @ outError[i]
 
     self.weightsinTohid += self.learningrate * tensor.clip(weightsinTohidΔ, -1, 1)
     self.weightshidTohid += self.learningrate * tensor.clip(weightshidTohidΔ, -1, 1)

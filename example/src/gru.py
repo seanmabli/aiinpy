@@ -1,4 +1,5 @@
 from .static_ops import sigmoid, tanh
+from .tensor import tensor
 
 class gru:
   def __init__(self, outshape, outactivation, hidshape=64, learningrate=0.05, inshape=None):
@@ -52,16 +53,16 @@ class gru:
 
 
     for i in range(self.cellSize):
-      self.ResetGate[i, :] = sigmoid().forward(self.weightsinToResetGate.T @ self.input[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
-      self.resetgatederivative[i, :] = sigmoid().backward(self.weightsinToResetGate.T @ self.input[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
-      self.UpdateGate[i, :] = sigmoid().forward(self.weightsinToUpdateGate.T @ self.input[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
-      self.updategatederivative[i, :] = sigmoid().backward(self.weightsinToUpdateGate.T @ self.input[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
-      self.hidGate[i, :] = tanh().forward(self.weightsinTohidGate.T @ self.input[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
-      self.hidgatederivative[i, :] = tanh().backward(self.weightsinTohidGate.T @ self.input[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
+      self.ResetGate[i, :] = sigmoid().forward(tensor.transpose(self.weightsinToResetGate) @ self.input[i, :] + tensor.transpose(self.weightshidToResetGate) @ self.hid[i, :] + self.ResetGatebias)
+      self.resetgatederivative[i, :] = sigmoid().backward(tensor.transpose(self.weightsinToResetGate) @ self.input[i, :] + tensor.transpose(self.weightshidToResetGate) @ self.hid[i, :] + self.ResetGatebias)
+      self.UpdateGate[i, :] = sigmoid().forward(tensor.transpose(self.weightsinToUpdateGate) @ self.input[i, :] + tensor.transpose(self.weightshidToUpdateGate) @ self.hid[i, :] + self.UpdateGatebias)
+      self.updategatederivative[i, :] = sigmoid().backward(tensor.transpose(self.weightsinToUpdateGate) @ self.input[i, :] + tensor.transpose(self.weightshidToUpdateGate) @ self.hid[i, :] + self.UpdateGatebias)
+      self.hidGate[i, :] = tanh().forward(tensor.transpose(self.weightsinTohidGate) @ self.input[i, :] + tensor.transpose(self.weightshidTohidGate) @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
+      self.hidgatederivative[i, :] = tanh().backward(tensor.transpose(self.weightsinTohidGate) @ self.input[i, :] + tensor.transpose(self.weightshidTohidGate) @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
 
       self.hid[i + 1, :] = (1 - self.UpdateGate[i, :]) * self.hid[i, :] + self.UpdateGate[i, :] * self.hidGate[i, :]
-      self.out[i, :] = self.outactivation.forward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
-      self.outderivative[i, :] = self.outactivation.backward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
+      self.out[i, :] = self.outactivation.forward(tensor.transpose(self.weightshidToout) @ self.hid[i + 1, :] + self.outbias)
+      self.outderivative[i, :] = self.outactivation.backward(tensor.transpose(self.weightshidToout) @ self.hid[i + 1, :] + self.outbias)
     
     return self.out
 
@@ -91,9 +92,9 @@ class gru:
 
       hidGateError = hidError * self.UpdateGate[i, :]
       UpdateGateError = hidError * (-1 * self.hid[i, :]) + hidError * self.hidGate[i, :]
-      ResetGateError = (self.weightshidTohidGate.T @ hidGateError) * self.hid[i, :]
+      ResetGateError = (tensor.transpose(self.weightshidTohidGate) @ hidGateError) * self.hid[i, :]
 
-      hidError += (self.weightshidTohidGate.T @ hidGateError) * self.ResetGate[i, :] + self.weightshidToResetGate.T @ ResetGateError + self.weightshidToUpdateGate.T @ UpdateGateError
+      hidError += (tensor.transpose(self.weightshidTohidGate) @ hidGateError) * self.ResetGate[i, :] + tensor.transpose(self.weightshidToResetGate) @ ResetGateError + tensor.transpose(self.weightshidToUpdateGate) @ UpdateGateError
       inError[i, :] = self.weightsinToResetGate @ ResetGateError + self.weightsinToUpdateGate @ UpdateGateError + self.weightsinTohidGate @ hidGateError
 
       ResetGateGradient = self.resetgatederivative[i, :] * ResetGateError

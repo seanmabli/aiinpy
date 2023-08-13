@@ -221,7 +221,6 @@ class softmax:
         out[i, j] = forward[i] * (1 if i == j else 0 - forward[j])
     return out
 
-
 class softplus:
   def __repr__(self):
     return 'softplus()'
@@ -270,44 +269,10 @@ class tanh:
   def __repr__(self):
     return 'tanh()'
 
-  # def forwardone(self, input):
-  #   return (tensor.exp(input) - tensor.exp(-input)) / (tensor.exp(input) + tensor.exp(-input))
-
-  # def forwardtwo(self, input):
-  #   return (tensor.exp(2 * input) - 1) / (tensor.exp(2 * input) + 1)
-
-  # def forwardthree(self, input):
-  #   a = tensor.exp(input)
-  #   return (a - 1 / a) / (a + 1 / a)
-
   def forward(self, input):
     a = tensor.exp(2 * input)
-    return (a - 1) / (a + 1)
-
-  # def backwardone(self, input):
-  #   return (4 * tensor.exp(2 * input)) / tensor.square(tensor.exp(2 * input) + 1)
-
-  # def backwardtwo(self, input):
-  #   return 4 / tensor.square(tensor.exp(input) + tensor.exp(-input))
+    return (4 * a) / (a + 1)
 
   def backward(self, input):
     a = tensor.exp(2 * input)
-    return (4 * a) / tensor.square(a + 1)
-  
-  # def backwardfour(self, input):
-  #   a = tensor.exp(input)
-  #   return 4 / tensor.square(a ** 2 + 1 / a)
-
-# forward
-# import timeit
-# print(timeit.timeit('(tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))) - 1) / (tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))) + 1)', setup='import numpy as np', number=10000))
-# print(timeit.timeit('(tensor.exp(tensor.uniform(-1, 1, (100, 100))) - tensor.exp(-tensor.uniform(-1, 1, (100, 100)))) / (tensor.exp(tensor.uniform(-1, 1, (100, 100))) + tensor.exp(-tensor.uniform(-1, 1, (100, 100))))', setup='import numpy as np', number=10000))
-# print(timeit.timeit('a = tensor.exp(tensor.uniform(-1, 1, (100, 100))); (a - 1 / a) / (a + 1 / a)', setup='import numpy as np', number=10000))
-# print(timeit.timeit('a = tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))); (a - 1) / (a + 1)', setup='import numpy as np', number=10000))
-
-# backward
-# import timeit
-# print(timeit.timeit('(4 * tensor.exp(2 * tensor.uniform(-1, 1, (100, 100)))) / tensor.square(tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))) + 1)', setup='import numpy as np', number=10000)) # 2.7722288
-# print(timeit.timeit('4 / tensor.square(tensor.exp(tensor.uniform(-1, 1, (100, 100))) + tensor.exp(-tensor.uniform(-1, 1, (100, 100))))', setup='import numpy as np', number=10000)) # 2.6440156000000004
-# print(timeit.timeit('a = tensor.exp(2 * tensor.uniform(-1, 1, (100, 100))); (4 * a) / tensor.square(a + 1)', setup='import numpy as np', number=10000)) # 1.4674546
-# print(timeit.timeit('a = tensor.exp(tensor.uniform(-1, 1, (100, 100))); 4 / tensor.square(a ** 2 + 1 / a)', setup='import numpy as np', number=10000)) # 1.567536
+    return (4 * a) / ((a + 1) ** 2)

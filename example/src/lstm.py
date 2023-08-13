@@ -1,5 +1,5 @@
 from .tensor import tensor
-from .static_ops import identity
+from .static_ops import sigmoid, tanh, stablesoftmax
 
 class lstm:
   def __init__(self, outshape, outactivation, hidshape=64, learningrate=0.05, inshape=None):
@@ -7,23 +7,23 @@ class lstm:
     self.inshape, self.hidshape, self.outshape = inshape, hidshape, outshape
     
     if inshape is not None:
-      self.weightsinToForgetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-      self.weightsinToinGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-      self.weightsinTooutGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-      self.weightsinTocellMemGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+      self.weightsinToForgetGate = tensor.uniform(-0.005, 0.005, (inshape, hidshape))
+      self.weightsinToinGate = tensor.uniform(-0.005, 0.005, (inshape, hidshape))
+      self.weightsinTooutGate = tensor.uniform(-0.005, 0.005, (inshape, hidshape))
+      self.weightsinTocellMemGate = tensor.uniform(-0.005, 0.005, (inshape, hidshape))
 
-    self.weightshidToForgetGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
-    self.weightshidToinputGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
-    self.weightshidTooutputGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
-    self.weightshidTocellMemGate = np.random.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightshidToForgetGate = tensor.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightshidToinputGate = tensor.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightshidTooutputGate = tensor.uniform(-0.005, 0.005, (hidshape, hidshape))
+    self.weightshidTocellMemGate = tensor.uniform(-0.005, 0.005, (hidshape, hidshape))
 
-    self.ForgetGatebiases = np.zeros(hidshape)
-    self.inGatebiases = np.zeros(hidshape)
-    self.outGatebiases = np.zeros(hidshape)
-    self.cellMemGatebiases = np.zeros(hidshape)
+    self.ForgetGatebiases = tensor.zeros(hidshape)
+    self.inGatebiases = tensor.zeros(hidshape)
+    self.outGatebiases = tensor.zeros(hidshape)
+    self.cellMemGatebiases = tensor.zeros(hidshape)
 
-    self.weightshidToout = np.random.uniform(-0.005, 0.005, (hidshape, outshape))
-    self.outbias = np.zeros(outshape)
+    self.weightshidToout = tensor.uniform(-0.005, 0.005, (hidshape, outshape))
+    self.outbias = tensor.zeros(outshape)
 
   def __copy__(self):
     return type(self)(self.outshape, self.outactivation, self.hidshape, self.learningrate, self.inshape)
@@ -33,73 +33,73 @@ class lstm:
 
   def modelinit(self, inshape):
     self.inshape = inshape
-    self.weightsinToForgetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-    self.weightsinToinGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-    self.weightsinTooutGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-    self.weightsinTocellMemGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+    self.weightsinToForgetGate = tensor.uniform(-0.005, 0.005, (inshape, self.hidshape))
+    self.weightsinToinGate = tensor.uniform(-0.005, 0.005, (inshape, self.hidshape))
+    self.weightsinTooutGate = tensor.uniform(-0.005, 0.005, (inshape, self.hidshape))
+    self.weightsinTocellMemGate = tensor.uniform(-0.005, 0.005, (inshape, self.hidshape))
     return self.outshape
 
   def forward(self, input):
     self.input = input
     self.cellSize = len(input)
 
-    self.hid = np.zeros((self.cellSize + 1, self.hidshape))
-    self.cellMem = np.zeros((self.cellSize + 1, self.hidshape))
-    self.out = np.zeros((self.cellSize, self.outshape))
-    self.outderivative = np.zeros((self.cellSize, self.outshape))
+    self.hid = tensor.zeros((self.cellSize + 1, self.hidshape))
+    self.cellMem = tensor.zeros((self.cellSize + 1, self.hidshape))
+    self.out = tensor.zeros((self.cellSize, self.outshape))
+    self.outderivative = tensor.zeros((self.cellSize, self.outshape))
 
-    self.ForgetGate = np.zeros((self.cellSize, self.hidshape))
-    self.inGate = np.zeros((self.cellSize, self.hidshape))
-    self.outGate = np.zeros((self.cellSize, self.hidshape))
-    self.cellMemGate = np.zeros((self.cellSize, self.hidshape))
+    self.ForgetGate = tensor.zeros((self.cellSize, self.hidshape))
+    self.inGate = tensor.zeros((self.cellSize, self.hidshape))
+    self.outGate = tensor.zeros((self.cellSize, self.hidshape))
+    self.cellMemGate = tensor.zeros((self.cellSize, self.hidshape))
 
-    self.forgetgatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.ingatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.outgatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.cellmemgatederivative = np.zeros((self.cellSize, self.hidshape))
+    self.forgetgatederivative = tensor.zeros((self.cellSize, self.hidshape))
+    self.ingatederivative = tensor.zeros((self.cellSize, self.hidshape))
+    self.outgatederivative = tensor.zeros((self.cellSize, self.hidshape))
+    self.cellmemgatederivative = tensor.zeros((self.cellSize, self.hidshape))
 
     for i in range(self.cellSize):
-      self.ForgetGate[i, :] = sigmoid().forward((self.weightsinToForgetGate.T @ self.input[i, :]) + (self.weightshidToForgetGate.T @ self.hid[i, :]) + self.ForgetGatebiases)
-      self.forgetgatederivative[i, :] = sigmoid().backward((self.weightsinToForgetGate.T @ self.input[i, :]) + (self.weightshidToForgetGate.T @ self.hid[i, :]) + self.ForgetGatebiases)
+      self.ForgetGate[i, :] = sigmoid().forward((tensor.transpose(self.weightsinToForgetGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidToForgetGate) @ self.hid[i, :]) + self.ForgetGatebiases)
+      self.forgetgatederivative[i, :] = sigmoid().backward((tensor.transpose(self.weightsinToForgetGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidToForgetGate) @ self.hid[i, :]) + self.ForgetGatebiases)
       
-      self.inGate[i, :] = sigmoid().forward((self.weightsinToinGate.T @ self.input[i, :]) + (self.weightshidToinputGate.T @ self.hid[i, :]) + self.inGatebiases)
-      self.ingatederivative[i, :] = sigmoid().backward((self.weightsinToinGate.T @ self.input[i, :]) + (self.weightshidToinputGate.T @ self.hid[i, :]) + self.inGatebiases)
+      self.inGate[i, :] = sigmoid().forward((tensor.transpose(self.weightsinToinGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidToinputGate) @ self.hid[i, :]) + self.inGatebiases)
+      self.ingatederivative[i, :] = sigmoid().backward((tensor.transpose(self.weightsinToinGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidToinputGate) @ self.hid[i, :]) + self.inGatebiases)
       
-      self.outGate[i, :] = sigmoid().forward((self.weightsinTooutGate.T @ self.input[i, :]) + (self.weightshidTooutputGate.T @ self.hid[i, :]) + self.outGatebiases)
-      self.outgatederivative[i, :] = sigmoid().backward((self.weightsinTooutGate.T @ self.input[i, :]) + (self.weightshidTooutputGate.T @ self.hid[i, :]) + self.outGatebiases)
+      self.outGate[i, :] = sigmoid().forward((tensor.transpose(self.weightsinTooutGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidTooutputGate) @ self.hid[i, :]) + self.outGatebiases)
+      self.outgatederivative[i, :] = sigmoid().backward((tensor.transpose(self.weightsinTooutGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidTooutputGate) @ self.hid[i, :]) + self.outGatebiases)
       
-      self.cellMemGate[i, :] = tanh().forward((self.weightsinTocellMemGate.T @ self.input[i, :]) + (self.weightshidTocellMemGate.T @ self.hid[i, :]) + self.cellMemGatebiases)
-      self.cellmemgatederivative[i, :] = tanh().backward((self.weightsinTocellMemGate.T @ self.input[i, :]) + (self.weightshidTocellMemGate.T @ self.hid[i, :]) + self.cellMemGatebiases)
+      self.cellMemGate[i, :] = tanh().forward((tensor.transpose(self.weightsinTocellMemGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidTocellMemGate) @ self.hid[i, :]) + self.cellMemGatebiases)
+      self.cellmemgatederivative[i, :] = tanh().backward((tensor.transpose(self.weightsinTocellMemGate) @ self.input[i, :]) + (tensor.transpose(self.weightshidTocellMemGate) @ self.hid[i, :]) + self.cellMemGatebiases)
 
       self.cellMem[i + 1, :] = (self.ForgetGate[i, :] * self.cellMem[i, :]) + (self.inGate[i, :] * self.cellMemGate[i, :])
       self.hid[i + 1, :] = self.outGate[i, :] * tanh().forward(self.cellMem[i + 1, :])
-      self.out[i, :] = self.outactivation.forward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
-      self.outderivative[i, :] = self.outactivation.backward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
+      self.out[i, :] = self.outactivation.forward(tensor.transpose(self.weightshidToout) @ self.hid[i + 1, :] + self.outbias)
+      self.outderivative[i, :] = self.outactivation.backward(tensor.transpose(self.weightshidToout) @ self.hid[i + 1, :] + self.outbias)
 
     return self.out
 
   def backward(self, outError):
-    inError = np.zeros(self.input.shape)
-    hidError = np.zeros(self.hidshape)
-    cellMemError = np.zeros(self.hidshape)
+    inError = tensor.zeros(self.input.shape)
+    hidError = tensor.zeros(self.hidshape)
+    cellMemError = tensor.zeros(self.hidshape)
 
-    weightsinToForgetGateΔ = np.zeros(self.weightsinToForgetGate.shape)
-    weightsinToinGateΔ = np.zeros(self.weightsinToinGate.shape)
-    weightsinTooutGateΔ = np.zeros(self.weightsinTooutGate.shape)
-    weightsinTocellMemGateΔ = np.zeros(self.weightsinTocellMemGate.shape)
+    weightsinToForgetGateΔ = tensor.zeros(self.weightsinToForgetGate.shape)
+    weightsinToinGateΔ = tensor.zeros(self.weightsinToinGate.shape)
+    weightsinTooutGateΔ = tensor.zeros(self.weightsinTooutGate.shape)
+    weightsinTocellMemGateΔ = tensor.zeros(self.weightsinTocellMemGate.shape)
 
-    weightshidToForgetGateΔ = np.zeros(self.weightshidToForgetGate.shape)
-    weightshidToinputGateΔ = np.zeros(self.weightshidToinputGate.shape)
-    weightshidTooutputGateΔ = np.zeros(self.weightshidTooutputGate.shape)
-    weightshidTocellMemGateΔ = np.zeros(self.weightshidTocellMemGate.shape)
+    weightshidToForgetGateΔ = tensor.zeros(self.weightshidToForgetGate.shape)
+    weightshidToinputGateΔ = tensor.zeros(self.weightshidToinputGate.shape)
+    weightshidTooutputGateΔ = tensor.zeros(self.weightshidTooutputGate.shape)
+    weightshidTocellMemGateΔ = tensor.zeros(self.weightshidTocellMemGate.shape)
 
-    ForgetGatebiasesΔ = np.zeros(self.ForgetGatebiases.shape)
-    inGatebiasesΔ = np.zeros(self.inGatebiases.shape)
-    outGatebiasesΔ = np.zeros(self.outGatebiases.shape)
-    cellMemGatebiasesΔ = np.zeros(self.cellMemGatebiases.shape)
+    ForgetGatebiasesΔ = tensor.zeros(self.ForgetGatebiases.shape)
+    inGatebiasesΔ = tensor.zeros(self.inGatebiases.shape)
+    outGatebiasesΔ = tensor.zeros(self.outGatebiases.shape)
+    cellMemGatebiasesΔ = tensor.zeros(self.cellMemGatebiases.shape)
 
-    weightshidTooutΔ = np.zeros(self.weightshidToout.shape)
-    outbiasΔ = np.zeros(self.outbias.shape)
+    weightshidTooutΔ = tensor.zeros(self.weightshidToout.shape)
+    outbiasΔ = tensor.zeros(self.outbias.shape)
 
     for i in reversed(range(self.cellSize)):
       outGradient = self.outderivative[i, :] * outError[i, :]
@@ -123,40 +123,40 @@ class lstm:
       hidError = self.weightshidToForgetGate @ ForgetGateError + self.weightshidToinputGate @ inGateError + self.weightshidTooutputGate @ outGateError + self.weightshidTocellMemGate @ cellMemGateError
       inError[i, :] = self.weightsinToForgetGate @ ForgetGateError + self.weightsinToinGate @ inGateError + self.weightsinTooutGate @ outGateError + self.weightsinTocellMemGate @ cellMemGateError
 
-      weightsinToForgetGateΔ += np.outer(self.input[i, :].T, ForgetGateGradient)
-      weightsinToinGateΔ += np.outer(self.input[i, :].T, inGateGradient)
-      weightsinTooutGateΔ += np.outer(self.input[i, :].T, outGateGradient)
-      weightsinTocellMemGateΔ += np.outer(self.input[i, :].T, cellMemGateGradient)
+      weightsinToForgetGateΔ += tensor.outer(self.input[i, :].T, ForgetGateGradient)
+      weightsinToinGateΔ += tensor.outer(self.input[i, :].T, inGateGradient)
+      weightsinTooutGateΔ += tensor.outer(self.input[i, :].T, outGateGradient)
+      weightsinTocellMemGateΔ += tensor.outer(self.input[i, :].T, cellMemGateGradient)
 
-      weightshidToForgetGateΔ += np.outer(self.hid[i, :].T, ForgetGateGradient)
-      weightshidToinputGateΔ += np.outer(self.hid[i, :].T, inGateGradient)
-      weightshidTooutputGateΔ += np.outer(self.hid[i, :].T, outGateGradient)
-      weightshidTocellMemGateΔ += np.outer(self.hid[i, :].T, cellMemGateGradient)
+      weightshidToForgetGateΔ += tensor.outer(self.hid[i, :].T, ForgetGateGradient)
+      weightshidToinputGateΔ += tensor.outer(self.hid[i, :].T, inGateGradient)
+      weightshidTooutputGateΔ += tensor.outer(self.hid[i, :].T, outGateGradient)
+      weightshidTocellMemGateΔ += tensor.outer(self.hid[i, :].T, cellMemGateGradient)
 
       ForgetGatebiasesΔ += ForgetGateGradient
       inGatebiasesΔ += inGateGradient
       outGatebiasesΔ += outGateGradient
       cellMemGatebiasesΔ += cellMemGateGradient
 
-      weightshidTooutΔ += np.outer(self.hid[i].T, outGradient)
+      weightshidTooutΔ += tensor.outer(self.hid[i].T, outGradient)
       outbiasΔ += outGradient
 
-    self.weightsinToForgetGate += np.clip(weightsinToForgetGateΔ, -1, 1) * self.learningrate
-    self.weightsinToinGate += np.clip(weightsinToinGateΔ, -1, 1) * self.learningrate
-    self.weightsinTooutGate += np.clip(weightsinTooutGateΔ, -1, 1) * self.learningrate
-    self.weightsinTocellMemGate += np.clip(weightsinTocellMemGateΔ, -1, 1) * self.learningrate
+    self.weightsinToForgetGate += tensor.clip(weightsinToForgetGateΔ, -1, 1) * self.learningrate
+    self.weightsinToinGate += tensor.clip(weightsinToinGateΔ, -1, 1) * self.learningrate
+    self.weightsinTooutGate += tensor.clip(weightsinTooutGateΔ, -1, 1) * self.learningrate
+    self.weightsinTocellMemGate += tensor.clip(weightsinTocellMemGateΔ, -1, 1) * self.learningrate
 
-    self.weightshidToForgetGate += np.clip(weightshidToForgetGateΔ, -1, 1) * self.learningrate
-    self.weightshidToinputGate += np.clip(weightshidToinputGateΔ, -1, 1) * self.learningrate
-    self.weightshidTooutputGate += np.clip(weightshidTooutputGateΔ, -1, 1) * self.learningrate
-    self.weightshidTocellMemGate += np.clip(weightshidTocellMemGateΔ, -1, 1) * self.learningrate
+    self.weightshidToForgetGate += tensor.clip(weightshidToForgetGateΔ, -1, 1) * self.learningrate
+    self.weightshidToinputGate += tensor.clip(weightshidToinputGateΔ, -1, 1) * self.learningrate
+    self.weightshidTooutputGate += tensor.clip(weightshidTooutputGateΔ, -1, 1) * self.learningrate
+    self.weightshidTocellMemGate += tensor.clip(weightshidTocellMemGateΔ, -1, 1) * self.learningrate
 
-    self.ForgetGatebiases += np.clip(ForgetGatebiasesΔ, -1, 1) * self.learningrate
-    self.inGatebiases += np.clip(inGatebiasesΔ, -1, 1) * self.learningrate
-    self.outGatebiases += np.clip(outGatebiasesΔ, -1, 1) * self.learningrate
-    self.cellMemGatebiases += np.clip(cellMemGatebiasesΔ, -1, 1) * self.learningrate
+    self.ForgetGatebiases += tensor.clip(ForgetGatebiasesΔ, -1, 1) * self.learningrate
+    self.inGatebiases += tensor.clip(inGatebiasesΔ, -1, 1) * self.learningrate
+    self.outGatebiases += tensor.clip(outGatebiasesΔ, -1, 1) * self.learningrate
+    self.cellMemGatebiases += tensor.clip(cellMemGatebiasesΔ, -1, 1) * self.learningrate
 
-    self.weightshidToout += np.clip(weightshidTooutΔ, -1, 1) * self.learningrate
-    self.outbias += np.clip(outbiasΔ, -1, 1) * self.learningrate
+    self.weightshidToout += tensor.clip(weightshidTooutΔ, -1, 1) * self.learningrate
+    self.outbias += tensor.clip(outbiasΔ, -1, 1) * self.learningrate
 
     return inError

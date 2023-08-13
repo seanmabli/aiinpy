@@ -10,6 +10,10 @@ class tensor:
 	newaxis = np.newaxis
 
 	def toTensor(other): return tensor(other) if type(other) != tensor else other
+	def reshape(self, shape, other=None): return tensor(other.data.reshape(shape), ops=['reshape', other.ops, shape]) if other != None else tensor(self.data.reshape(shape), ops=['reshape', self.ops, shape])
+	def __int__(self): return int(self.data)
+	def __float__(self): return float(self.data)
+	def __bool__(self): return bool(self.data)
 
 	def __add__(self, other): other = tensor.toTensor(other); return tensor(self.data + other.data, ops=['add', self.ops, other.ops, self.data + other.data])
 	def __mul__(self, other): other = tensor.toTensor(other); return tensor(self.data * other.data, ops=['mul', self.ops, other.ops, self.data * other.data])
@@ -28,8 +32,6 @@ class tensor:
 	def __rpow__(self, other): return self ** tensor.toTensor(other)
 	def __rmod__(self, other): return self % tensor.toTensor(other)
 	def __rmatmul__(self, other): return self @ tensor.toTensor(other)
-
-	def reshape(self, shape, other=None): return tensor(other.data.reshape(shape), ops=['reshape', other.ops, shape]) if other != None else tensor(self.data.reshape(shape), ops=['reshape', self.ops, shape])
 
 	def zeros(shape): return tensor(np.zeros(shape))
 	def ones(shape): return tensor(np.ones(shape))
@@ -51,29 +53,25 @@ class tensor:
 	def max(self, axis=None): return np.max(self.data, axis=axis)
 	def min(self, axis=None): return np.min(self.data, axis=axis)
 
-	def maximum(a, b): return np.maximum(tensor.toTensor(a).data, tensor.toTensor(b).data)
-	def minimum(a, b): return np.minimum(tensor.toTensor(a).data, tensor.toTensor(b).data)
-
 	def exp(other): other = tensor.toTensor(other); return tensor(np.exp(other.data), ops=['pow', other.ops, ['init', tensor(np.e), other.dtype]])
 	def floor(other): other = tensor.toTensor(other); return tensor(np.floor(other.data), ops=['mod', other.ops, ['init', tensor(1), other.dtype]])
 	def prod(other): other = tensor.toTensor(other); return np.prod(other.data)
 
-	def vectorize(function): return np.vectorize(function)
-	def where(condition, x, y): return tensor(np.where(condition, x, y))
-	def concat(tensors, axis=0): return tensor(np.concatenate(list(map(lambda i: i.data, tensors)), axis=axis))
-
-	def __int__(self): return int(self.data)
-	def __float__(self): return float(self.data)
-	def __bool__(self): return bool(self.data)
-
-	def multiply(tensors, axis=None): return tensor(np.multiply.reduce(list(map(lambda i: i.data, tensors)), axis=axis))
+	def maximum(a, b): return np.maximum(tensor.toTensor(a).data, tensor.toTensor(b).data)
+	def minimum(a, b): return np.minimum(tensor.toTensor(a).data, tensor.toTensor(b).data)
 	def outer(a, b): return tensor(np.outer(tensor.toTensor(a).data, tensor.toTensor(b).data))
 	def inner(a, b): return tensor(np.inner(tensor.toTensor(a).data, tensor.toTensor(b).data))
 	def transpose(other, axes=None): other = tensor.toTensor(other); return tensor(np.transpose(other.data, axes), ops=['tbd'])
+
+	# bad functions (try to remove)
+	def vectorize(function): return np.vectorize(function)
+	def where(condition, x, y): return tensor(np.where(condition, x, y))
+	def concat(tensors, axis=0): return tensor(np.concatenate(list(map(lambda i: i.data, tensors)), axis=axis))
 	def repeat(other, repeats, axis=None): other = tensor.toTensor(other); return tensor(np.repeat(other.data, repeats, axis=axis))
 	def rot90(other, repeats): other = tensor.toTensor(other); return tensor(np.rot90(other.data, repeats), ops=['tbd'])
 	def pad(other, pad_width, mode='constant', constant_values=0): other = tensor.toTensor(other); return tensor(np.pad(other.data, pad_width, mode=mode, constant_values=constant_values), ops=['tbd'])
 	def index(other, value): other = tensor.toTensor(other); return np.where(other.data == value)
+	def clip(other, min, max): other = tensor.toTensor(other); return tensor(np.clip(other.data, min, max), ops=['tbd'])
 
 	'''
 	def autograd(self, input):
