@@ -1,5 +1,3 @@
-import os
-
 tests = ["cnn-mnist",
 "lstm-timeseries",
 "gru-timeseries",
@@ -8,12 +6,15 @@ tests = ["cnn-mnist",
 "rnn-posnegcon",
 ]
 
-for i in range(len(tests)):
-    template = """
-name: test {{test}}.py
+start = """
+name: test models
 on: [push]
 jobs:
-  cnn-mnist:
+"""
+
+for i in range(len(tests)):
+    template = """
+  {{test}}:
     runs-on: ubuntu-latest
     steps:
       - name: clone
@@ -31,7 +32,10 @@ jobs:
 
       - name: run tests
         run: cd example && python3 {{test}}.py
+
     """
     template = template.replace("{{test}}", tests[i])
-    with open("test-{}.yml".format(tests[i]), "w") as f:
-        f.write(template)
+    start += template
+
+with open("test-models.yml", "w") as f:
+    f.write(start)
