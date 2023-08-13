@@ -1,17 +1,5 @@
 import numpy as np
-from .binarystep import binarystep
-from .gaussian import gaussian
-from .identity import identity
-from .leakyrelu import leakyrelu
-from .mish import mish
-from .relu import relu
-from .selu import selu
-from .sigmoid import sigmoid
-from .silu import silu
-from .softmax import softmax
-from .softplus import softplus
-from .stablesoftmax import stablesoftmax
-from .tanh import tanh
+from .static_ops import identity
 
 class nn:
   def __init__(self, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0), inshape=None):

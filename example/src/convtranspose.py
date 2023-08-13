@@ -1,18 +1,6 @@
 import numpy as np
 import math
-from .binarystep import binarystep
-from .gaussian import gaussian
-from .identity import identity
-from .leakyrelu import leakyrelu
-from .mish import mish
-from .relu import relu
-from .selu import selu
-from .sigmoid import sigmoid
-from .silu import silu
-from .softmax import softmax
-from .softplus import softplus
-from .stablesoftmax import stablesoftmax
-from .tanh import tanh
+from .static_ops import identity
 
 class convtranspose:
   def __init__(self, inshape, filtershape, learningrate, activation, padding=False, stride=(1, 1)):

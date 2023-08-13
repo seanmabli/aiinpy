@@ -1,18 +1,6 @@
 import numpy as np
-from .binarystep import binarystep
-from .gaussian import gaussian
-from .identity import identity
-from .leakyrelu import leakyrelu
-from .mish import mish
-from .relu import relu
-from .selu import selu
-from .sigmoid import sigmoid
-from .silu import silu
-from .softmax import softmax
-from .softplus import softplus
-from .stablesoftmax import stablesoftmax
-from .tanh import tanh
 from .tensor import tensor
+from .static_ops import identity
 
 class conv:
   def __init__(self, filtershape, learningrate, numoffilters=1, activation=identity(), padding=False, stride=(1, 1), inshape=None):
