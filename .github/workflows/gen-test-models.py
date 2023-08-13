@@ -8,13 +8,13 @@ tests = ["cnn-mnist",
 ]
 
 start = """
+name: test models
+on: [push]
+jobs:
 """
 
 for i in range(len(tests)):
     template = """
-name: test {{test}}
-on: [push]
-jobs:
   {{test}}:
     runs-on: ubuntu-latest
     steps:

@@ -1,8 +1,8 @@
 
-
-name: test cnn-mnist
+name: test models
 on: [push]
 jobs:
+
   cnn-mnist:
     runs-on: ubuntu-latest
     steps:
@@ -23,9 +23,6 @@ jobs:
         run: cd example && python3 cnn-mnist.py
 
     
-name: test lstm-timeseries
-on: [push]
-jobs:
   lstm-timeseries:
     runs-on: ubuntu-latest
     steps:
@@ -46,9 +43,6 @@ jobs:
         run: cd example && python3 lstm-timeseries.py
 
     
-name: test gru-timeseries
-on: [push]
-jobs:
   gru-timeseries:
     runs-on: ubuntu-latest
     steps:
@@ -69,9 +63,6 @@ jobs:
         run: cd example && python3 gru-timeseries.py
 
     
-name: test rnn-timeseries
-on: [push]
-jobs:
   rnn-timeseries:
     runs-on: ubuntu-latest
     steps:
@@ -92,9 +83,6 @@ jobs:
         run: cd example && python3 rnn-timeseries.py
 
     
-name: test nn-andor
-on: [push]
-jobs:
   nn-andor:
     runs-on: ubuntu-latest
     steps:
@@ -115,9 +103,6 @@ jobs:
         run: cd example && python3 nn-andor.py
 
     
-name: test nn-nonlinearity
-on: [push]
-jobs:
   nn-nonlinearity:
     runs-on: ubuntu-latest
     steps:
@@ -138,9 +123,6 @@ jobs:
         run: cd example && python3 nn-nonlinearity.py
 
     
-name: test rnn-posnegcon
-on: [push]
-jobs:
   rnn-posnegcon:
     runs-on: ubuntu-latest
     steps:
