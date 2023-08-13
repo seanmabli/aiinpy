@@ -33,8 +33,8 @@ class rnn:
     
     if self.type == 'ManyToOne':
       for i in range(len(input)):
-        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
-        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
 
       self.out = self.outactivation.forward(self.weightshidToout @ self.hid[len(input), :] + self.outbiases)
       self.outderivative = self.outactivation.backward(self.weightshidToout @ self.hid[len(input), :] + self.outbiases)
@@ -44,8 +44,8 @@ class rnn:
       self.outderivative = tensor.zeros((len(self.input), self.outshape))
 
       for i in range(len(input)):
-        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
-        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].flatten() + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hid[i + 1, :] = tanh().forward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
+        self.hidderivative[i + 1, :] = tanh().backward(self.weightsinTohid @ input[i].reshape(tensor.prod(input.shape)) + self.weightshidTohid @ self.hid[i, :] + self.hidbiases)
         self.out[i, :] = self.outactivation.forward(self.weightshidToout @ self.hid[i + 1, :] + self.outbiases)
         self.outderivative[i, :] = self.outactivation.backward(self.weightshidToout @ self.hid[i + 1, :] + self.outbiases)
 

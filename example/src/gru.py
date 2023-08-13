@@ -34,9 +34,9 @@ class gru:
     self.weightsinTohidGate = tensor.uniform(-0.005, 0.005, (inshape, hidshape))
     return self.outshape
 
-  def forward(self, itensorut):
-    self.itensorut = itensorut
-    self.cellSize = len(itensorut)
+  def forward(self, input):
+    self.input = input
+    self.cellSize = len(input)
 
     self.hid = tensor.zeros((self.cellSize + 1, self.hidshape))
     self.out = tensor.zeros((self.cellSize, self.outshape))
@@ -52,12 +52,12 @@ class gru:
 
 
     for i in range(self.cellSize):
-      self.ResetGate[i, :] = sigmoid().forward(self.weightsinToResetGate.T @ self.itensorut[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
-      self.resetgatederivative[i, :] = sigmoid().backward(self.weightsinToResetGate.T @ self.itensorut[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
-      self.UpdateGate[i, :] = sigmoid().forward(self.weightsinToUpdateGate.T @ self.itensorut[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
-      self.updategatederivative[i, :] = sigmoid().backward(self.weightsinToUpdateGate.T @ self.itensorut[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
-      self.hidGate[i, :] = tanh().forward(self.weightsinTohidGate.T @ self.itensorut[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
-      self.hidgatederivative[i, :] = tanh().backward(self.weightsinTohidGate.T @ self.itensorut[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
+      self.ResetGate[i, :] = sigmoid().forward(self.weightsinToResetGate.T @ self.input[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
+      self.resetgatederivative[i, :] = sigmoid().backward(self.weightsinToResetGate.T @ self.input[i, :] + self.weightshidToResetGate.T @ self.hid[i, :] + self.ResetGatebias)
+      self.UpdateGate[i, :] = sigmoid().forward(self.weightsinToUpdateGate.T @ self.input[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
+      self.updategatederivative[i, :] = sigmoid().backward(self.weightsinToUpdateGate.T @ self.input[i, :] + self.weightshidToUpdateGate.T @ self.hid[i, :] + self.UpdateGatebias)
+      self.hidGate[i, :] = tanh().forward(self.weightsinTohidGate.T @ self.input[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
+      self.hidgatederivative[i, :] = tanh().backward(self.weightsinTohidGate.T @ self.input[i, :] + self.weightshidTohidGate.T @ (self.hid[i, :] * self.ResetGate[i, :]) + self.hidGatebias)
 
       self.hid[i + 1, :] = (1 - self.UpdateGate[i, :]) * self.hid[i, :] + self.UpdateGate[i, :] * self.hidGate[i, :]
       self.out[i, :] = self.outactivation.forward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
@@ -66,7 +66,7 @@ class gru:
     return self.out
 
   def backward(self, outError):
-    inError = tensor.zeros(self.itensorut.shape)
+    inError = tensor.zeros(self.input.shape)
     hidError = tensor.zeros(self.hidshape)
 
     weightsinToResetGateΔ = tensor.zeros(self.weightsinToResetGate.shape)
@@ -100,9 +100,9 @@ class gru:
       UpdateGateGradient = self.updategatederivative[i, :] * UpdateGateError
       hidGateGradient = self.hidgatederivative[i, :] * hidGateError
 
-      weightsinToResetGateΔ += tensor.outer(self.itensorut[i, :].T, ResetGateGradient)
-      weightsinToUpdateGateΔ += tensor.outer(self.itensorut[i, :].T, UpdateGateGradient)
-      weightsinTohidGateΔ += tensor.outer(self.itensorut[i, :].T, hidGateGradient)
+      weightsinToResetGateΔ += tensor.outer(self.input[i, :].T, ResetGateGradient)
+      weightsinToUpdateGateΔ += tensor.outer(self.input[i, :].T, UpdateGateGradient)
+      weightsinTohidGateΔ += tensor.outer(self.input[i, :].T, hidGateGradient)
   
       weightshidToResetGateΔ += tensor.outer(self.hid[i, :].T, ResetGateGradient)
       weightshidToUpdateGateΔ += tensor.outer(self.hid[i, :].T, UpdateGateGradient)

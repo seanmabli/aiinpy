@@ -1,4 +1,5 @@
 from .static_ops import identity
+from .tensor import tensor
 
 class convmatrix:
   def __init__(self, filtershape, learningrate, activation=identity(), padding=False, stride=(1, 1), inshape=None):
@@ -29,9 +30,9 @@ class convmatrix:
   def modelinit(self, inshape):
     return self.outshape
 
-  def forward(self, itensorut):
-    self.itensorut = itensorut.flatten()
-    out = self.itensorut @ self.filtermatrix
+  def forward(self, input):
+    self.input = input.flatten()
+    out = self.input @ self.filtermatrix
     self.out = self.activation.forward(out)
     self.derivative = self.activation.backward(out)
 
@@ -40,6 +41,6 @@ class convmatrix:
   def backward(self, outerror):
     outerror = outerror.flatten()
     outgradient = self.derivative * outerror
-    # itensoruterror = tensor.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
-    self.filtermatrix += tensor.outer(self.itensorut.T, outgradient) * self.learningrate
-    # return itensoruterror
+    # inputerror = tensor.flip((self.filtermatrix @ outerror).reshape(self.inshape), axis=1)
+    self.filtermatrix += tensor.outer(self.input.T, outgradient) * self.learningrate
+    # return inputerror

@@ -27,16 +27,16 @@ class nn:
     return self.outshape
 
   def forward(self, input):
-    self.input = input.flatten()
-    out = self.weights.T @ self.input + self.biases
+    self.input = input.reshape(tensor.prod(input.shape))
+    out = tensor.transpose(self.weights) @ self.input + self.biases
     self.out = self.activation.forward(out)
     self.derivative = self.activation.backward(out) # now it applys the derivative to the output without the activation function, check if this is right
     return self.out.reshape(self.outshape)
 
   def backward(self, outerror):
-    outerror = outerror.flatten()
-    outgradient = self.derivative * outerror if tensor.ndim(self.derivative) == 1 else self.derivative @ outerror
+    outerror = outerror.reshape(tensor.prod(self.outshape))
+    outgradient = self.derivative * outerror if len(self.derivative.shape) == 1 else self.derivative @ outerror
     inputerror = self.weights @ outerror
     self.biases += outgradient * self.learningrate
-    self.weights += tensor.outer(self.input.T, outgradient) * self.learningrate
+    self.weights += tensor.outer(tensor.transpose(self.input), outgradient) * self.learningrate
     return inputerror.reshape(self.inshape)

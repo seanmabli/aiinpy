@@ -47,11 +47,11 @@ class pool:
     if self.operation == 'max':
       for i in range(self.outshape[1]):
         for j in range(self.outshape[2]):
-          self.out[:, i, j] = tensor.amax(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
+          self.out[:, i, j] = tensor.max(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
     elif self.operation == 'min':
       for i in range(self.outshape[1]):
         for j in range(self.outshape[2]):
-          self.out[:, i, j] = tensor.amin(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
+          self.out[:, i, j] = tensor.min(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
     elif self.operation == 'mean':
       for i in range(self.outshape[1]):
         for j in range(self.outshape[2]):
@@ -64,6 +64,6 @@ class pool:
 
   def backward(self, outError):
     if self.operation == 'max' or self.operation == 'min':
-      return tensor.repeat(tensor.repeat(outError, 2, axis=1), 2, axis=2) * tensor.equal(tensor.repeat(tensor.repeat(self.out, 2, axis=1), 2, axis=2), self.input).astype(int)
+      return tensor.repeat(tensor.repeat(outError, 2, axis=1), 2, axis=2) * (tensor.repeat(tensor.repeat(self.out, 2, axis=1), 2, axis=2) == self.input).astype(int)
     elif self.operation == 'mean' or self.operation == 'sum':
       return tensor.repeat(tensor.repeat(outError, 2, axis=1), 2, axis=2) * tensor.repeat(tensor.repeat(self.out, 2, axis=1), 2, axis=2)

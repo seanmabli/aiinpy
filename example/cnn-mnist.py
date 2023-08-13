@@ -19,7 +19,7 @@ model = ai.model((28, 28), 10, [
   ai.conv(numoffilters=4, activation=ai.relu(), filtershape=(3, 3), learningrate=0.01),
   ai.pool(stride=(2, 2), filtershape=(2, 2), operation='max'),
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
-])
+], "cnn-activationlayers")
 
 model.train((inTrainData, outTrainDataReal), 2000)
 print(model.test((inTestData, outTestDataReal)))

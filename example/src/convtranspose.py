@@ -22,15 +22,15 @@ class convtranspose:
   def modelinit(self, inshape):
     return self.outshape
 
-  def forward(self, itensorut):
-    self.itensorut = itensorut
-    if(itensorut.ndim == 2):
-      self.itensorut = tensor.stack(([self.itensorut] * self.filtershape[0]))
+  def forward(self, input):
+    self.input = input
+    if(input.ndim == 2):
+      self.input = tensor.concat(([self.input] * self.filtershape[0]))
 
     self.out = tensor.zeros(self.fakeoutshape)
     for i in range(0, self.inshape[1]):
       for j in range(0, self.inshape[2]):
-        self.out[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]] += self.itensorut[:, i, j][:, tensor.newaxis, tensor.newaxis] * self.Filter
+        self.out[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]] += self.input[:, i, j][:, tensor.newaxis, tensor.newaxis] * self.Filter
 
     self.out += self.bias[:, tensor.newaxis, tensor.newaxis]
 
@@ -51,7 +51,7 @@ class convtranspose:
 
     for i in range(0, self.inshape[1]):
       for j in range(0, self.inshape[2]):
-        FilterΔ += self.itensorut[:, i, j][:, tensor.newaxis, tensor.newaxis] * outGradient[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]]
+        FilterΔ += self.input[:, i, j][:, tensor.newaxis, tensor.newaxis] * outGradient[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]]
 
     self.bias += tensor.sum(outGradient, axis=(1, 2)) * self.learningrate
     self.Filter += FilterΔ * self.learningrate
