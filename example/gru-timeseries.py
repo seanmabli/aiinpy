@@ -1,8 +1,5 @@
-import old as ai
+import src as ai
 import numpy as np
-import wandb
-
-wandb.init(project='gru-timeseries', config={'version' : 'old-b'})
 
 model = ai.gru(inshape=1, outshape=1, outactivation=ai.identity(), learningrate=0.01)
 
@@ -34,4 +31,3 @@ for Generation in range(NumOfTestGen):
   inError = model.backward(OutError)
 
 print(error / NumOfTestGen)
-wandb.log({"test accuracy" : error / NumOfTestGen})

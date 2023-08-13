@@ -1,3 +1,5 @@
 numpy
 emnist
 wandb
+aiinpy
+matplotlib

@@ -1,6 +1,7 @@
 tests = ["cnn-mnist",
 "lstm-timeseries",
 "gru-timeseries",
+"rnn-timeseries",
 "nn-andor",
 "nn-nonlinearity",
 "rnn-posnegcon",
