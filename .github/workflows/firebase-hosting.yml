@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting
+name: deploy to firebase hosting
 'on':
   push:
     branches: [ main, 0.0.19 ]
