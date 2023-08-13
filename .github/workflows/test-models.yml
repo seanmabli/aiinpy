@@ -18,4 +18,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: run tests
-        run: cd examples && while read p; do python3 "$p"; done < test-models.txt
+        run: cd example && while read p; do python3 "$p"; done < test-models.txt
