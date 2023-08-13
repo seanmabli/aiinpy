@@ -2,8 +2,8 @@ from .tensor import tensor
 from .static_ops import identity
 
 class conv:
-  def __init__(self, filtershape, learningrate, numoffilters=1, activation=identity(), padding=False, stride=(1, 1), inshape=None):
-    self.learningrate, self.activation, self.padding, self.stride, self.numoffilters = learningrate, activation, padding, stride, numoffilters
+  def __init__(self, filtershape, learningrate, numoffilters=1, activation=identity(), padding=False, stride=(1, 1), clip=False, inshape=None):
+    self.learningrate, self.activation, self.padding, self.stride, self.numoffilters, self.clip = learningrate, activation, padding, stride, numoffilters, clip
     self.inshape = inshape
 
     self.filtershape = tuple([numoffilters]) + filtershape
@@ -63,6 +63,8 @@ class conv:
     
     self.bias += tensor.sum(outGradient, axis=(1, 2)) * self.learningrate
     self.filter += filterΔ * self.learningrate
+
+    if self.clip: self.bias, self.filter = tensor.clip(self.bias, -1, 1), tensor.clip(self.filter, -1, 1)
 
     # in Error
     rotfilter = tensor.rot90(self.filter, 2)

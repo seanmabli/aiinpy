@@ -107,7 +107,7 @@ class mean:
       self.axis = axis
 
   def __repr__(self):
-    return 'average()'
+    return 'mean()'
 
   def modelinit(self, inshape):
     self.inshape = inshape
@@ -126,10 +126,10 @@ class mish:
     return 'mish()'
 
   def forward(self, input):
-    return (input * ((2 * np.exp(input)) + np.exp(2 * input))) / ((2 * np.exp(input)) + np.exp(2 * input) + 2)
+    return (input * ((2 * tensor.exp(input)) + tensor.exp(2 * input))) / ((2 * tensor.exp(input)) + tensor.exp(2 * input) + 2)
 
   def backward(self, input):
-    return (np.exp(input) * ((4 * np.exp(2 * input)) + np.exp(3 * input) + (4 * (1 + input)) + (np.exp(input) * (6 + (4 * input))))) / np.square(2 + (2 * np.exp(input)) + np.exp(2 * input))
+    return (tensor.exp(input) * ((4 * tensor.exp(2 * input)) + tensor.exp(3 * input) + (4 * (1 + input)) + (tensor.exp(input) * (6 + (4 * input))))) / tensor.square(2 + (2 * tensor.exp(input)) + tensor.exp(2 * input))
   
 class prelu:
   def __init__(self, alpha):

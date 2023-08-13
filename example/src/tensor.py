@@ -10,7 +10,7 @@ class tensor:
 	newaxis = np.newaxis
 
 	def toTensor(other): return tensor(other) if type(other) != tensor else other
-	def reshape(self, shape, other=None): return tensor(other.data.reshape(shape), ops=['reshape', other.ops, shape]) if other != None else tensor(self.data.reshape(shape), ops=['reshape', self.ops, shape])
+	def reshape(self, shape): return tensor(self.data.reshape(shape), ops=['reshape', self.ops, shape])
 	def __int__(self): return int(self.data)
 	def __float__(self): return float(self.data)
 	def __bool__(self): return bool(self.data)
@@ -53,8 +53,10 @@ class tensor:
 	def max(self, axis=None): return np.max(self.data, axis=axis)
 	def min(self, axis=None): return np.min(self.data, axis=axis)
 
-	def exp(other): other = tensor.toTensor(other); return tensor(np.exp(other.data), ops=['pow', other.ops, ['init', tensor(np.e), other.dtype]])
-	def floor(other): other = tensor.toTensor(other); return tensor(np.floor(other.data), ops=['mod', other.ops, ['init', tensor(1), other.dtype]])
+	# make the following 4 functions return the input type
+	def exp(other): other = tensor.toTensor(other); print(other); return tensor(np.exp(other.data), ops=['pow', other.ops, ['init', tensor(np.e), other.dtype]])
+	def floor(other): other = tensor.toTensor(other); return tensor(np.floor(other.data), ops=['floor', other.ops])
+	def ceil(other): other = tensor.toTensor(other); return tensor(np.ceil(other.data), ops=['ceil', other.ops])
 	def prod(other): other = tensor.toTensor(other); return np.prod(other.data)
 
 	def maximum(a, b): return np.maximum(tensor.toTensor(a).data, tensor.toTensor(b).data)

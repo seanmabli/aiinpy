@@ -2,14 +2,13 @@ from .tensor import tensor
 from .static_ops import identity
 
 class nn:
-  def __init__(self, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0), inshape=None):
+  def __init__(self, outshape, activation, learningrate, weightsinit=(-1, 1), biasesinit=(0, 0), clip=False, inshape=None):
     self.weightsinit, self.biasesinit = weightsinit, biasesinit
-    self.activation, self.learningrate = activation, learningrate
-    self.inshape = inshape
+    self.activation, self.learningrate, self.clip = activation, learningrate, clip
+    self.inshape, self.outshape = inshape, outshape
     if inshape is not None:
       self.weights = tensor.uniform(weightsinit[0], weightsinit[1], (tensor.prod(inshape), tensor.prod(outshape)))
       self.biases = tensor.uniform(biasesinit[0], biasesinit[1], tensor.prod(outshape))
-    self.outshape = outshape
     
   def __copy__(self):
     return type(self)(self.outshape, self.activation, self.learningrate, self.weightsinit, self.biasesinit, self.inshape)
@@ -39,4 +38,5 @@ class nn:
     inputerror = self.weights @ outerror
     self.biases += outgradient * self.learningrate
     self.weights += tensor.outer(tensor.transpose(self.input), outgradient) * self.learningrate
+    if self.clip: self.biases, self.weights = tensor.clip(self.biases, -1, 1), tensor.clip(self.weights, -1, 1)
     return inputerror.reshape(self.inshape)

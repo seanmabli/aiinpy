@@ -3,3 +3,4 @@ emnist
 wandb
 aiinpy
 matplotlib
+warnings

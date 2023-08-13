@@ -1,8 +1,6 @@
-from __future__ import annotations
-import sys, os, time, json, random, datetime
-import _pickle as pickle
-import wandb
 from .tensor import tensor
+import _pickle as pickle
+import sys, os, time, json, random, datetime, wandb
 
 class model:
   def __init__(self, inshape, outshape, layers, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
@@ -106,46 +104,49 @@ class model:
     trainstarttime = time.time()
 
     # Training, with wandb
-    if self.wandbproject != None:
-      for gen in range(numofgen):
-        starttime = time.time()
-        random = int(tensor.uniform() * NumOfData)
-        input = data[0][random]
-        for i in range(len(self.layers)):
-          input = self.layers[i].forward(input)
+    try:
+      if self.wandbproject != None:
+        for gen in range(numofgen):
+          starttime = time.time()
+          random = int(tensor.uniform() * NumOfData)
+          input = data[0][random]
+          for i in range(len(self.layers)):
+            input = self.layers[i].forward(input)
 
-        outerror = data[1][random] - input
-        wandb.log({'train error': tensor.sum(abs(outerror))})
-        trainerror.append(tensor.sum(abs(outerror)))
-        for i in reversed(range(len(self.layers))):
-          outerror = self.layers[i].backward(outerror)
-        avgtime.append(time.time() - starttime)
-        speed = round(6000 / sum(avgtime[-100:]))
-        remaining = round(60 * (numofgen - gen) / speed)
-        remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
-        elapsed = round(time.time() - trainstarttime)
-        elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
-    else:
-      # Training, without wandb
-      for gen in range(numofgen):
-        starttime = time.time()
-        random = int(tensor.uniform() * NumOfData)
-        input = data[0][random]
-        for i in range(len(self.layers)):
-          input = self.layers[i].forward(input)
+          outerror = data[1][random] - input
+          wandb.log({'train error': tensor.sum(abs(outerror))})
+          trainerror.append(tensor.sum(abs(outerror)))
+          for i in reversed(range(len(self.layers))):
+            outerror = self.layers[i].backward(outerror)
+          avgtime.append(time.time() - starttime)
+          speed = round(6000 / sum(avgtime[-100:]))
+          remaining = round(60 * (numofgen - gen) / speed)
+          remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+          elapsed = round(time.time() - trainstarttime)
+          elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+          sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+      else:
+        # Training, without wandb
+        for gen in range(numofgen):
+          starttime = time.time()
+          random = int(tensor.uniform() * NumOfData)
+          input = data[0][random]
+          for i in range(len(self.layers)):
+            input = self.layers[i].forward(input)
 
-        outerror = data[1][random] - input
-        trainerror.append(tensor.sum(abs(outerror)))
-        for i in reversed(range(len(self.layers))):
-          outerror = self.layers[i].backward(outerror)
-        avgtime.append(time.time() - starttime)
-        speed = round(6000 / sum(avgtime[-100:]))
-        remaining = round(60 * (numofgen - gen) / speed)
-        remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
-        elapsed = round(time.time() - trainstarttime)
-        elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+          outerror = data[1][random] - input
+          trainerror.append(tensor.sum(abs(outerror)))
+          for i in reversed(range(len(self.layers))):
+            outerror = self.layers[i].backward(outerror)
+          avgtime.append(time.time() - starttime)
+          speed = round(6000 / sum(avgtime[-100:]))
+          remaining = round(60 * (numofgen - gen) / speed)
+          remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+          elapsed = round(time.time() - trainstarttime)
+          elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+          sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+    except RuntimeWarning:
+      assert breakpoint()
 
     sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed')
     print('')
@@ -170,8 +171,8 @@ class model:
   def test(self, data):
     # data preprocessing: tuple of (indata, outdata) with indata and outdata as numpy array
     data = list(data) if type(data) == tuple else data
-    data[0] = tensor.reshape(data[0], (data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
-    data[1] = tensor.reshape(data[1], (data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
+    data[0] = data[0].reshape((data[0].shape[0], 1)) if len(data[0].shape) == 1 else data[0]
+    data[1] = data[1].reshape((data[1].shape[0], 1)) if len(data[1].shape) == 1 else data[1]
 
     NumOfData = (set(self.inshape) ^ set(data[0].shape)).pop()
     if data[0].shape.index(NumOfData) != 0:
@@ -188,25 +189,28 @@ class model:
     trainstarttime = time.time()
 
     # Testing
-    testcorrect = 0
-    for gen in range(NumOfData):
-      starttime = time.time()
+    try:
+      testcorrect = 0
+      for gen in range(NumOfData):
+        starttime = time.time()
 
-      input = data[0][gen]
-      for i in range(len(self.layers)):
-        input = self.layers[i].forward(input)
+        input = data[0][gen]
+        for i in range(len(self.layers)):
+          input = self.layers[i].forward(input)
 
-      testerror.append(tensor.sum(abs(data[1][gen] - input)))
-      testcorrect += 1 if tensor.index(input, tensor.max(input)) == tensor.index(input, tensor.max(data[1][gen])) else 0
+        testerror.append(tensor.sum(abs(data[1][gen] - input)))
+        testcorrect += 1 if tensor.index(input, tensor.max(input)) == tensor.index(input, tensor.max(data[1][gen])) else 0
 
-      avgtime.append(time.time() - starttime)
-      speed = round(6000 / sum(avgtime[-100:]))
-      remaining = round(60 * (NumOfData - gen) / speed)
-      remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
-      elapsed = round(time.time() - trainstarttime)
-      elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
-
+        avgtime.append(time.time() - starttime)
+        speed = round(6000 / sum(avgtime[-100:]))
+        remaining = round(60 * (NumOfData - gen) / speed)
+        remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+        elapsed = round(time.time() - trainstarttime)
+        elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+        sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+    except RuntimeWarning:
+      assert breakpoint()
+    
     sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed')
     print('')
     
@@ -223,7 +227,7 @@ class model:
     return testaccuracy
 
   def use(self, indata):
-    indata = tensor.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
+    indata = indata.reshape((indata.shape[0], 1)) if len(indata.shape) == 1 else indata
     NumOfData = (set(self.inshape) ^ set(indata.shape)).pop()
     if indata.shape.index(NumOfData) != 0:
       x = list(range(0, len(indata.shape)))

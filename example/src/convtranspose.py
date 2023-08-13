@@ -36,7 +36,7 @@ class convtranspose:
 
     if self.padding:
       paddingdifference = tuple(map(lambda i, j: i - j, self.fakeoutshape, self.outshape))
-      self.out = self.out[:, tensor.floor(paddingdifference[1] / 2) : self.fakeoutshape[1] - tensor.ceil(paddingdifference[1] / 2), tensor.floor(paddingdifference[2] / 2) : self.fakeoutshape[2] - tensor.ceil(paddingdifference[2] / 2)]
+      self.out = self.out[:, int(tensor.floor(paddingdifference[1] / 2)) : self.fakeoutshape[1] - int(tensor.ceil(paddingdifference[1] / 2)), int(tensor.floor(paddingdifference[2] / 2)) : self.fakeoutshape[2] - int(tensor.ceil(paddingdifference[2] / 2))]
 
     self.derivative = self.activation.backward(self.out)
     self.out = self.activation.forward(self.out)

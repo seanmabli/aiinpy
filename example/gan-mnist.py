@@ -1,29 +1,25 @@
 import numpy as np
 from emnist import extract_training_samples, extract_test_samples
 import src as ai
-import wandb
 import sys, time
-from matplotlib import pyplot as plt
-
-wandb.init(project="gan-mnist")
 
 # gen -> generator
 genmodel = ai.model(inshape=100, outshape=(28, 28), layers=[
   ai.nn(outshape=(128, 7, 7), activation=ai.leakyrelu(0.2), learningrate=0.0002),
   ai.convtranspose(inshape=(128, 7, 7), filtershape=(128, 4, 4), learningrate=0.0002, activation=ai.leakyrelu(0.2), padding=True, stride=(2, 2)),
   ai.convtranspose(inshape=(128, 14, 14), filtershape=(128, 4, 4), learningrate=0.0002, activation=ai.leakyrelu(0.2), padding=True, stride=(2, 2)),
-  ai.conv(filtershape=(128, 7, 7), learningrate=0.0002, activation=ai.sigmoid(), padding=True),
-  ai.average()
-], usebestcache=False)
+  ai.conv(numoffilters=128, filtershape=(7, 7), learningrate=0.0002, activation=ai.sigmoid(), padding=True),
+  ai.mean()
+])
 
 # dis -> discrimanator
 dismodel = ai.model(inshape=(28, 28), outshape=1, layers=[
-  ai.conv(filtershape=(64, 3, 3), learningrate=0.0002, activation=ai.leakyrelu(0.2), padding=True, stride=(2, 2)),
+  ai.conv(numoffilters=64, filtershape=(3, 3), learningrate=0.0002, activation=ai.leakyrelu(0.2), padding=True, stride=(2, 2), clip=True),
   ai.dropout(0.4),
-  ai.conv(filtershape=(64, 3, 3), learningrate=0.0002, activation=ai.leakyrelu(0.2), padding=True, stride=(2, 2)),
+  ai.conv(numoffilters=64, filtershape=(3, 3), learningrate=0.0002, activation=ai.leakyrelu(0.2), padding=True, stride=(2, 2), clip=True),
   ai.dropout(0.4),
-  ai.nn(outshape=1, activation=ai.sigmoid(), learningrate=0.0002)
-], usebestcache=False)
+  ai.nn(outshape=1, activation=ai.sigmoid(), learningrate=0.0002, clip=True)
+])
 
 # combomodel = ai.model(inshape=100, outshape=1, layers=[
 #   genmodel,
@@ -42,7 +38,6 @@ disintest, disouttest = np.vstack((disrealtest, disfaketest)), np.hstack((np.one
 print('train discrimanator')
 dismodel.train(data=(disintrain, disouttrain), numofgen=2000)
 print('discrimanator accuracy:', dismodel.test(data=(disintest, disouttest)))
-wandb.log({"discriminator accuracy": dismodel.test(data=(disintest, disouttest))})
 
 for layer in dismodel.layers:
   layer.learningrate = 0
@@ -59,7 +54,6 @@ for gen in range(numofgen):
   error = dismodel.backward(1 - out)
   genmodel.backward(error)
 
-  wandb.log({"gen error": 1 - out})
   avgtime.append(time.time() - starttime)
   speed = round(6000 / sum(avgtime[-100:]))
   sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
@@ -68,4 +62,3 @@ for gen in range(numofgen):
     for _ in range(3):
       input = np.random.uniform(-0.5, 0.5, 100)
       out = genmodel.forward(input)
-      wandb.log({"outimage": wandb.Image(out)})
