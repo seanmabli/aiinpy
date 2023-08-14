@@ -14,6 +14,7 @@ class tensor:
 	def __int__(self): return int(self.data)
 	def __float__(self): return float(self.data)
 	def __bool__(self): return bool(self.data)
+	def astype(self, dtype): return tensor(self.data.astype(dtype), ops=['astype', self.ops, dtype])
 
 	def __add__(self, other): other = tensor.toTensor(other); return tensor(self.data + other.data, ops=['add', self.ops, other.ops, self.data + other.data])
 	def __mul__(self, other): other = tensor.toTensor(other); return tensor(self.data * other.data, ops=['mul', self.ops, other.ops, self.data * other.data])
@@ -46,8 +47,8 @@ class tensor:
 	def __len__(self): return len(self.data)
 	def __iter__(self): return iter(self.data)
 	def __copy__(self): return tensor(self.data.copy())
-	def __eq__(self, other) -> bool: return self.data.all() == other.data.all() if type(other) == tensor else self.data.all() == other
-	def __ne__(self, other) -> bool: return self.data.all() != other.data.all() if type(other) == tensor else self.data.all() != other
+	def __eq__(self, other): return tensor(self.data == other.data)
+	def __ne__(self, other): return tensor(self.data != other.data)
 	def mean(self, axis=None): return tensor(np.mean(self.data, axis=axis))
 	def sum(self, axis=None): return tensor(np.sum(self.data, axis=axis))
 	def max(self, axis=None): return np.max(self.data, axis=axis)
@@ -71,7 +72,7 @@ class tensor:
 	def concat(tensors, axis=0): return tensor(np.concatenate(list(map(lambda i: i.data, tensors)), axis=axis))
 	def repeat(other, repeats, axis=None): other = tensor.toTensor(other); return tensor(np.repeat(other.data, repeats, axis=axis))
 	def rot90(other, repeats): other = tensor.toTensor(other); return tensor(np.rot90(other.data, repeats), ops=['tbd'])
-	def pad(other, pad_width, mode='constant', constant_values=0): other = tensor.toTensor(other); return tensor(np.pad(other.data, pad_width, mode=mode, constant_values=constant_values), ops=['tbd'])
+	def pad(other, pad_width, mode='constant'): other = tensor.toTensor(other); return tensor(np.pad(other.data, pad_width, mode=mode), ops=['tbd'])
 	def index(other, value): other = tensor.toTensor(other); return np.where(other.data == value)
 	def clip(other, min, max): other = tensor.toTensor(other); return tensor(np.clip(other.data, min, max), ops=['tbd'])
 

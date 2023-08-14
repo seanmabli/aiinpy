@@ -239,6 +239,7 @@ class stablesoftmax:
     a = tensor.exp(input - tensor.max(input))
     return a / tensor.sum(a)
 
+  '''
   def newbackward(self, input): # use this
     forward = tensor.exp(input - tensor.max(input)) / tensor.sum(tensor.exp(input - tensor.max(input)))
     out = tensor.zeros((len(input), len(input)))
@@ -257,7 +258,8 @@ class stablesoftmax:
     temp1 = tensor.einsum('ij,jk->ijk',s,a)
     temp2 = tensor.einsum('ij,ik->ijk',s,s)
     return temp1-temp2
-
+  '''
+    
   def backward(self, input):
     return (tensor.exp(input) * (tensor.sum(tensor.exp(input)) - tensor.exp(input))) / tensor.sum(tensor.exp(input)) ** 2
 
