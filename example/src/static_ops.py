@@ -261,10 +261,6 @@ class stablesoftmax:
   def backward(self, input):
     return (tensor.exp(input) * (tensor.sum(tensor.exp(input)) - tensor.exp(input))) / tensor.sum(tensor.exp(input)) ** 2
 
-# x = tensor.random.rand(10, 10)
-# print(stablesoftmax().newbackwardtwo(x))
-
-
 class tanh:
   def __repr__(self):
     return 'tanh()'

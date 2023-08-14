@@ -58,35 +58,21 @@ class lstm:
     self.hid = np.zeros((self.cellSize + 1, self.hidshape))
     self.cellMem = np.zeros((self.cellSize + 1, self.hidshape))
     self.out = np.zeros((self.cellSize, self.outshape))
-    self.outderivative = np.zeros((self.cellSize, self.outshape))
 
     self.ForgetGate = np.zeros((self.cellSize, self.hidshape))
     self.inGate = np.zeros((self.cellSize, self.hidshape))
     self.outGate = np.zeros((self.cellSize, self.hidshape))
     self.cellMemGate = np.zeros((self.cellSize, self.hidshape))
 
-    self.forgetgatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.ingatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.outgatederivative = np.zeros((self.cellSize, self.hidshape))
-    self.cellmemgatederivative = np.zeros((self.cellSize, self.hidshape))
-
     for i in range(self.cellSize):
       self.ForgetGate[i, :] = sigmoid().forward((self.weightsinToForgetGate.T @ self.input[i, :]) + (self.weightshidToForgetGate.T @ self.hid[i, :]) + self.ForgetGatebiases)
-      self.forgetgatederivative[i, :] = sigmoid().backward((self.weightsinToForgetGate.T @ self.input[i, :]) + (self.weightshidToForgetGate.T @ self.hid[i, :]) + self.ForgetGatebiases)
-      
       self.inGate[i, :] = sigmoid().forward((self.weightsinToinGate.T @ self.input[i, :]) + (self.weightshidToinputGate.T @ self.hid[i, :]) + self.inGatebiases)
-      self.ingatederivative[i, :] = sigmoid().backward((self.weightsinToinGate.T @ self.input[i, :]) + (self.weightshidToinputGate.T @ self.hid[i, :]) + self.inGatebiases)
-      
       self.outGate[i, :] = sigmoid().forward((self.weightsinTooutGate.T @ self.input[i, :]) + (self.weightshidTooutputGate.T @ self.hid[i, :]) + self.outGatebiases)
-      self.outgatederivative[i, :] = sigmoid().backward((self.weightsinTooutGate.T @ self.input[i, :]) + (self.weightshidTooutputGate.T @ self.hid[i, :]) + self.outGatebiases)
-      
       self.cellMemGate[i, :] = tanh().forward((self.weightsinTocellMemGate.T @ self.input[i, :]) + (self.weightshidTocellMemGate.T @ self.hid[i, :]) + self.cellMemGatebiases)
-      self.cellmemgatederivative[i, :] = tanh().backward((self.weightsinTocellMemGate.T @ self.input[i, :]) + (self.weightshidTocellMemGate.T @ self.hid[i, :]) + self.cellMemGatebiases)
 
       self.cellMem[i + 1, :] = (self.ForgetGate[i, :] * self.cellMem[i, :]) + (self.inGate[i, :] * self.cellMemGate[i, :])
       self.hid[i + 1, :] = self.outGate[i, :] * tanh().forward(self.cellMem[i + 1, :])
       self.out[i, :] = self.outactivation.forward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
-      self.outderivative[i, :] = self.outactivation.backward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
 
     return self.out
 
@@ -114,11 +100,11 @@ class lstm:
     outbiasΔ = np.zeros(self.outbias.shape)
 
     for i in reversed(range(self.cellSize)):
-      outGradient = self.outderivative[i, :] * outError[i, :]
+      outGradient = self.outactivation.backward(self.out[i, :]) * outError[i, :]
       
       hidError += self.weightshidToout @ outError[i, :]
 
-      cellMemError += hidError * self.outGate[i] * tanh().backward(self.cellMem[i + 1, :])
+      cellMemError += hidError * self.outGate[i] * tanh().backward(tanh().forward(self.cellMem[i + 1, :]))
       outGateError = hidError * tanh().forward(self.cellMem[i + 1, :])
 
       ForgetGateError = cellMemError * self.cellMem[i, :]
@@ -127,10 +113,10 @@ class lstm:
 
       cellMemError *= self.ForgetGate[i, :]
 
-      ForgetGateGradient = self.forgetgatederivative[i, :] * ForgetGateError
-      inGateGradient = self.ingatederivative[i, :] * inGateError
-      outGateGradient = self.outgatederivative[i, :] * outGateError
-      cellMemGateGradient = self.cellmemgatederivative[i, :] * cellMemGateError
+      ForgetGateGradient = sigmoid().backward(self.ForgetGate[i, :]) * ForgetGateError
+      inGateGradient = sigmoid().backward(self.inGate[i, :]) * inGateError
+      outGateGradient = sigmoid().backward(self.outGate[i, :]) * outGateError
+      cellMemGateGradient = tanh().backward(self.cellMemGate[i, :]) * cellMemGateError
 
       hidError = self.weightshidToForgetGate @ ForgetGateError + self.weightshidToinputGate @ inGateError + self.weightshidTooutputGate @ outGateError + self.weightshidTocellMemGate @ cellMemGateError
       inError[i, :] = self.weightsinToForgetGate @ ForgetGateError + self.weightsinToinGate @ inGateError + self.weightsinTooutGate @ outGateError + self.weightsinTocellMemGate @ cellMemGateError

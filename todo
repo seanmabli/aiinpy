@@ -4,3 +4,5 @@ for 0.1.0:
  - gan
  - epoch system
  - rnn, lstm, gru not in main package (be able to construct them using the model framework)
+ - label stuff with 1d, 2d, 3d
+   - add 1d, 2d, 3d versions of functions where it is missing

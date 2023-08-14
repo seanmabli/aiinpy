@@ -6,9 +6,6 @@ class nn:
     self.weightsinit, self.biasesinit = weightsinit, biasesinit
     self.activation, self.learningrate, self.clip = activation, learningrate, clip
     self.inshape, self.outshape = inshape, outshape
-    if inshape is not None:
-      self.weights = tensor.uniform(weightsinit[0], weightsinit[1], (tensor.prod(inshape), tensor.prod(outshape)))
-      self.biases = tensor.uniform(biasesinit[0], biasesinit[1], tensor.prod(outshape))
     
   def __copy__(self):
     return type(self)(self.outshape, self.activation, self.learningrate, self.weightsinit, self.biasesinit, self.inshape)
@@ -21,7 +18,7 @@ class nn:
       inshape = inshape[0]
     self.inshape = inshape
 
-    self.weights = tensor.uniform(self.weightsinit[0], self.weightsinit[1], (tensor.prod(inshape), tensor.prod(self.outshape)))
+    self.weights = tensor.uniform(self.weightsinit[0], self.weightsinit[1], (tensor.prod(self.inshape), tensor.prod(self.outshape)))
     self.biases = tensor.uniform(self.biasesinit[0], self.biasesinit[1], tensor.prod(self.outshape))
     return self.outshape
 
@@ -34,7 +31,7 @@ class nn:
 
   def backward(self, outerror):
     outerror = outerror.reshape(tensor.prod(self.outshape))
-    outgradient = self.derivative * outerror if len(self.derivative.shape) == 1 else self.derivative @ outerror
+    outgradient = self.derivative * outerror
     inputerror = self.weights @ outerror
     self.biases += outgradient * self.learningrate
     self.weights += tensor.outer(tensor.transpose(self.input), outgradient) * self.learningrate

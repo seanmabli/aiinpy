@@ -36,11 +36,7 @@ class conv:
     return type(self)(self.filtershape, self.learningrate, self.activation, self.padding, self.stride, self.inshape)
 
   def __repr__(self):
-    if 'self.outshape' not in locals() or globals():
-      outshape = None
-    else:
-      outshape = self.outshape
-    return 'conv(inshape=' + str(self.inshape) + ', outshape=' + str(outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', activation=' + str(self.activation) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
+    return 'conv(inshape=' + str(self.inshape) + ', outshape=' + str(self.outshape) + ', filtershape=' + str(self.filtershape) + ', learningrate=' + str(self.learningrate) + ', activation=' + str(self.activation) + ', padding=' + str(self.padding) + ', stride=' + str(self.stride) + ')'
 
   def modelinit(self, inshape):
     self.inshape = inshape
@@ -66,21 +62,21 @@ class conv:
         self.out[:, i, j] = np.sum(np.multiply(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], self.filter), axis=(1, 2))
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
-    self.derivative = self.activation.backward(self.out)
+    self.derivative = self.activation.backward(self.out) # now it applys the derivative to the output without the activation function
     self.out = self.activation.forward(self.out)
     return self.out
   
   def backward(self, outError):
-    filterΔ = np.zeros(self.filtershape)
+    self.filterΔ = np.zeros(self.filtershape)
     
     outGradient = outError * self.derivative
 
     for i in range(0, self.outshape[1], self.stride[0]):
       for j in range(0, self.outshape[2], self.stride[1]):
-        filterΔ += np.multiply(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], outGradient[:, i, j][:, np.newaxis, np.newaxis])
+        self.filterΔ += np.multiply(self.input[:, i : i + self.filtershape[1], j : j + self.filtershape[2]], outGradient[:, i, j][:, np.newaxis, np.newaxis])
     
     self.bias += np.multiply(np.sum(outGradient, axis=(1, 2)), self.learningrate)
-    self.filter += np.multiply(filterΔ, self.learningrate)
+    self.filter += np.multiply(self.filterΔ, self.learningrate)
 
     # in Error
     rotfilter = np.rot90(np.rot90(self.filter))

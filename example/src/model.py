@@ -104,51 +104,48 @@ class model:
     trainstarttime = time.time()
 
     # Training, with wandb
-    try:
-      if self.wandbproject != None:
-        for gen in range(numofgen):
-          starttime = time.time()
-          random = int(tensor.uniform() * NumOfData)
-          input = data[0][random]
-          for i in range(len(self.layers)):
-            input = self.layers[i].forward(input)
+    if self.wandbproject != None:
+      for gen in range(numofgen):
+        starttime = time.time()
+        randomInput = int(tensor.uniform() * NumOfData)
+        input = data[0][randomInput]
+        for i in range(len(self.layers)):
+          input = self.layers[i].forward(input)
 
-          outerror = data[1][random] - input
-          wandb.log({'train error': tensor.sum(abs(outerror))})
-          trainerror.append(tensor.sum(abs(outerror)))
-          for i in reversed(range(len(self.layers))):
-            outerror = self.layers[i].backward(outerror)
-          avgtime.append(time.time() - starttime)
-          speed = round(6000 / sum(avgtime[-100:]))
-          remaining = round(60 * (numofgen - gen) / speed)
-          remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
-          elapsed = round(time.time() - trainstarttime)
-          elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-          sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
-      else:
-        # Training, without wandb
-        for gen in range(numofgen):
-          starttime = time.time()
-          random = int(tensor.uniform() * NumOfData)
-          input = data[0][random]
-          for i in range(len(self.layers)):
-            input = self.layers[i].forward(input)
+        outerror = data[1][randomInput] - input
+        wandb.log({'train error': float(tensor.sum(abs(outerror)))})
+        trainerror.append(float(tensor.sum(abs(outerror))))
+        for i in reversed(range(len(self.layers))):
+          outerror = self.layers[i].backward(outerror)
+        avgtime.append(time.time() - starttime)
+        speed = round(6000 / sum(avgtime[-100:]))
+        remaining = round(60 * (numofgen - gen) / speed)
+        remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+        elapsed = round(time.time() - trainstarttime)
+        elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+    else:
+      # Training, without wandb
+      for gen in range(numofgen):
+        starttime = time.time()
+        randomInput = int(tensor.uniform() * NumOfData)
+        input = data[0][randomInput]
+        for i in range(len(self.layers)):
+          input = self.layers[i].forward(input)
 
-          outerror = data[1][random] - input
-          trainerror.append(tensor.sum(abs(outerror)))
-          for i in reversed(range(len(self.layers))):
-            outerror = self.layers[i].backward(outerror)
-          avgtime.append(time.time() - starttime)
-          speed = round(6000 / sum(avgtime[-100:]))
-          remaining = round(60 * (numofgen - gen) / speed)
-          remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
-          elapsed = round(time.time() - trainstarttime)
-          elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-          sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
-    except RuntimeWarning:
-      assert breakpoint()
-
-    sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed')
+        outerror = data[1][randomInput] - input
+        trainerror.append(float(tensor.sum(abs(outerror))))
+        for i in reversed(range(len(self.layers))):
+          outerror = self.layers[i].backward(outerror)
+        avgtime.append(time.time() - starttime)
+        speed = round(6000 / sum(avgtime[-100:]))
+        remaining = round(60 * (numofgen - gen) / speed)
+        remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
+        elapsed = round(time.time() - trainstarttime)
+        elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+    
+    sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed' + " " * 30)
     print('')
 
     # NOTE: Error bc tensor ops has high recursive depth
@@ -198,8 +195,8 @@ class model:
         for i in range(len(self.layers)):
           input = self.layers[i].forward(input)
 
-        testerror.append(tensor.sum(abs(data[1][gen] - input)))
-        testcorrect += 1 if tensor.index(input, tensor.max(input)) == tensor.index(input, tensor.max(data[1][gen])) else 0
+        testerror.append(float(tensor.sum(abs(data[1][gen] - input))))
+        testcorrect += 1 if tensor.index(input, tensor.max(input)) == tensor.index(data[1][gen], tensor.max(data[1][gen])) else 0
 
         avgtime.append(time.time() - starttime)
         speed = round(6000 / sum(avgtime[-100:]))
@@ -211,7 +208,7 @@ class model:
     except RuntimeWarning:
       assert breakpoint()
     
-    sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed')
+    sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed' + " " * 30)
     print('')
     
     testaccuracy = testcorrect / NumOfData

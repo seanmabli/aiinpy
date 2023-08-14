@@ -1,109 +1,38 @@
-from __future__ import annotations
 import numpy as np
 import sys, os, time, json, random, datetime
-import _pickle as pickle
 import wandb
-'''
-import pyrebase
 
-firebase = pyrebase.initialize_app({
-  "apiKey" : "AIzaSyAeVOKLeGPek386fDsyZ7lC9zQ_9JlnaIc",
-  "authDomain" : "aiinpy.firebaseapp.com",
-  "databaseURL": "https://aiinpy-default-rtdb.firebaseio.com/",
-  "storageBucket" : "aiinpy.appspot.com"
-})
-db = firebase.database()
-
-def error(func):
-    def inner(*args, **kwargs):
-      try:
-        func(*args, **kwargs)
-      except Exception as e:
-        metadata = open([x[0] + '/metadata.json' for x in os.walk('aiinpy')][1], 'r').read()
-        # db.child("errors").push({"error" : str(e), 'metadata' : metadata})
-    return inner
-
-@error
-'''
 class model:
-  def __init__(self, inshape, outshape, layers, wandbproject=None, usebestcache=False, usespecificcache='', cacheexpire=10):
+  def __init__(self, inshape, outshape, model, wandbproject=None, usecache=False, cacheexpire=10):
     self.inshape = inshape = inshape if isinstance(inshape, tuple) else tuple([inshape])
     self.outshape = outshape if isinstance(outshape, tuple) else tuple([outshape])
-    self.layers = layers
+    self.model = model
     self.wandbproject = wandbproject
 
-    i = 0
-    while i < len(self.layers):
-      if isinstance(self.layers[i], model):
-        c = self.layers[i]
-        for j, newlayer in enumerate(self.layers[i].layers):
-          self.layers.insert(i + j, newlayer)
-        self.layers.remove(c)
-        i = -1
-      i += 1
-
-    for layer in self.layers:
-      inshape = layer.modelinit(inshape)
+    for i in self.model:
+      inshape = i.modelinit(inshape)
     
     if wandbproject is not None:
       wandb.init(project=wandbproject)
 
-    printlayers = [p.__repr__() for p in self.layers]
-
-    lowesterror = float('inf')
-    if usebestcache and os.path.isdir('aiinpy'):
-      for run in [x[0] + '/metadata.json' for x in os.walk('aiinpy')][1:]:
-        info = json.load(open(run, 'r'))
-        if printlayers == info['layers'] and info['cacheexpire'] > 0:
-          try:
-            try:
-              if info['testerror'] < lowesterror:
-                bestcache = info['file']
-                lowesterror = info['testerror']
-            except:
-              if info['trainerror'] < lowesterror:
-                bestcache = info['file']
-                lowesterror = info['trainerror']
-          except:
-            pass
-
-      # try:
-      self.layers = pickle.load(open('aiinpy/' + bestcache + '/layers.pickle', 'rb'))
-      # except:
-      #   print('no cache available')
-
-    self.time = datetime.datetime.now()
-    self.runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
-    self.longrunname = self.time.strftime('%m%d%Y%H%M%S') + '-' + self.runname
+    if usecache and os.path.isdir('aiinpy'):
+      pass # add code for retreiving cache
+      
+    runname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=6))
     if not os.path.isdir('aiinpy'):
       os.mkdir('aiinpy')
-    else:
-      for run in [x[0] + '/metadata.json' for x in os.walk('aiinpy')][1:]:
-        try:
-          info = json.load(open(run, 'r'))
-          info['cacheexpire'] -= 1 if info['cacheexpire'] > 0 else 0
-          json.dump(info, open(run, 'w'), indent=2)
-        except:
-          if input('cache', run, 'is corrupted, do you want to delete it (y/n)? ').lower() == 'y':
-            os.remove(run)
-            os.remove(run.replace('metadata.json', 'layers.pickle'))
-            os.remove(run.replace('metadata.json', 'trainerror.pickle'))
-            os.remove(run.replace('metadata.json', 'testerror.pickle'))
-          quit()
-    os.mkdir('aiinpy/' + self.longrunname)
-    json.dump({'name' : self.runname, 'file' : self.longrunname, 'time' : str(self.time), 'layers' : printlayers, 'cacheexpire' : cacheexpire}, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
-
-  def __repr__(self):
-    return "\n".join([p.__repr__() for p in self.layers])
+    os.mkdir('aiinpy/' + runname)
+    printmodel = [p.__repr__() for p in self.model]
+    json.dump({'name' : runname, 'time' : str(datetime.datetime.now()), 'model' : printmodel}, open('aiinpy/' + runname + '/metadata.json', 'w'), indent=2)
 
   def forward(self, input):
-    for i in range(len(self.layers)):
-      input = self.layers[i].forward(input)
+    for i in range(len(self.model)):
+      input = self.model[i].forward(input)
     return input
 
   def backward(self, outError):
-    for i in reversed(range(len(self.layers))):
-      outError = self.layers[i].backward(outError)
+    for i in reversed(range(len(self.model))):
+      outError = self.model[i].backward(outError)
     return outError
 
   def train(self, data, numofgen):
@@ -123,57 +52,35 @@ class model:
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
     trainerror = []
-    avgtime = []
-    trainstarttime = time.time()
 
     # Training, with wandb
     if self.wandbproject is not None:
       for gen in range(numofgen):
-        starttime = time.time()
         random = np.random.randint(0, NumOfData)
         input = data[0][random]
-        for i in range(len(self.layers)):
-          input = self.layers[i].forward(input)
+        for i in range(len(self.model)):
+          input = self.model[i].forward(input)
 
         outerror = data[1][random] - input
         wandb.log({'train error': np.sum(abs(outerror))})
-        trainerror.append(np.sum(abs(outerror)))
-        for i in reversed(range(len(self.layers))):
-          outerror = self.layers[i].backward(outerror)
-        avgtime.append(time.time() - starttime)
-        speed = round(6000 / sum(avgtime[-100:]))
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
+        for i in reversed(range(len(self.model))):
+          outerror = self.model[i].backward(outerror)
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
     else:
       # Training, without wandb
       for gen in range(numofgen):
-        starttime = time.time()
         random = np.random.randint(0, NumOfData)
         input = data[0][random]
-        for i in range(len(self.layers)):
-          input = self.layers[i].forward(input)
+        for i in range(len(self.model)):
+          input = self.model[i].forward(input)
 
         outerror = data[1][random] - input
         trainerror.append(np.sum(abs(outerror)))
-        for i in reversed(range(len(self.layers))):
-          outerror = self.layers[i].backward(outerror)
-        avgtime.append(time.time() - starttime)
-        speed = round(6000 / sum(avgtime[-100:]))
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (numofgen - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
-
-    sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed' + str(' ' * 50))
+        for i in reversed(range(len(self.model))):
+          outerror = self.model[i].backward(outerror)
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen))
+    
     print('')
-
-    pickle.dump(self.layers, open('aiinpy/' + self.longrunname + '/layers.pickle', 'wb'))
-    pickle.dump(trainerror, open('aiinpy/' + self.longrunname + '/trainerror.pickle', 'wb'))
-
-    if numofgen * 0.01 > 5:
-      simptrainerror = sum(trainerror[- int(numofgen * 0.01) :]) / int(numofgen * 0.01)
-    else:
-      simptrainerror = sum(trainerror[-5:]) / 5
-
-    info = json.load(open('aiinpy/' + self.longrunname + '/metadata.json', 'r'))
-    info.update({'trainerror' : simptrainerror})
-    json.dump(info, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
 
     return trainerror
 
@@ -193,39 +100,22 @@ class model:
       x.pop(data[1].shape.index(NumOfData))
       data[1] = np.transpose(data[1], tuple([data[1].shape.index(NumOfData)]) + tuple(x))
 
-    testerror = []
-    avgtime = []
-    trainstarttime = time.time()
-
     # Testing
     testcorrect = 0
     for gen in range(NumOfData):
-      starttime = time.time()
-
       input = data[0][gen]
-      for i in range(len(self.layers)):
-        input = self.layers[i].forward(input)
+      for i in range(len(self.model)):
+        input = self.model[i].forward(input)
 
-      testerror.append(np.sum(abs(data[1][gen] - input)))
       testcorrect += 1 if np.argmax(input) == np.argmax(data[1][gen]) else 0
+      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData))
 
-      avgtime.append(time.time() - starttime)
-      speed = round(6000 / sum(avgtime[-100:]))
-      sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + str(round(60 * (NumOfData - gen) / speed)) + ' sec remaining | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed')
-
-    sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(round(60 * len(avgtime) / sum(avgtime))) + ' gen/min | ' + str(round(time.time() - trainstarttime)) + ' sec elapsed' + str(' ' * 50))
     print('')
     
-    testaccuracy = testcorrect / NumOfData
-
+    self.testaccuracy = testcorrect / NumOfData
     if self.wandbproject is not None:
-      wandb.log({'test accuracy': testaccuracy})
-
-    info = json.load(open('aiinpy/' + self.longrunname + '/metadata.json', 'r'))
-    info.update({'testerror' : sum(testerror) / NumOfData, 'testaccuracy' : testaccuracy})
-    json.dump(info, open('aiinpy/' + self.longrunname + '/metadata.json', 'w'), indent=2)
-
-    return testaccuracy
+      wandb.log({'test accuracy': self.testaccuracy})
+    return self.testaccuracy
 
   def use(self, indata):
     indata = np.reshape(indata, (indata.shape[0], 1)) if len(indata.shape) == 1 else indata
@@ -238,7 +128,7 @@ class model:
     outdata = np.zeros(indata.shape)
     for gen in range (NumOfData):
       input = indata[gen]
-      for i in range(len(self.layers)):
-        input = self.layers[i].forward(input)
+      for i in range(len(self.model)):
+        input = self.model[i].forward(input)
       outdata[gen] = input
     return outdata

@@ -54,7 +54,7 @@ class tensor:
 	def min(self, axis=None): return np.min(self.data, axis=axis)
 
 	# make the following 4 functions return the input type
-	def exp(other): other = tensor.toTensor(other); print(other); return tensor(np.exp(other.data), ops=['pow', other.ops, ['init', tensor(np.e), other.dtype]])
+	def exp(other): other = tensor.toTensor(other); return tensor(np.exp(other.data), ops=['pow', other.ops, ['init', tensor(np.e), other.dtype]])
 	def floor(other): other = tensor.toTensor(other); return tensor(np.floor(other.data), ops=['floor', other.ops])
 	def ceil(other): other = tensor.toTensor(other); return tensor(np.ceil(other.data), ops=['ceil', other.ops])
 	def prod(other): other = tensor.toTensor(other); return np.prod(other.data)

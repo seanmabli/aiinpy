@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from .binarystep import binarystep
 from .gaussian import gaussian
 from .identity import identity
@@ -16,10 +15,9 @@ from .tanh import tanh
 
 class convtranspose:
   def __init__(self, inshape, filtershape, learningrate, activation, padding=False, stride=(1, 1)):
-    filtershape = tuple([1]) + filtershape if len(filtershape) == 2 else filtershape
     self.inshape, self.filtershape, self.learningrate, self.activation, self.padding, self.stride = inshape, filtershape, learningrate, activation, padding, stride
     if len(inshape) == 2:
-      self.inshape = inshape = tuple([self.filtershape[0]]) + inshape
+      inshape = tuple([self.filtershape[0]]) + inshape
     fakepadding = (0 if stride[0] > filtershape[1] else filtershape[1] - stride[0], 0 if stride[1] > filtershape[2] else filtershape[2] - stride[1])
     padding = (0 if padding == True or stride[0] > filtershape[1] else filtershape[1] - stride[0], 0 if padding == True or stride[1] > filtershape[2] else filtershape[2] - stride[1])
 
@@ -46,20 +44,18 @@ class convtranspose:
         self.out[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[1], j * self.stride[1] : j * self.stride[1] + self.filtershape[2]] += self.input[:, i, j][:, np.newaxis, np.newaxis] * self.Filter
 
     self.out += self.bias[:, np.newaxis, np.newaxis]
+    self.out = self.activation.forward(self.out)
 
     if self.padding:
       paddingdifference = tuple(map(lambda i, j: i - j, self.fakeoutshape, self.outshape))
-      self.out = self.out[:, math.floor(paddingdifference[1] / 2) : self.fakeoutshape[1] - math.ceil(paddingdifference[1] / 2), math.floor(paddingdifference[2] / 2) : self.fakeoutshape[2] - math.ceil(paddingdifference[2] / 2)]
+      self.out = self.out[:, int(paddingdifference[1] / 2) : self.fakeoutshape[1] - int(paddingdifference[1] / 2), int(paddingdifference[2] / 2) : self.fakeoutshape[2] - int(paddingdifference[2] / 2)]
 
-    self.derivative = self.activation.backward(self.out)
-    self.out = self.activation.forward(self.out)
-    
     return self.out
 
   def backward(self, outError):
     FilterΔ = np.zeros(self.filtershape)
 
-    outGradient = self.derivative * outError
+    outGradient = self.activation.backward(self.out) * outError
     outGradient = np.pad(outGradient, 1, mode='constant')[1 : self.filtershape[0] + 1, :, :]
 
     for i in range(0, self.inshape[1]):

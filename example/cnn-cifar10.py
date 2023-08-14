@@ -1,5 +1,4 @@
 import pickle
-import numpy as np
 import src as ai
 
 data_batch_1 = pickle.load(open("data/cifar10/data_batch_1", 'rb'), encoding='bytes')
@@ -9,21 +8,20 @@ inTrainData, outTrainData = data_batch_1[b'data'].reshape(10000, 3, 32, 32), dat
 inTestData, outTestData = test_batch[b'data'][:1000].reshape(1000, 3, 32, 32), test_batch[b'labels'][:1000]
 inTrainData, inTestData = (inTrainData / 255) - 0.5, (inTestData / 255) - 0.5
 
-outTrainDataReal = np.zeros((10000, 10))
+outTrainDataReal = ai.tensor.zeros((10000, 10))
 for i in range(10000):
   outTrainDataReal[i, outTrainData[i]] = 1
-outTestDataReal = np.zeros((1000, 10))
+outTestDataReal = ai.tensor.zeros((1000, 10))
 for i in range(1000):
   outTestDataReal[i, outTestData[i]] = 1
 
 # cnn model
 model = ai.model((3, 32, 32), 10, [
-  ai.conv(inshape=(3, 32, 32), numoffilters=16, filtershape=(3, 3, 3), learningrate=0.01, activation=ai.relu()),
+  ai.mean(axis=0),
+  ai.conv(numoffilters=16, filtershape=(3, 3), learningrate=0.01, activation=ai.relu()),
   ai.pool(stride=(2, 2), filtershape=(2, 2), operation='max'),
   ai.nn(outshape=10, activation=ai.stablesoftmax(), learningrate=0.1, weightsinit=(0, 0))
-])
+], "cnn-cifar10")
 
-print(model)
-
-model.train((inTrainData, outTrainDataReal), 500)
+model.train((inTrainData, outTrainDataReal), 2000)
 print(model.test((inTestData, outTestDataReal)))
