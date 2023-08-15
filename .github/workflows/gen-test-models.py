@@ -1,4 +1,4 @@
-tests = ["cnn-mnist", "cnn-cifar10", "lstm-timeseries", "gru-timeseries", "rnn-timeseries", "rnn-posnegcon", "nn-andor", "nn-nonlinearity"]
+tests = ["cnn-mnist", "cnn-emnist-byclass", "cnn-emnist-bymerge", "cnn-cifar10", "lstm-timeseries", "gru-timeseries", "rnn-timeseries", "rnn-posnegcon", "nn-andor", "nn-nonlinearity"]
 
 start = """
 name: test models

@@ -26,7 +26,7 @@ class model:
       try:
         wandb.init(project=wandbproject)
       except:
-        wandbproject = None
+        self.wandbproject = None
 
     printlayers = [p.__repr__() for p in self.layers]
 
@@ -126,7 +126,7 @@ class model:
         remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
         elapsed = round(time.time() - trainstarttime)
         elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed' + " " * 30)
     else:
       # Training, without wandb
       for gen in range(numofgen):
@@ -146,7 +146,7 @@ class model:
         remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
         elapsed = round(time.time() - trainstarttime)
         elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+        sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed' + " " * 30)
     
     sys.stdout.write('\r' + 'training: ' + str(gen + 1) + '/' + str(numofgen) + ' | ' + str(speed) + ' gen/min | ' + elapsed + ' elapsed' + " " * 30)
     print('')
@@ -207,7 +207,7 @@ class model:
         remaining = f"{(remaining // 3600):02}" + ':' + f"{((remaining % 3600) // 60):02}" + ':' + f"{(remaining % 60):02}"
         elapsed = round(time.time() - trainstarttime)
         elapsed = f"{(elapsed // 3600):02}" + ':' + f"{((elapsed % 3600) // 60):02}" + ':' + f"{(elapsed % 60):02}"
-        sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed')
+        sys.stdout.write('\r' + 'testing: ' + str(gen + 1) + '/' + str(NumOfData) + ' | ' + str(speed) + ' gen/min | ' + remaining + ' remaining | ' + elapsed + ' elapsed' + " " * 30)
     except RuntimeWarning:
       assert breakpoint()
     

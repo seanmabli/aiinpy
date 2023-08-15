@@ -6,3 +6,4 @@ for 0.1.0:
  - rnn, lstm, gru not in main package (be able to construct them using the model framework)
  - label stuff with 1d, 2d, 3d
    - add 1d, 2d, 3d versions of functions where it is missing
+ - fix vanishing/exploding gradient problems (https://machinelearningmastery.com/how-to-avoid-exploding-gradients-in-neural-networks-with-gradient-clipping/)
