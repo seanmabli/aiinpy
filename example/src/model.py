@@ -23,7 +23,10 @@ class model:
       inshape = layer.modelinit(inshape)
     
     if wandbproject is not None:
-      wandb.init(project=wandbproject)
+      try:
+        wandb.init(project=wandbproject)
+      except:
+        wandbproject = None
 
     printlayers = [p.__repr__() for p in self.layers]
 

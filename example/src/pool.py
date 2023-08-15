@@ -62,8 +62,8 @@ class pool:
           self.out[:, i, j] = tensor.sum(input[:, i * self.stride[0] : i * self.stride[0] + self.filtershape[0], j * self.stride[1] : j * self.stride[1] + self.filtershape[1]], axis=(1, 2))
     return self.out
 
-  def backward(self, outError):
+  def backward(self, outError): # NOTE: this prob doesn't work with weird filter shapes, fix in future when it becomes a problem, to fix change the self.stride[0] portion (it determines the repeats)
     if self.operation == 'max' or self.operation == 'min':
-      return tensor.repeat(tensor.repeat(outError, 2, axis=1), 2, axis=2) * (tensor.repeat(tensor.repeat(self.out, 2, axis=1), 2, axis=2) == self.input).astype(int)
+      return tensor.repeat(tensor.repeat(outError, self.stride[0], axis=1), self.stride[1], axis=2) * (tensor.repeat(tensor.repeat(self.out, self.stride[0], axis=1), self.stride[1], axis=2) == self.input).astype(int)
     elif self.operation == 'mean' or self.operation == 'sum':
-      return tensor.repeat(tensor.repeat(outError, 2, axis=1), 2, axis=2) * tensor.repeat(tensor.repeat(self.out, 2, axis=1), 2, axis=2)
+      return tensor.repeat(tensor.repeat(outError, self.stride[0], axis=1), self.stride[1], axis=2) * tensor.repeat(tensor.repeat(self.out, self.stride[0], axis=1), self.stride[1], axis=2)
