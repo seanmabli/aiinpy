@@ -2,11 +2,10 @@ import numpy as np
 
 class stablesoftmax:
   def forward(self, input):
-    return np.exp(input - np.max(input)) / np.sum(np.exp(input - np.max(input)))
+    e = np.exp(input - np.max(input))
+    return e / np.sum(e)
 
   def backward(self, input):
-    equation = np.vectorize(self.equationforderivative, otypes=[float])
-    return equation(input, np.sum(np.exp(input)))
-    
-  def equationforderivative(self, input, SumExpOfinput):
-    return (np.exp(input) * (SumExpOfinput - np.exp(input))) / (SumExpOfinput) ** 2
+    e = np.exp(input)
+    s = np.sum(e)
+    return (e * (s - e)) / (s * s)

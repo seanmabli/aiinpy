@@ -8,8 +8,4 @@ class leakyrelu:
     return np.maximum(self.alpha * input, input)
 
   def backward(self, input):
-    equation = np.vectorize(self.equationforderivative, otypes=[float])
-    return equation(input)
-
-  def equationforderivative(self, input):
-    return self.alpha if input < 0 else 1
+    return np.where(input >= 0, 1.0, self.alpha)

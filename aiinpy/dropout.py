@@ -11,8 +11,7 @@ class dropout:
     return inshape
 
   def forward(self, input):
-    self.Dropout = np.random.binomial(1, self.dropoutrate, size=input.shape)
-    self.Dropout = np.where(self.Dropout == 0, 1, 0)
+    self.Dropout = np.random.binomial(1, 1 - self.dropoutrate, size=input.shape)
     return self.Dropout * input
 
   def backward(self, outError):

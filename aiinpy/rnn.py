@@ -1,17 +1,5 @@
 import numpy as np
-from .binarystep import binarystep
-from .gaussian import gaussian
-from .identity import identity
-from .leakyrelu import leakyrelu
-from .mish import mish
-from .relu import relu
-from .selu import selu
-from .sigmoid import sigmoid
-from .silu import silu
-from .softmax import softmax
-from .softplus import softplus
 from .stablesoftmax import stablesoftmax
-from .tanh import tanh
 
 class rnn:
   def __init__(self, outshape, type, outactivation=stablesoftmax(), hidshape=64, learningrate=0.05, inshape=None):
@@ -41,7 +29,7 @@ class rnn:
     
     if self.type == 'ManyToOne':
       for i in range(len(input)):
-        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
+        self.Hid[i + 1, :] = np.tanh(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
 
       self.out = self.outactivation.forward(self.weightsHidToout @ self.Hid[len(input), :] + self.outbiases)
     
@@ -49,7 +37,7 @@ class rnn:
       self.out = np.zeros((len(self.input), self.outshape))
 
       for i in range(len(input)):
-        self.Hid[i + 1, :] = tanh().forward(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
+        self.Hid[i + 1, :] = np.tanh(self.weightsinToHid @ input[i].flatten() + self.weightsHidToHid @ self.Hid[i, :] + self.Hidbiases)
         self.out[i, :] = self.outactivation.forward(self.weightsHidToout @ self.Hid[i + 1, :] + self.outbiases)
 
     return self.out
@@ -60,7 +48,7 @@ class rnn:
     HidbiasesΔ = np.zeros(self.Hidbiases.shape)
 
     if self.type == 'ManyToOne':
-      outGradient = np.multiply(self.outactivation.backward(self.out), outError)
+      outGradient = self.outactivation.backward(self.out) * outError
 
       weightsHidTooutΔ = np.outer(outGradient, self.Hid[len(self.input)].T)
       outbiasesΔ = outGradient
@@ -68,7 +56,7 @@ class rnn:
       HidError = self.weightsHidToout.T @ outError
 
       for i in reversed(range(len(self.input))):
-        HidGradient = np.multiply(tanh().backward(self.Hid[i + 1]), HidError)
+        HidGradient = (1 - np.square(self.Hid[i + 1])) * HidError
 
         HidbiasesΔ += HidGradient
         weightsHidToHidΔ += np.outer(HidGradient, self.Hid[i].T)
@@ -83,8 +71,8 @@ class rnn:
       HidError = self.weightsHidToout.T @ outError[len(self.input) - 1]
 
       for i in reversed(range(len(self.input))):
-        HidGradient = np.multiply(tanh().backward(self.Hid[i + 1]), HidError)
-        outGradient = np.multiply(self.outactivation.backward(self.out[i]), outError[i])
+        HidGradient = (1 - np.square(self.Hid[i + 1])) * HidError
+        outGradient = self.outactivation.backward(self.out[i]) * outError[i]
 
         weightsinToHidΔ += np.outer(HidGradient, self.input[i].T)
         weightsHidToHidΔ += np.outer(HidGradient, self.Hid[i].T)

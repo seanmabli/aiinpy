@@ -22,7 +22,6 @@ class neuroevolution:
     return out
 
   def forwardsingle(self, input, Player):
-    out = np.zeros(self.outshape)
     for j in range(self.model.shape[1]):
       input = self.model[Player, j].forward(input)
     return input
@@ -31,16 +30,19 @@ class neuroevolution:
     Favorablemodel = self.model[FavorablePlayer]
 
     for i in range(self.model.shape[1]):
-      self.model[0, i].weights = Favorablemodel[i].weights
-      self.model[0, i].biases = Favorablemodel[i].biases
+      self.model[0, i].weights = Favorablemodel[i].weights.copy()
+      self.model[0, i].biases = Favorablemodel[i].biases.copy()
 
     for i in range(1, self.PopulationSize):
       for j in range(self.model.shape[1]):
-        self.model[i, j].weights = Favorablemodel[j].weights
-        self.model[i, j].biases = Favorablemodel[j].biases
+        w = Favorablemodel[j].weights.copy()
+        b = Favorablemodel[j].biases.copy()
+        lr = self.model[i, j].learningrate
 
-        self.model[i, j].weights *= np.random.choice([0, 1], self.model[i, j].weights.shape, p=[self.model[i, j].learningrate, 1 - self.model[i, j].learningrate])
-        self.model[i, j].weights = np.where(self.model[i, j].weights == 0, np.random.uniform(-1, 1, self.model[i, j].weights.shape), self.model[i, j].weights)
+        wmask = np.random.random(w.shape) < lr
+        w[wmask] = np.random.uniform(-1, 1, np.count_nonzero(wmask))
+        self.model[i, j].weights = w
 
-        self.model[i, j].biases *= np.random.choice([0, 1], self.model[i, j].biases.shape, p=[self.model[i, j].learningrate, 1 - self.model[i, j].learningrate])
-        self.model[i, j].biases = np.where(self.model[i, j].biases == 0, np.random.uniform(-1, 1, self.model[i, j].biases.shape), self.model[i, j].biases)
+        bmask = np.random.random(b.shape) < lr
+        b[bmask] = np.random.uniform(-1, 1, np.count_nonzero(bmask))
+        self.model[i, j].biases = b

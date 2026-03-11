@@ -1,9 +1,12 @@
 import numpy as np
-from .tanh import tanh
 
 class mish:
   def forward(self, input):
-    return input * tanh.forward(np.log(1 + np.exp(input)))
+    return input * np.tanh(np.log(1 + np.exp(input)))
 
   def backward(self, input):
-    return (np.exp(input) * ((4 * np.exp(2 * input)) + np.exp(3 * input) + (4 * (1 + input)) + (np.exp(input) * (6 + (4 * input))))) / np.square(2 + (2 * np.exp(input)) + np.exp(2 * input))
+    e = np.exp(input)
+    e2 = e * e
+    e3 = e2 * e
+    d = 2 + 2 * e + e2
+    return (e * (4 * e2 + e3 + 4 * (1 + input) + e * (6 + 4 * input))) / (d * d)

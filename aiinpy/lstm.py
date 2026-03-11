@@ -1,17 +1,4 @@
 import numpy as np
-from .binarystep import binarystep
-from .gaussian import gaussian
-from .identity import identity
-from .leakyrelu import leakyrelu
-from .mish import mish
-from .relu import relu
-from .selu import selu
-from .sigmoid import sigmoid
-from .silu import silu
-from .softmax import softmax
-from .softplus import softplus
-from .stablesoftmax import stablesoftmax
-from .tanh import tanh
 
 class lstm:
   def __init__(self, outshape, outactivation, hidshape=64, learningrate=0.05, inshape=None):
@@ -42,10 +29,10 @@ class lstm:
 
   def modelinit(self, inshape):
     self.inshape = inshape
-    self.weightsinToForgetGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-    self.weightsinToinGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-    self.weightsinTooutGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
-    self.weightsinTocellMemGate = np.random.uniform(-0.005, 0.005, (inshape, hidshape))
+    self.weightsinToForgetGate = np.random.uniform(-0.005, 0.005, (inshape, self.hidshape))
+    self.weightsinToinGate = np.random.uniform(-0.005, 0.005, (inshape, self.hidshape))
+    self.weightsinTooutGate = np.random.uniform(-0.005, 0.005, (inshape, self.hidshape))
+    self.weightsinTocellMemGate = np.random.uniform(-0.005, 0.005, (inshape, self.hidshape))
     return self.outshape
 
   def forward(self, input):
@@ -62,13 +49,13 @@ class lstm:
     self.cellMemGate = np.zeros((self.cellSize, self.hidshape))
 
     for i in range(self.cellSize):
-      self.ForgetGate[i, :] = sigmoid().forward((self.weightsinToForgetGate.T @ self.input[i, :]) + (self.weightshidToForgetGate.T @ self.hid[i, :]) + self.ForgetGatebiases)
-      self.inGate[i, :] = sigmoid().forward((self.weightsinToinGate.T @ self.input[i, :]) + (self.weightshidToinputGate.T @ self.hid[i, :]) + self.inGatebiases)
-      self.outGate[i, :] = sigmoid().forward((self.weightsinTooutGate.T @ self.input[i, :]) + (self.weightshidTooutputGate.T @ self.hid[i, :]) + self.outGatebiases)
-      self.cellMemGate[i, :] = tanh().forward((self.weightsinTocellMemGate.T @ self.input[i, :]) + (self.weightshidTocellMemGate.T @ self.hid[i, :]) + self.cellMemGatebiases)
+      self.ForgetGate[i, :] = 1.0 / (1 + np.exp(-(self.weightsinToForgetGate.T @ self.input[i, :] + self.weightshidToForgetGate.T @ self.hid[i, :] + self.ForgetGatebiases)))
+      self.inGate[i, :] = 1.0 / (1 + np.exp(-(self.weightsinToinGate.T @ self.input[i, :] + self.weightshidToinputGate.T @ self.hid[i, :] + self.inGatebiases)))
+      self.outGate[i, :] = 1.0 / (1 + np.exp(-(self.weightsinTooutGate.T @ self.input[i, :] + self.weightshidTooutputGate.T @ self.hid[i, :] + self.outGatebiases)))
+      self.cellMemGate[i, :] = np.tanh(self.weightsinTocellMemGate.T @ self.input[i, :] + self.weightshidTocellMemGate.T @ self.hid[i, :] + self.cellMemGatebiases)
 
-      self.cellMem[i + 1, :] = (self.ForgetGate[i, :] * self.cellMem[i, :]) + (self.inGate[i, :] * self.cellMemGate[i, :])
-      self.hid[i + 1, :] = self.outGate[i, :] * tanh().forward(self.cellMem[i + 1, :])
+      self.cellMem[i + 1, :] = self.ForgetGate[i, :] * self.cellMem[i, :] + self.inGate[i, :] * self.cellMemGate[i, :]
+      self.hid[i + 1, :] = self.outGate[i, :] * np.tanh(self.cellMem[i + 1, :])
       self.out[i, :] = self.outactivation.forward(self.weightshidToout.T @ self.hid[i + 1, :] + self.outbias)
 
     return self.out
@@ -101,8 +88,9 @@ class lstm:
       
       hidError += self.weightshidToout @ outError[i, :]
 
-      cellMemError += hidError * self.outGate[i] * tanh().backward(tanh().forward(self.cellMem[i + 1, :]))
-      outGateError = hidError * tanh().forward(self.cellMem[i + 1, :])
+      tanhCellMem = np.tanh(self.cellMem[i + 1, :])
+      cellMemError += hidError * self.outGate[i] * (1 - np.square(tanhCellMem))
+      outGateError = hidError * tanhCellMem
 
       ForgetGateError = cellMemError * self.cellMem[i, :]
       inGateError = cellMemError * self.cellMemGate[i, :]
@@ -110,10 +98,10 @@ class lstm:
 
       cellMemError *= self.ForgetGate[i, :]
 
-      ForgetGateGradient = sigmoid().backward(self.ForgetGate[i, :]) * ForgetGateError
-      inGateGradient = sigmoid().backward(self.inGate[i, :]) * inGateError
-      outGateGradient = sigmoid().backward(self.outGate[i, :]) * outGateError
-      cellMemGateGradient = tanh().backward(self.cellMemGate[i, :]) * cellMemGateError
+      ForgetGateGradient = (self.ForgetGate[i, :] * (1 - self.ForgetGate[i, :])) * ForgetGateError
+      inGateGradient = (self.inGate[i, :] * (1 - self.inGate[i, :])) * inGateError
+      outGateGradient = (self.outGate[i, :] * (1 - self.outGate[i, :])) * outGateError
+      cellMemGateGradient = (1 - np.square(self.cellMemGate[i, :])) * cellMemGateError
 
       hidError = self.weightshidToForgetGate @ ForgetGateError + self.weightshidToinputGate @ inGateError + self.weightshidTooutputGate @ outGateError + self.weightshidTocellMemGate @ cellMemGateError
       inError[i, :] = self.weightsinToForgetGate @ ForgetGateError + self.weightsinToinGate @ inGateError + self.weightsinTooutGate @ outGateError + self.weightsinTocellMemGate @ cellMemGateError
